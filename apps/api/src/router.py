@@ -24,6 +24,7 @@ from src.routers.playgrounds import playgrounds_generator as playgrounds_generat
 from src.core.ee_hooks import register_ee_routers
 from src.services.dev.dev import isDevModeEnabledOrRaise
 from src.routers.utils import router as utils_router
+from src.routers.auth_validate import router as auth_validate_router
 from src.security.auth import get_current_user
 from src.security.api_token_utils import require_non_api_token_user
 from src.security.features_utils.plan_check import require_plan, require_plan_for_boards, require_plan_for_certifications, require_plan_for_community, require_plan_for_usergroups, require_plan_for_playgrounds
@@ -50,6 +51,7 @@ v1_router.include_router(
     dependencies=[Depends(require_plan_for_usergroups("standard", "User Groups"))]
 )
 v1_router.include_router(auth.router, prefix="/auth", tags=["auth"])
+v1_router.include_router(auth_validate_router, prefix="/auth", tags=["Auth"])
 v1_router.include_router(
     orgs.router,
     prefix="/orgs",
