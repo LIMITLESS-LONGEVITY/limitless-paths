@@ -40,6 +40,7 @@ import {
   ChalkboardSimple,
   Cube,
   ShoppingBag,
+  Article,
 } from '@phosphor-icons/react'
 import { DiscordIcon } from '@components/Objects/Icons/DiscordIcon'
 import Link from 'next/link'
@@ -365,6 +366,13 @@ function DashLeftMenu() {
                 )}
               </button>
             </HoverMenu>
+            <MenuLink
+              href="/dash/articles"
+              icon={<Article size={20} weight="fill" />}
+              label="Articles"
+              isCollapsed={isCollapsed}
+            />
+
             {showCommunities && (
               <MenuLink
                 href="/dash/communities"
