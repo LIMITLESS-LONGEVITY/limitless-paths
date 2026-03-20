@@ -33,8 +33,8 @@ class DynamicCORSMiddleware(BaseHTTPMiddleware):
         # Check explicit allowed origins first (includes localhost URLs from config)
         if origin in self.allowed_origins:
             return True
-        # Always allow localhost in dev
-        if origin.startswith("http://localhost"):
+        # Always allow localhost and subdomains of localhost in dev
+        if "localhost" in origin:
             return True
         # Check subdomain pattern
         if self.pattern and self.pattern.match(origin):

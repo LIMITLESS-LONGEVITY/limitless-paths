@@ -10,7 +10,7 @@ general:
 security:
   # SECURITY: Set via LEARNHOUSE_AUTH_JWT_SECRET_KEY env var (required, min 32 chars).
   # Generate with: python -c "import secrets; print(secrets.token_urlsafe(32))"
-  auth_jwt_secret_key: ""
+  auth_jwt_secret_key: "uKqZtfd247tFhxpEeshXzCBLMbtvC9qR4_6Vo-MVZPU"
 
 hosting_config:
   domain: localhost:3000
@@ -20,6 +20,7 @@ hosting_config:
   allowed_origins:
     - http://localhost:3000
     - http://localhost:3001
+    - http://admin.localhost:3000
   cookies_config:
     domain: ".localhost"
   allowed_regexp: '\b((?:https?://)[^\s/$.?#].[^\s]*)\b'
@@ -40,10 +41,10 @@ mailing_config:
   smtp_use_tls: true
 
 database_config:
-  sql_connection_string: postgresql://learnhouse:learnhouse@localhost:5432/learnhouse
+  sql_connection_string: postgresql://limitless:limitless_dev@127.0.0.1:5433/limitless_paths
 
 redis_config:
-  redis_connection_string: redis://localhost:6379/learnhouse
+  redis_connection_string: redis://127.0.0.1:6379/0
 
 payments_config:
   # See ee/services/payments/README.md for full setup instructions.
