@@ -23,14 +23,14 @@ POST   /articles/{article_uuid}/versions/{version_number}/restore  — restore v
 
 from typing import List, Optional, Union
 
-from fastapi import APIRouter, Depends, Query, Request, status
-from sqlmodel import Session, SQLModel
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from sqlmodel import Session, SQLModel, select
 
 from src.core.events.database import get_db_session
-from src.db.articles import ArticleCreate, ArticleRead, ArticleUpdate
+from src.db.articles import Article, ArticleCreate, ArticleListItem, ArticleRead, ArticleUpdate
 from src.db.article_versions import ArticleVersionRead
 from src.db.users import PublicUser
-from src.security.auth import get_authenticated_user
+from src.security.auth import get_authenticated_user, get_current_user
 from src.services.articles.articles import (
     create_article,
     delete_article,
@@ -43,6 +43,11 @@ from src.services.articles.workflow import (
     transition_article,
     get_article_versions,
     restore_article_version,
+)
+from src.services.access_control.access_control import (
+    can_user_access_article,
+    get_article_access_info,
+    get_effective_access,
 )
 
 router = APIRouter()
@@ -85,7 +90,7 @@ async def api_create_article(
     )
 
 
-@router.get("/", response_model=List[ArticleRead])
+@router.get("/", response_model=Union[List[ArticleRead], List[ArticleListItem]])
 async def api_list_articles(
     org_id: int = Query(..., description="Organization ID (required)"),
     pillar_id: Optional[int] = Query(default=None),
@@ -93,48 +98,159 @@ async def api_list_articles(
     author_id: Optional[int] = Query(default=None),
     page: int = Query(default=1, ge=1),
     limit: int = Query(default=20, ge=1, le=100),
-    current_user=Depends(get_authenticated_user),
+    include_locked: bool = Query(
+        default=False,
+        description="If true, return all PUBLISHED articles with a 'locked' flag for inaccessible ones (content=null for locked). If false (default), only return accessible articles.",
+    ),
+    current_user=Depends(get_current_user),
     db_session: Session = Depends(get_db_session),
-) -> List[ArticleRead]:
+) -> Union[List[ArticleRead], List[ArticleListItem]]:
     """
     List articles for an organization.
 
     Filters: pillar_id, status, author_id.
     Ordered by update_date descending, paginated.
 
-    Requires articles.read permission (checked at service layer).
+    Access control:
+    - Authenticated users with articles.read RBAC permission see all articles.
+    - Otherwise, only accessible articles are returned (or marked locked if include_locked=true).
+    - Anonymous users see only free published articles.
     """
-    from src.services.articles.articles import _check_article_permission
-    _check_article_permission(current_user.id, org_id, "read", db_session)
+    from src.services.articles.articles import _get_article_rights
 
-    return get_articles(
-        org_id=org_id,
-        db_session=db_session,
-        pillar_id=pillar_id,
-        status=article_status,
-        author_id=author_id,
-        page=page,
-        limit=limit,
-    )
+    user_id = current_user.id if hasattr(current_user, "id") else None
+
+    # Resolve RBAC permissions for admin bypass
+    user_perms = None
+    if user_id is not None:
+        user_perms = _get_article_rights(user_id, org_id, db_session)
+
+    # Admin bypass: users with read permission see everything unfiltered
+    is_admin = user_perms is not None and user_perms.get("action_read", False)
+
+    if is_admin:
+        # Full access — no access-level filtering
+        return get_articles(
+            org_id=org_id,
+            db_session=db_session,
+            pillar_id=pillar_id,
+            status=article_status,
+            author_id=author_id,
+            page=page,
+            limit=limit,
+        )
+
+    # Compute effective access levels for this user
+    effective = get_effective_access(user_id, db_session)
+
+    if not include_locked:
+        # SQL-level filter: only return articles with an accessible access_level
+        # Fetch raw Article objects to filter by access_level
+        stmt = select(Article).where(Article.org_id == org_id)
+        if pillar_id is not None:
+            stmt = stmt.where(Article.pillar_id == pillar_id)
+        if article_status is not None:
+            stmt = stmt.where(Article.status == article_status)
+        if author_id is not None:
+            stmt = stmt.where(Article.author_id == author_id)
+        stmt = stmt.where(Article.access_level.in_(list(effective)))  # type: ignore[union-attr]
+        stmt = stmt.order_by(Article.update_date.desc())  # type: ignore[union-attr]
+        stmt = stmt.offset((page - 1) * limit).limit(limit)
+        articles = db_session.exec(stmt).all()
+        return [ArticleRead.model_validate(a) for a in articles]
+    else:
+        # Return all, mark locked ones with locked=True and null content
+        articles_read = get_articles(
+            org_id=org_id,
+            db_session=db_session,
+            pillar_id=pillar_id,
+            status=article_status,
+            author_id=author_id,
+            page=page,
+            limit=limit,
+        )
+        result: List[ArticleListItem] = []
+        for art in articles_read:
+            item = ArticleListItem(**art.model_dump())
+            if art.access_level not in effective:
+                item.locked = True
+                item.content = None
+            result.append(item)
+        return result
+
+
+@router.get("/{article_uuid}/access")
+async def api_get_article_access(
+    article_uuid: str,
+    current_user=Depends(get_current_user),
+    db_session: Session = Depends(get_db_session),
+) -> dict:
+    """
+    Return access information for an article without exposing content.
+
+    Response:
+    - accessible (bool): whether the current user can read this article
+    - required_level (str): the access_level set on the article
+    - user_levels (list[str]): sorted list of access levels the user holds
+
+    Does not require authentication — anonymous users get {"user_levels": ["free"]}.
+    """
+    article_orm = db_session.exec(
+        select(Article).where(Article.article_uuid == article_uuid)
+    ).first()
+    if not article_orm:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Article '{article_uuid}' not found")
+
+    user_id = current_user.id if hasattr(current_user, "id") else None
+    return get_article_access_info(user_id, article_orm, db_session)
 
 
 @router.get("/{article_uuid}", response_model=ArticleRead)
 async def api_get_article(
     article_uuid: str,
-    current_user=Depends(get_authenticated_user),
+    request: Request,
+    course_uuid: Optional[str] = Query(default=None, description="Course UUID for course-reference bypass"),
+    current_user=Depends(get_current_user),
     db_session: Session = Depends(get_db_session),
 ) -> ArticleRead:
     """
     Get a single article by its UUID.
 
-    Requires articles.read permission in the article's org.
+    - Authenticated users with articles.read RBAC permission can access any article in their org.
+    - Published articles are access-controlled by membership tier (access_level).
+    - Anonymous users can read free published articles.
+    - Pass course_uuid to enable course-reference bypass.
+
+    Returns 403 if access is denied (upgrade required).
+    Returns 404 if article does not exist.
     """
-    article = get_article_by_uuid(article_uuid, db_session)
+    # Fetch the raw Article ORM object (not ArticleRead) so we can pass it to access control
+    article_orm = db_session.exec(
+        select(Article).where(Article.article_uuid == article_uuid)
+    ).first()
+    if not article_orm:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Article '{article_uuid}' not found")
 
-    from src.services.articles.articles import _check_article_permission
-    _check_article_permission(current_user.id, article.org_id, "read", db_session)
+    user_id = current_user.id if hasattr(current_user, "id") else None
 
-    return article
+    # Resolve RBAC permissions for admin bypass (authenticated users only)
+    user_perms = None
+    if user_id is not None:
+        user_perms = _get_article_rights(user_id, article_orm.org_id, db_session)
+
+    if not can_user_access_article(
+        user_id=user_id,
+        article=article_orm,
+        db_session=db_session,
+        user_article_permissions=user_perms,
+        course_uuid=course_uuid,
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied — upgrade your membership",
+        )
+
+    return ArticleRead.model_validate(article_orm)
 
 
 @router.put("/{article_uuid}", response_model=ArticleRead)

@@ -24,6 +24,8 @@ from src.db.articles import (
 from src.db.article_versions import ArticleVersion
 from src.db.roles import Role
 from src.db.user_organizations import UserOrganization
+from src.db.access_levels import AccessLevel
+from src.db.content_pillars import ContentPillar
 from src.security.superadmin import is_user_superadmin
 
 logger = logging.getLogger(__name__)
@@ -158,11 +160,24 @@ def create_article(
     """
     _check_article_permission(author_id, org_id, "create", db_session)
 
+    # Validate access_level if explicitly provided (ArticleCreate doesn't expose it yet,
+    # but guard against future callers passing it in unexpected ways via model extensions)
+    if hasattr(data, "access_level") and data.access_level is not None:
+        valid_levels = [e.value for e in AccessLevel]
+        if data.access_level not in valid_levels:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Invalid access_level: {data.access_level!r}. Valid values: {valid_levels}",
+            )
+
     article_uuid = f"article_{uuid4()}"
 
     # Resolve slug
     base_slug = _slugify(data.slug) if data.slug else _slugify(data.title)
     slug = _ensure_unique_slug(base_slug, org_id, db_session)
+
+    # Determine access_level: use explicitly provided value, then pillar default, then "free"
+    explicit_access_level = getattr(data, "access_level", None)
 
     article = Article(
         article_uuid=article_uuid,
@@ -172,6 +187,7 @@ def create_article(
         content=data.content or {},
         featured_image=data.featured_image,
         status=ArticleStatusEnum.DRAFT.value,
+        access_level=explicit_access_level or "free",
         pillar_id=data.pillar_id,
         org_id=org_id,
         author_id=author_id,
@@ -183,6 +199,15 @@ def create_article(
     db_session.add(article)
     db_session.commit()
     db_session.refresh(article)
+
+    # Inherit access_level from pillar if not explicitly set
+    if not explicit_access_level and article.pillar_id:
+        pillar = db_session.get(ContentPillar, article.pillar_id)
+        if pillar and hasattr(pillar, "default_access_level") and pillar.default_access_level:
+            article.access_level = pillar.default_access_level
+            db_session.add(article)
+            db_session.commit()
+            db_session.refresh(article)
 
     # Create initial version
     version = ArticleVersion(
@@ -294,6 +319,15 @@ def update_article(
         )
 
     update_data = data.model_dump(exclude_unset=True)
+
+    # Validate access_level if provided
+    if "access_level" in update_data and update_data["access_level"] is not None:
+        valid_levels = [e.value for e in AccessLevel]
+        if update_data["access_level"] not in valid_levels:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Invalid access_level: {update_data['access_level']!r}. Valid values: {valid_levels}",
+            )
 
     # Validate related_courses (silently filter invalid ones)
     if "related_courses" in update_data and update_data["related_courses"]:

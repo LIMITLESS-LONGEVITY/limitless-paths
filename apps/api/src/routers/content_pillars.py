@@ -16,7 +16,7 @@ from sqlmodel import Session
 from src.core.events.database import get_db_session
 from src.db.content_pillars import ContentPillarCreate, ContentPillarRead, ContentPillarUpdate
 from src.db.users import PublicUser
-from src.security.auth import get_authenticated_user
+from src.security.auth import get_authenticated_user, get_current_user
 from src.security.superadmin import require_superadmin
 from src.services.content_pillars.pillars import (
     create_pillar,
@@ -59,7 +59,7 @@ async def api_create_pillar(
 @router.get("/{pillar_id}/content")
 async def api_get_pillar_content(
     pillar_id: int,
-    _current_user = Depends(get_authenticated_user),
+    current_user=Depends(get_current_user),
     db_session: Session = Depends(get_db_session),
 ) -> dict:
     """
@@ -67,9 +67,12 @@ async def api_get_pillar_content(
 
     Returns: {"articles": [...], "courses": [...]}
 
-    Requires authentication.
+    Articles are filtered by access control — only articles the current user
+    can access are returned. Anonymous users see free published articles only.
+    Authentication is no longer strictly required for free content.
     """
-    return get_pillar_content(pillar_id, db_session)
+    user_id = current_user.id if hasattr(current_user, "id") else None
+    return get_pillar_content(pillar_id, db_session, user_id=user_id)
 
 
 @router.put("/{pillar_id}", response_model=ContentPillarRead)

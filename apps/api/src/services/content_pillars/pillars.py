@@ -21,6 +21,7 @@ from src.db.content_pillars import (
 )
 from src.db.articles import Article, ArticleRead
 from src.db.courses.courses import Course
+from src.services.access_control.access_control import filter_accessible_articles
 
 logger = logging.getLogger(__name__)
 
@@ -176,9 +177,14 @@ def delete_pillar(pillar_id: int, db_session: Session) -> dict:
     return {"detail": f"Pillar {pillar_id} deleted successfully"}
 
 
-def get_pillar_content(pillar_id: int, db_session: Session) -> dict:
+def get_pillar_content(pillar_id: int, db_session: Session, user_id: Optional[int] = None) -> dict:
     """
-    Return all articles and courses tagged with this pillar.
+    Return articles and courses tagged with this pillar, filtered by access control.
+
+    Articles are filtered to those the requesting user can access:
+    - Admin users (with action_update or action_publish rights) see all articles.
+    - Other authenticated users see articles at their effective access levels.
+    - Anonymous users (user_id=None) see only free published articles.
 
     Returns: {"articles": [...], "courses": [...]}
     """
@@ -193,9 +199,16 @@ def get_pillar_content(pillar_id: int, db_session: Session) -> dict:
             detail=f"Pillar {pillar_id} not found",
         )
 
-    articles = db_session.exec(
+    all_articles = db_session.exec(
         select(Article).where(Article.pillar_id == pillar_id)
     ).all()
+
+    # Filter articles through access control
+    articles = filter_accessible_articles(
+        articles=list(all_articles),
+        user_id=user_id,
+        db_session=db_session,
+    )
 
     courses = db_session.exec(
         select(Course).where(Course.pillar_id == pillar_id)
