@@ -24,13 +24,14 @@ export async function getArticles(
   filters?: ArticleFilters
 ) {
   const params = new URLSearchParams()
+  params.set('org_id', String(orgId))
   if (filters?.pillar_id) params.set('pillar_id', String(filters.pillar_id))
   if (filters?.status) params.set('status', filters.status)
   if (filters?.author_id) params.set('author_id', String(filters.author_id))
   if (filters?.page) params.set('page', String(filters.page))
   if (filters?.limit) params.set('limit', String(filters.limit))
 
-  const query = params.toString() ? `?${params.toString()}` : ''
+  const query = `?${params.toString()}`
   const result: any = await fetch(
     `${getAPIUrl()}articles/${query}`,
     RequestBodyWithAuthHeader('GET', null, null, access_token || undefined)
@@ -49,7 +50,7 @@ export async function createArticle(
     ...(data.pillar_id ? { pillar_id: data.pillar_id } : {}),
   }
   const result: any = await fetch(
-    `${getAPIUrl()}articles/`,
+    `${getAPIUrl()}articles/?org_id=${orgId}`,
     RequestBodyWithAuthHeader('POST', body, null, access_token || undefined)
   )
   const res = await getResponseMetadata(result)
