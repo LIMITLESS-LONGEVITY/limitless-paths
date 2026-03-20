@@ -5,6 +5,7 @@ from sqlmodel import SQLModel, Session, select
 import typer
 from config.config import get_learnhouse_config
 from src.db.membership_tiers import MembershipTier
+from src.db.content_pillars import ContentPillar
 from src.db.organizations import OrganizationCreate
 from src.db.users import UserCreate
 from src.services.setup.setup import (
@@ -14,6 +15,28 @@ from src.services.setup.setup import (
 )
 
 cli = typer.Typer()
+
+DEFAULT_PILLARS = [
+    {"name": "Nutrition", "slug": "nutrition", "display_order": 1},
+    {"name": "Movement", "slug": "movement", "display_order": 2},
+    {"name": "Sleep", "slug": "sleep", "display_order": 3},
+    {"name": "Mental Health", "slug": "mental-health", "display_order": 4},
+    {"name": "Medicine", "slug": "medicine", "display_order": 5},
+    {"name": "Health Tech", "slug": "health-tech", "display_order": 6},
+]
+
+
+def _seed_default_pillars(db_session: Session) -> None:
+    """Seed the default content pillars if they do not already exist."""
+    for pillar_data in DEFAULT_PILLARS:
+        existing = db_session.exec(
+            select(ContentPillar).where(ContentPillar.slug == pillar_data["slug"])
+        ).first()
+        if not existing:
+            pillar = ContentPillar(**pillar_data, org_id=None, is_active=True)
+            db_session.add(pillar)
+    db_session.commit()
+    print("Default content pillars seeded.")
 
 
 def _seed_free_tier(db_session: Session) -> None:
@@ -58,6 +81,9 @@ def install(
 
         # Seed default free membership tier
         _seed_free_tier(db_session)
+
+        # Seed default content pillars
+        _seed_default_pillars(db_session)
 
         # Create the Organization
         print("Creating default organization...")
@@ -109,6 +135,9 @@ def install(
 
         # Seed default free membership tier
         _seed_free_tier(db_session)
+
+        # Seed default content pillars
+        _seed_default_pillars(db_session)
 
         # Create the Organization
         print("Creating your organization...")

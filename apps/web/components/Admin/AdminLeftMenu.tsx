@@ -3,6 +3,7 @@ import {
   Buildings,
   ChartBar,
   Crown,
+  Rows,
   SignOut,
   User,
   Users,
@@ -63,6 +64,11 @@ function AdminTopMenu() {
             href="/tiers"
             icon={<Crown size={16} weight="fill" />}
             label="Tiers"
+          />
+          <NavLink
+            href="/pillars"
+            icon={<Rows size={16} weight="fill" />}
+            label="Pillars"
           />
           <NavLink
             href="/analytics"
