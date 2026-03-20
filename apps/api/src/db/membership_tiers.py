@@ -10,7 +10,7 @@ class MembershipTierBase(SQLModel):
     description: Optional[str] = None
     is_active: bool = Field(default=True)
     priority: int = Field(default=0)
-    permissions: dict = Field(default={}, sa_column=Column(JSON))
+    permissions: dict = Field(default_factory=dict, sa_column=Column(JSON))
 
 
 class MembershipTier(MembershipTierBase, table=True):
