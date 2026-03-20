@@ -27,6 +27,8 @@ from src.core.ee_hooks import register_ee_routers
 from src.services.dev.dev import isDevModeEnabledOrRaise
 from src.routers.utils import router as utils_router
 from src.routers.auth_validate import router as auth_validate_router
+from src.routers.content_pillars import router as content_pillars_router
+from src.routers.articles import router as articles_router
 from src.security.auth import get_current_user
 from src.security.api_token_utils import require_non_api_token_user
 from src.security.features_utils.plan_check import require_plan, require_plan_for_boards, require_plan_for_certifications, require_plan_for_community, require_plan_for_usergroups, require_plan_for_playgrounds
@@ -277,4 +279,18 @@ v1_router.include_router(
     user_memberships_router_module.router,
     prefix="/memberships",
     tags=["user-memberships"],
+)
+
+# CMS: Content Pillars
+v1_router.include_router(
+    content_pillars_router,
+    prefix="/pillars",
+    tags=["Content Pillars"],
+)
+
+# CMS: Articles
+v1_router.include_router(
+    articles_router,
+    prefix="/articles",
+    tags=["Articles"],
 )
