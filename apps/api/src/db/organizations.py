@@ -25,6 +25,8 @@ class OrganizationBase(SQLModel):
     label: Optional[str] = None
     slug: str
     email: str
+    org_type: Optional[str] = Field(default=None)  # medical | non_medical | hospitality | wellness
+    managed_by: str = Field(default="limitless")
 
 
 class Organization(OrganizationBase, table=True):
@@ -54,6 +56,8 @@ class OrganizationUpdate(SQLModel):
     slug: Optional[str] = None
     email: Optional[str] = None
     explore: Optional[bool] = None
+    org_type: Optional[str] = None
+    managed_by: Optional[str] = None
 
 class OrganizationCreate(OrganizationBase):
     pass
