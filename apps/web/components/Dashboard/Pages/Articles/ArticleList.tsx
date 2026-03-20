@@ -126,9 +126,10 @@ export default function ArticleList({ orgslug, org_id }: ArticleListProps) {
     const toastId = toast.loading('Creating article...')
     try {
       const res = await createArticle(org_id, { title: 'Untitled Article' }, access_token)
-      if (res.success && res.data) {
+      const article = res?.data ?? res // handle both wrapped {success, data} and raw response
+      if (article && article.article_uuid) {
         toast.dismiss(toastId)
-        const uuid = res.data.article_uuid || res.data.uuid
+        const uuid = article.article_uuid
         if (uuid) {
           router.push(`/dash/articles/${uuid.replace('article_', '')}/edit`)
         } else {
