@@ -246,6 +246,14 @@ async def get_authenticated_user(
     return user
 
 
+def get_cookie_domain() -> str | None:
+    """Return cookie domain from config. None = current domain only (dev)."""
+    from config.config import get_learnhouse_config
+    config = get_learnhouse_config()
+    domain = config.hosting_config.cookie_config.domain
+    return domain if domain else None
+
+
 async def validate_api_token(
     token: str,
     db_session: Session,

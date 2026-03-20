@@ -1,14 +1,61 @@
 import uvicorn
+import re
 import sentry_sdk
 from fastapi import FastAPI
 from config.config import LearnHouseConfig, get_learnhouse_config
 from src.core.events.events import shutdown_app, startup_app
 from src.router import v1_router
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 from src.core.ee_hooks import register_ee_middlewares
 from src.routers.content_files import router as content_files_router
 from src.routers.local_content import router as local_content_router
+
+
+class DynamicCORSMiddleware(BaseHTTPMiddleware):
+    """CORS middleware that reflects matching subdomain origins."""
+
+    def __init__(self, app, allowed_domain: str | None = None, allowed_origins: list | None = None):
+        super().__init__(app)
+        self.allowed_domain = allowed_domain
+        self.allowed_origins = allowed_origins or []
+        if allowed_domain:
+            escaped = re.escape(allowed_domain.lstrip("."))
+            self.pattern = re.compile(rf"^https?://([a-zA-Z0-9-]+\.)*{escaped}$")
+        else:
+            self.pattern = None
+
+    def _is_allowed(self, origin: str) -> bool:
+        if not origin:
+            return False
+        # Check explicit allowed origins first (includes localhost URLs from config)
+        if origin in self.allowed_origins:
+            return True
+        # Always allow localhost in dev
+        if origin.startswith("http://localhost"):
+            return True
+        # Check subdomain pattern
+        if self.pattern and self.pattern.match(origin):
+            return True
+        return False
+
+    async def dispatch(self, request: Request, call_next):
+        origin = request.headers.get("origin", "")
+
+        if request.method == "OPTIONS":
+            response = Response(status_code=200)
+        else:
+            response = await call_next(request)
+
+        if self._is_allowed(origin):
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-CSRF-Token"
+
+        return response
 
 
 ########################
@@ -42,11 +89,9 @@ app = FastAPI(
 )
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origin_regex=learnhouse_config.hosting_config.allowed_regexp,
-    allow_methods=["*"],
-    allow_credentials=True,
-    allow_headers=["*"],
+    DynamicCORSMiddleware,
+    allowed_domain=learnhouse_config.hosting_config.cookie_config.domain,
+    allowed_origins=learnhouse_config.hosting_config.allowed_origins,
 )
 
 # Gzip Middleware (will add brotli later)
