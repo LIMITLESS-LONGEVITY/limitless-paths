@@ -11,6 +11,7 @@ class ContentPillarBase(SQLModel):
     icon: Optional[str] = None
     display_order: int = Field(default=0)
     is_active: bool = Field(default=True)
+    default_access_level: str = Field(default="free")
     org_id: Optional[int] = Field(
         default=None,
         sa_column=Column(Integer, ForeignKey("organization.id"), nullable=True),
@@ -41,3 +42,4 @@ class ContentPillarUpdate(SQLModel):
     icon: Optional[str] = None
     display_order: Optional[int] = None
     is_active: Optional[bool] = None
+    default_access_level: Optional[str] = None

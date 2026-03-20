@@ -14,6 +14,18 @@ import pytest
 from sqlmodel import SQLModel, Session, create_engine
 from sqlalchemy import event, text
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.dialects.sqlite.base import SQLiteTypeCompiler
+from sqlalchemy.dialects.postgresql import JSONB
+
+
+# ---------------------------------------------------------------------------
+# SQLite compatibility: treat JSONB as JSON
+# SQLite does not have a JSONB type; map it to plain JSON for unit tests.
+# ---------------------------------------------------------------------------
+def _visit_JSONB(self, type_, **kw):  # noqa: N802
+    return "JSON"
+
+SQLiteTypeCompiler.visit_JSONB = _visit_JSONB
 
 
 def _create_partial_indexes(connection, **kwargs):

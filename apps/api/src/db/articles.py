@@ -21,6 +21,7 @@ class ArticleBase(SQLModel):
     content: Optional[dict] = Field(default_factory=dict, sa_column=Column(JSON))
     featured_image: Optional[str] = None
     status: str = Field(default=ArticleStatusEnum.DRAFT.value)
+    access_level: str = Field(default="free")
     pillar_id: Optional[int] = Field(
         default=None,
         sa_column=Column(Integer, ForeignKey("content_pillars.id"), nullable=True),
@@ -81,6 +82,7 @@ class ArticleRead(SQLModel):
     content: Optional[dict] = None
     featured_image: Optional[str] = None
     status: str
+    access_level: str = "free"
     pillar_id: Optional[int] = None
     org_id: int
     author_id: int
@@ -93,6 +95,12 @@ class ArticleRead(SQLModel):
     update_date: Optional[str] = None
 
 
+class ArticleListItem(ArticleRead):
+    """ArticleRead extended with a lock flag for list endpoints."""
+
+    locked: bool = False
+
+
 class ArticleUpdate(SQLModel):
     """Partial update — status NOT updatable here (use workflow endpoints)."""
 
@@ -103,3 +111,4 @@ class ArticleUpdate(SQLModel):
     featured_image: Optional[str] = None
     pillar_id: Optional[int] = None
     related_courses: Optional[list] = None
+    access_level: Optional[str] = None
