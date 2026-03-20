@@ -69,7 +69,7 @@ class Course(CourseBase, table=True):
     update_date: str = ""
     seo: Optional[dict] = Field(default=None, sa_column=Column(JSONB))
     pillar_id: Optional[int] = Field(default=None, sa_column=Column(Integer, ForeignKey("content_pillars.id"), nullable=True))
-    related_articles: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+    related_articles: Optional[dict] = Field(default=None, sa_column=Column(JSONB))
 
 
 class CourseCreate(CourseBase):

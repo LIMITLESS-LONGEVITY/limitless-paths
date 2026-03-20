@@ -53,7 +53,11 @@ export async function createArticle(
     `${getAPIUrl()}articles/?org_id=${orgId}`,
     RequestBodyWithAuthHeader('POST', body, null, access_token || undefined)
   )
-  const res = await getResponseMetadata(result)
+  if (!result.ok) {
+    const detail = await result.text()
+    throw new Error(detail || 'Failed to create article')
+  }
+  const res = await result.json()
   return res
 }
 
