@@ -147,6 +147,10 @@ async def create_user(
 
     user_read = UserRead.model_validate(user)
 
+    # Auto-assign free tier to newly registered user
+    from src.services.membership_tiers.user_memberships import auto_assign_free_tier
+    auto_assign_free_tier(user.id, db_session)  # type: ignore[arg-type]
+
     increase_feature_usage("members", org_id, db_session)
 
     # Track user signup
@@ -297,6 +301,10 @@ async def create_user_without_org(
     db_session.refresh(user)
 
     user_read = UserRead.model_validate(user)
+
+    # Auto-assign free tier to newly registered user
+    from src.services.membership_tiers.user_memberships import auto_assign_free_tier
+    auto_assign_free_tier(user.id, db_session)  # type: ignore[arg-type]
 
     # OAuth users get welcome email (already verified)
     # Non-OAuth SaaS users get verification email (no org needed)

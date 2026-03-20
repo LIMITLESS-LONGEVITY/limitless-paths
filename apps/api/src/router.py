@@ -5,6 +5,8 @@ from src.routers import health
 from src.routers import instance
 from src.routers import usergroups
 from src.routers import dev, trail, users, auth, orgs, roles, search
+from src.routers import membership_tiers as membership_tiers_router_module
+from src.routers import user_memberships as user_memberships_router_module
 from src.routers import stream
 from src.routers import api_tokens
 from src.routers.ai import ai, magicblocks, courseplanning, rag
@@ -261,4 +263,18 @@ v1_router.include_router(
     prefix="/stream",
     tags=["stream"],
     dependencies=[Depends(get_non_api_token_user)]
+)
+
+# Membership Tier CRUD (superadmin only)
+v1_router.include_router(
+    membership_tiers_router_module.router,
+    prefix="/tiers",
+    tags=["membership-tiers"],
+)
+
+# User Membership Assignment (superadmin only)
+v1_router.include_router(
+    user_memberships_router_module.router,
+    prefix="/memberships",
+    tags=["user-memberships"],
 )
