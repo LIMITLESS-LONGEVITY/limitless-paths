@@ -36,6 +36,19 @@ class DashboardPermission(BaseModel):
         return getattr(self, item)
 
 
+class ArticlePermissions(BaseModel):
+    action_create: bool
+    action_read: bool
+    action_update: bool
+    action_delete: bool
+    action_submit_review: bool
+    action_review: bool
+    action_publish: bool
+
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+
 class Rights(BaseModel):
     courses: PermissionsWithOwn
     users: Permission
@@ -66,6 +79,21 @@ class Rights(BaseModel):
         action_update_own=False,
         action_delete=False,
         action_delete_own=False,
+    )  # Default: read-only for backward compat with existing roles
+    articles: ArticlePermissions = ArticlePermissions(
+        action_create=False,
+        action_read=True,
+        action_update=False,
+        action_delete=False,
+        action_submit_review=False,
+        action_review=False,
+        action_publish=False,
+    )  # Default: read-only for backward compat with existing roles
+    pillars: Permission = Permission(
+        action_create=False,
+        action_read=True,
+        action_update=False,
+        action_delete=False,
     )  # Default: read-only for backward compat with existing roles
 
     def __getitem__(self, item):

@@ -37,6 +37,10 @@ async def check_element_type(element_uuid):
         return "episodes"
     elif element_uuid.startswith("board_"):
         return "boards"
+    elif element_uuid.startswith("article_"):
+        return "articles"
+    elif element_uuid.startswith("pillar_"):
+        return "pillars"
     else:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -229,6 +233,23 @@ async def get_element_organization_id(
         statement = select(Board).where(Board.board_uuid == element_uuid)
         board = db_session.exec(statement).first()
         return board.org_id if board else None
+
+    elif element_type == "articles":
+        from src.db.articles import Article
+        statement = select(Article).where(Article.article_uuid == element_uuid)
+        article = db_session.exec(statement).first()
+        return article.org_id if article else None
+
+    elif element_type == "pillars":
+        from src.db.content_pillars import ContentPillar
+        # ContentPillar uses integer id; element_uuid is expected as "pillar_<id>"
+        try:
+            pillar_id = int(element_uuid.replace("pillar_", ""))
+        except (ValueError, AttributeError):
+            return None
+        statement = select(ContentPillar).where(ContentPillar.id == pillar_id)
+        pillar = db_session.exec(statement).first()
+        return pillar.org_id if pillar else None
 
     # Unknown element type
     return None

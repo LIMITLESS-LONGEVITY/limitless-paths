@@ -1,5 +1,5 @@
 from typing import List, Optional
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, JSON
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 from enum import Enum
@@ -68,6 +68,8 @@ class Course(CourseBase, table=True):
     creation_date: str = ""
     update_date: str = ""
     seo: Optional[dict] = Field(default=None, sa_column=Column(JSONB))
+    pillar_id: Optional[int] = Field(default=None, sa_column=Column(Integer, ForeignKey("content_pillars.id"), nullable=True))
+    related_articles: Optional[dict] = Field(default=None, sa_column=Column(JSON))
 
 
 class CourseCreate(CourseBase):
@@ -91,6 +93,8 @@ class CourseUpdate(SQLModel):
     published: Optional[bool] = None
     open_to_contributors: Optional[bool] = None
     seo: Optional[dict] = None
+    pillar_id: Optional[int] = None
+    related_articles: Optional[list] = None
 
 
 class CourseRead(CourseBase):
@@ -104,6 +108,8 @@ class CourseRead(CourseBase):
     thumbnail_image: Optional[str] = Field(default="")
     thumbnail_video: Optional[str] = Field(default="")
     seo: Optional[dict] = None
+    pillar_id: Optional[int] = None
+    related_articles: Optional[list] = None
     pass
 
 
@@ -118,6 +124,8 @@ class FullCourseRead(CourseBase):
     thumbnail_image: Optional[str] = Field(default="")
     thumbnail_video: Optional[str] = Field(default="")
     seo: Optional[dict] = None
+    pillar_id: Optional[int] = None
+    related_articles: Optional[list] = None
     # Chapters, Activities
     chapters: List[ChapterRead]
     authors: List[AuthorWithRole]
@@ -131,6 +139,8 @@ class FullCourseReadWithTrail(CourseBase):
     update_date: Optional[str] = None
     org_id: int = Field(default=None, foreign_key="organization.id")
     seo: Optional[dict] = None
+    pillar_id: Optional[int] = None
+    related_articles: Optional[list] = None
     authors: List[AuthorWithRole]
     # Chapters, Activities
     chapters: List[ChapterRead]
