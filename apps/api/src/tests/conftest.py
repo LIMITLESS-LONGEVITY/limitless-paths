@@ -56,6 +56,27 @@ def db_session_fixture():
             )
             conn.commit()
 
+    # Create partial unique indexes on content_pillars for SQLite
+    # (mirrors PostgreSQL partial indexes for platform-wide and org-scoped slug uniqueness)
+    with engine.connect() as conn:
+        tables = conn.execute(
+            text("SELECT name FROM sqlite_master WHERE type='table' AND name='content_pillars'")
+        ).fetchall()
+        if tables:
+            conn.execute(
+                text(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS ix_content_pillars_slug_platform "
+                    "ON content_pillars (slug) WHERE org_id IS NULL"
+                )
+            )
+            conn.execute(
+                text(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS ix_content_pillars_slug_per_org "
+                    "ON content_pillars (slug, org_id) WHERE org_id IS NOT NULL"
+                )
+            )
+            conn.commit()
+
     with Session(engine) as session:
         yield session
     SQLModel.metadata.drop_all(engine)
