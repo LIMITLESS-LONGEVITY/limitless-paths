@@ -65,7 +65,7 @@ export default function ArticleList({ orgslug, org_id }: ArticleListProps) {
 
   // SWR for articles
   const { data: articles = [], mutate: mutateArticles, isLoading: articlesLoading } = useSWR(
-    access_token ? `${getAPIUrl()}articles/` : null,
+    access_token && org_id ? `${getAPIUrl()}articles/?org_id=${org_id}` : null,
     (url) => swrFetcher(url, access_token),
     { revalidateOnFocus: true }
   )
