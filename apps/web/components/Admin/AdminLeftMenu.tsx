@@ -2,6 +2,7 @@
 import {
   Buildings,
   ChartBar,
+  Crown,
   SignOut,
   User,
   Users,
@@ -57,6 +58,11 @@ function AdminTopMenu() {
             href="/users"
             icon={<Users size={16} weight="fill" />}
             label="Users"
+          />
+          <NavLink
+            href="/tiers"
+            icon={<Crown size={16} weight="fill" />}
+            label="Tiers"
           />
           <NavLink
             href="/analytics"

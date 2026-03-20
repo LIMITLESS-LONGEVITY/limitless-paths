@@ -306,6 +306,47 @@ async def list_all_users(
     return {"items": items, "total": total, "page": page, "limit": limit}
 
 
+@router.get("/users/{user_id}")
+async def get_user_detail(
+    user_id: int,
+    current_user: PublicUser = Depends(require_superadmin),
+    db_session: Session = Depends(get_db_session),
+) -> GlobalUserInfo:
+    """Get a single user by ID with their org memberships."""
+    from src.db.organizations import Organization as Org
+
+    user = db_session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    membership_stmt = (
+        select(UserOrganization, Org.name, Org.slug, Role.name.label("role_name"))
+        .join(Org, Org.id == UserOrganization.org_id)
+        .join(Role, Role.id == UserOrganization.role_id)
+        .where(UserOrganization.user_id == user_id)
+        .order_by(Org.name)
+    )
+    orgs = [
+        {"id": uo.org_id, "name": org_name, "slug": org_slug, "role_name": role_name}
+        for uo, org_name, org_slug, role_name in db_session.exec(membership_stmt).all()
+    ]
+
+    return GlobalUserInfo(
+        id=user.id,
+        user_uuid=user.user_uuid,
+        username=user.username,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        avatar_image=user.avatar_image,
+        is_superadmin=user.is_superadmin,
+        org_count=len(orgs),
+        orgs=orgs,
+        creation_date=str(user.creation_date) if user.creation_date else "",
+        update_date=str(user.update_date) if user.update_date else "",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Organization list
 # ---------------------------------------------------------------------------

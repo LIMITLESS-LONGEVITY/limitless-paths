@@ -6,6 +6,7 @@ import { getUserAvatarMediaDirectory } from '@services/media/media'
 import { swrFetcher } from '@services/utils/ts/requests'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
 import {
   User,
   CaretLeft,
@@ -14,6 +15,7 @@ import {
   Buildings,
   ShieldStar,
   EnvelopeSimple,
+  Crown,
 } from '@phosphor-icons/react'
 
 interface OrgMembership {
@@ -349,6 +351,9 @@ export default function UserList() {
                     Role
                   </th>
                   <th className="px-4 py-3 text-xs font-medium text-white/40 uppercase tracking-wider">
+                    Tier
+                  </th>
+                  <th className="px-4 py-3 text-xs font-medium text-white/40 uppercase tracking-wider">
                     Created
                   </th>
                   <th className="px-4 py-3 text-xs font-medium text-white/40 uppercase tracking-wider">
@@ -383,9 +388,12 @@ export default function UserList() {
                             avatarFallback
                           )}
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-white">
+                            <Link
+                              href={`/users/${u.id}`}
+                              className="text-sm font-medium text-white hover:text-white/70 transition-colors"
+                            >
                               {u.username}
-                            </p>
+                            </Link>
                             {fullName && (
                               <p className="text-xs text-white/30 truncate max-w-[200px]">
                                 {fullName}
@@ -420,6 +428,16 @@ export default function UserList() {
                             User
                           </span>
                         )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Link
+                          href={`/users/${u.id}`}
+                          className="inline-flex items-center gap-1 text-xs text-white/40 hover:text-white/70 transition-colors"
+                          title="View membership"
+                        >
+                          <Crown size={12} weight="fill" className="text-amber-400/40" />
+                          <span>View</span>
+                        </Link>
                       </td>
                       <td className="px-4 py-3">
                         <span className="text-sm text-white/40">
