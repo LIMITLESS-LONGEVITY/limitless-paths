@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from sqlalchemy import Column, ForeignKey, Integer
 from sqlmodel import Field, SQLModel
@@ -11,4 +12,5 @@ class UserOrganization(SQLModel, table=True):
     )
     role_id: int = Field(default=None, foreign_key="role.id")
     creation_date: str
-    update_date: str
+    update_date: Optional[str] = Field(default_factory=lambda: str(datetime.now()))
+    updated_by: Optional[int] = Field(default=None, foreign_key="user.id")

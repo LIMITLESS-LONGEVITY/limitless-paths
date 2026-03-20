@@ -1,9 +1,10 @@
 import os
 from typing import Annotated
 from sqlalchemy import create_engine
-from sqlmodel import SQLModel, Session
+from sqlmodel import SQLModel, Session, select
 import typer
 from config.config import get_learnhouse_config
+from src.db.membership_tiers import MembershipTier
 from src.db.organizations import OrganizationCreate
 from src.db.users import UserCreate
 from src.services.setup.setup import (
@@ -13,6 +14,28 @@ from src.services.setup.setup import (
 )
 
 cli = typer.Typer()
+
+
+def _seed_free_tier(db_session: Session) -> None:
+    """Seed the default 'free' membership tier if it does not already exist."""
+    existing_free = db_session.exec(
+        select(MembershipTier).where(MembershipTier.slug == "free")
+    ).first()
+    if not existing_free:
+        free_tier = MembershipTier(
+            name="Free",
+            slug="free",
+            description="Basic free access to public content",
+            is_active=True,
+            priority=0,
+            permissions={"content_access": ["free"], "features": [], "max_courses": None},
+        )
+        db_session.add(free_tier)
+        db_session.commit()
+        print("Default 'free' membership tier created.")
+    else:
+        print("Free tier already exists, skipping.")
+
 
 @cli.command()
 def install(
@@ -32,6 +55,9 @@ def install(
         print("Installing default elements...")
         install_default_elements(db_session)
         print("Default elements installed ✅")
+
+        # Seed default free membership tier
+        _seed_free_tier(db_session)
 
         # Create the Organization
         print("Creating default organization...")
@@ -80,6 +106,9 @@ def install(
         print("Installing default elements...")
         install_default_elements(db_session)
         print("Default elements installed ✅")
+
+        # Seed default free membership tier
+        _seed_free_tier(db_session)
 
         # Create the Organization
         print("Creating your organization...")
