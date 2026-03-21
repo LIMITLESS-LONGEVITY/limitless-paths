@@ -21,9 +21,10 @@ GET    /articles/{article_uuid}/versions                            — list ver
 POST   /articles/{article_uuid}/versions/{version_number}/restore  — restore version
 """
 
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi.responses import JSONResponse
 from sqlmodel import Session, SQLModel, select
 
 from src.core.events.database import get_db_session
@@ -35,6 +36,7 @@ from src.services.articles.articles import (
     create_article,
     delete_article,
     get_article_by_uuid,
+    get_article_preview,
     get_articles,
     update_article,
     _get_article_rights,
@@ -210,6 +212,7 @@ async def api_get_article(
     article_uuid: str,
     request: Request,
     course_uuid: Optional[str] = Query(default=None, description="Course UUID for course-reference bypass"),
+    preview: bool = Query(default=False, description="If true, return truncated content teaser for published articles without access control (always 200 for published articles)"),
     current_user=Depends(get_current_user),
     db_session: Session = Depends(get_db_session),
 ) -> ArticleRead:
@@ -220,6 +223,8 @@ async def api_get_article(
     - Published articles are access-controlled by membership tier (access_level).
     - Anonymous users can read free published articles.
     - Pass course_uuid to enable course-reference bypass.
+    - Pass preview=true to get a truncated content teaser for any PUBLISHED article,
+      always returns 200 with a `locked` flag indicating whether the user has full access.
 
     Returns 403 if access is denied (upgrade required).
     Returns 404 if article does not exist.
@@ -237,6 +242,26 @@ async def api_get_article(
     user_perms = None
     if user_id is not None:
         user_perms = _get_article_rights(user_id, article_orm.org_id, db_session)
+
+    # Preview mode: short-circuit access control for published articles
+    if preview:
+        from src.db.articles import ArticleStatusEnum as _StatusEnum
+        if article_orm.status != _StatusEnum.PUBLISHED.value:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Article '{article_uuid}' is not published",
+            )
+        locked = not can_user_access_article(
+            user_id=user_id,
+            article=article_orm,
+            db_session=db_session,
+            user_article_permissions=user_perms,
+        )
+        preview_content = get_article_preview(article_orm)
+        article_data = ArticleListItem(**ArticleRead.model_validate(article_orm).model_dump())
+        article_data.content = preview_content
+        article_data.locked = locked
+        return JSONResponse(content=article_data.model_dump())
 
     if not can_user_access_article(
         user_id=user_id,

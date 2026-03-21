@@ -382,6 +382,38 @@ def update_article(
     return ArticleRead.model_validate(article)
 
 
+def get_article_preview(article, max_blocks=5, max_chars=200):
+    """Return truncated TipTap content (first N blocks or ~200 chars) for teasers."""
+    content = article.content
+    if not content or not isinstance(content, dict):
+        return None
+
+    blocks = content.get("content", [])
+    if not blocks:
+        return content
+
+    truncated = []
+    char_count = 0
+    for block in blocks:
+        if len(truncated) >= max_blocks or char_count >= max_chars:
+            break
+        truncated.append(block)
+        char_count += _count_block_chars(block)
+
+    return {"type": "doc", "content": truncated}
+
+
+def _count_block_chars(block):
+    """Recursively count text characters in a TipTap block."""
+    chars = 0
+    if "text" in block:
+        chars += len(block["text"])
+    if "content" in block and isinstance(block["content"], list):
+        for child in block["content"]:
+            chars += _count_block_chars(child)
+    return chars
+
+
 def delete_article(article_uuid: str, user_id: int, db_session: Session) -> dict:
     """
     Delete an article and its versions (cascade handled by DB FK ON DELETE CASCADE).
