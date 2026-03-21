@@ -246,7 +246,6 @@ v1_router.include_router(
     health.router,
     prefix="/health",
     tags=["health"],
-    dependencies=[Depends(get_non_api_token_user)]
 )
 
 # Dev Routes
