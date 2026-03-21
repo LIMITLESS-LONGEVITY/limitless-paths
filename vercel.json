@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd apps/web && bun install --frozen-lockfile && bun run build",
+  "buildCommand": "bun run build",
   "outputDirectory": "apps/web/.next",
-  "installCommand": "echo 'skipped'",
+  "installCommand": "bun install --frozen-lockfile",
   "framework": "nextjs",
   "regions": ["fra1"]
 }
