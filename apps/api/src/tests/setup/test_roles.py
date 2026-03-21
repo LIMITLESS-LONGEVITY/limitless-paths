@@ -189,7 +189,7 @@ class TestRightsModel:
         assert "communities" in dumped
         assert "discussions" in dumped
         assert "podcasts" in dumped
-        assert len(dumped) == 14  # All 14 fields
+        assert len(dumped) == 16  # All 16 fields (14 original + articles + pillars)
 
 
 class TestPermissionModels:
@@ -255,6 +255,8 @@ class TestDefaultRolesValidation:
         "podcasts",
         "boards",
         "playgrounds",
+        "articles",
+        "pillars",
     ]
 
     def test_rights_model_has_expected_fields(self):
@@ -563,6 +565,8 @@ class TestRightsFieldConsistency:
             "podcasts",
             "boards",
             "playgrounds",
+            "articles",
+            "pillars",
         }
 
         actual_fields = set(fields.keys())
