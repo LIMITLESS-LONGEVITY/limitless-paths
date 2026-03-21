@@ -29,6 +29,7 @@ from src.routers.utils import router as utils_router
 from src.routers.auth_validate import router as auth_validate_router
 from src.routers.content_pillars import router as content_pillars_router
 from src.routers.articles import router as articles_router
+from src.routers.org_admin import router as org_admin_router
 from src.security.auth import get_current_user
 from src.security.api_token_utils import require_non_api_token_user
 from src.security.features_utils.plan_check import require_plan, require_plan_for_boards, require_plan_for_certifications, require_plan_for_community, require_plan_for_usergroups, require_plan_for_playgrounds
@@ -233,6 +234,9 @@ v1_router.include_router(
 
 # Instance info (public, no auth)
 v1_router.include_router(instance.router, prefix="/instance", tags=["instance"])
+
+# Org admin (superadmin-only: org stats + global user search)
+v1_router.include_router(org_admin_router, prefix="/admin", tags=["Org Admin"])
 
 # Register EE Routers if available
 register_ee_routers(v1_router)

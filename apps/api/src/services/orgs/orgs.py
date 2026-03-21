@@ -1388,6 +1388,12 @@ async def rbac_check(
     if isinstance(current_user, InternalUser):
         return True
 
+    # Superadmins bypass all org-level RBAC checks
+    if isinstance(current_user, PublicUser):
+        from src.security.superadmin import is_user_superadmin
+        if is_user_superadmin(current_user.id, db_session):
+            return True
+
     # API Token path: verify token has permissions for this action on organizations
     if isinstance(current_user, APITokenUser):
         # SECURITY: API tokens should NOT be allowed to delete organizations

@@ -30,6 +30,9 @@ import {
   Check,
   ArrowSquareOut,
 } from '@phosphor-icons/react'
+import OrgStats from '@components/Admin/Organizations/OrgStats'
+import OrgSettings from '@components/Admin/Organizations/OrgSettings'
+import OrgMembers from '@components/Admin/Organizations/OrgMembers'
 
 function getLogoUrl(orgUuid: string, logoImage: string): string {
   if (logoImage.startsWith('http')) return logoImage
@@ -202,7 +205,7 @@ export default function OrgDetailPage() {
       {/* Tab content */}
       {activeTab === 'overview' && <OverviewTab org={org} orgId={orgId} accessToken={accessToken} />}
       {activeTab === 'courses' && <CoursesTab orgId={orgId} accessToken={accessToken} orgUuid={org.org_uuid} orgSlug={org.slug} />}
-      {activeTab === 'users' && <UsersTab orgId={orgId} accessToken={accessToken} />}
+      {activeTab === 'users' && <UsersTab orgId={orgId} accessToken={accessToken} numericOrgId={org.id} />}
       {activeTab === 'analytics' && <AnalyticsTab orgId={orgId} accessToken={accessToken} />}
       {activeTab === 'plan' && <PlanTab orgId={orgId} accessToken={accessToken} currentPlan={org.plan} config={org.config} />}
       {activeTab === 'settings' && <SettingsTab orgId={orgId} accessToken={accessToken} org={org} />}
@@ -266,6 +269,9 @@ function OverviewTab({ org, orgId, accessToken }: { org: any; orgId: string; acc
 
   return (
     <div className="space-y-6">
+      {/* Org stats (members, articles, courses, created) */}
+      <OrgStats orgId={orgId} accessToken={accessToken} />
+
       {/* Usage bars */}
       {features ? (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -502,7 +508,7 @@ function CoursesTab({
 // ---------------------------------------------------------------------------
 // Users Tab
 // ---------------------------------------------------------------------------
-function UsersTab({ orgId, accessToken }: { orgId: string; accessToken: string }) {
+function UsersTab({ orgId, accessToken, numericOrgId }: { orgId: string; accessToken: string; numericOrgId?: number }) {
   const { searchParams, updateParams } = useUrlParams()
   const page = Number(searchParams.get('page')) || 1
   const search = searchParams.get('search') || ''
@@ -612,6 +618,13 @@ function UsersTab({ orgId, accessToken }: { orgId: string; accessToken: string }
           </table>
           {totalPages > 1 && <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />}
         </>
+      )}
+
+      {/* Enhanced member management: add / remove members */}
+      {numericOrgId && (
+        <div className="mt-8">
+          <OrgMembers orgId={numericOrgId} accessToken={accessToken} />
+        </div>
       )}
     </div>
   )
@@ -1025,10 +1038,12 @@ function SettingsTab({
   orgId,
   accessToken,
   org,
+  numericOrgId,
 }: {
   orgId: string
   accessToken: string
   org: any
+  numericOrgId?: number
 }) {
   const [form, setForm] = useState({
     name: org.name || '',
@@ -1130,6 +1145,9 @@ function SettingsTab({
           </button>
         </div>
       )}
+
+      {/* Org type, content access level, managed_by */}
+      <OrgSettings orgId={orgId} org={org} accessToken={accessToken} />
     </div>
   )
 }
