@@ -1,0 +1,71 @@
+site_name: PATHS Contributor Guide
+site_url: https://guide.limitless-longevity.health
+site_description: Your guide to creating content on the PATHS platform
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: custom
+    accent: custom
+  font:
+    text: Inter
+    code: Roboto Mono
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.suggest
+    - content.tabs.link
+  icon:
+    logo: material/book-open-page-variant
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Welcome: index.md
+  - Getting Started:
+    - Your Account: getting-started/your-account.md
+    - Finding Your Way: getting-started/finding-your-way.md
+  - Writing Articles:
+    - Creating an Article: writing-articles/creating-an-article.md
+    - Using the Editor: writing-articles/using-the-editor.md
+    - Metadata & Pillars: writing-articles/metadata-and-pillars.md
+  - Editorial Workflow:
+    - How It Works: editorial-workflow/how-it-works.md
+    - Submitting for Review: editorial-workflow/submitting-for-review.md
+    - Reviewing & Publishing: editorial-workflow/reviewing-and-publishing.md
+  - Reference:
+    - Glossary: reference/glossary.md
+    - FAQ: reference/faq.md
