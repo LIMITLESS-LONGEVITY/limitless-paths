@@ -54,8 +54,8 @@ const nextConfig = {
   },
 }
 
-// Generate runtime config for development
-if (process.env.NODE_ENV === 'development') {
+// Generate runtime config for client-side access to NEXT_PUBLIC_ env vars
+{
   const fs = require('fs')
   const path = require('path')
   const runtimeConfig = {}
