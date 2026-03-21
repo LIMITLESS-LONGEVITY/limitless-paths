@@ -2,7 +2,7 @@ name: API Lint
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - "apps/api/**"
   pull_request:

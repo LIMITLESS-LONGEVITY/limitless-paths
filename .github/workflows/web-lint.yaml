@@ -2,7 +2,7 @@ name: Web Lint
 on:
   push:
     branches:
-      - dev
+      - main
     paths:
       - "apps/web/**"
   pull_request:
@@ -24,3 +24,9 @@ jobs:
       - name: Lint
         run: bun run lint
         working-directory: ./apps/web
+      - name: Build
+        run: bun run build
+        working-directory: ./apps/web
+        env:
+          NEXT_PUBLIC_LEARNHOUSE_BACKEND_URL: http://localhost:9000
+          NEXT_PUBLIC_LEARNHOUSE_DOMAIN: localhost:3000
