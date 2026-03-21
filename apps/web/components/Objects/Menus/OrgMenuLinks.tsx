@@ -1,6 +1,6 @@
 import { useOrg } from '@components/Contexts/OrgContext'
 import { getUriWithOrg } from '@services/config/config'
-import { Books, SquaresFour, ChatsCircle, Headphones, Cube, ShoppingBag } from '@phosphor-icons/react'
+import { Books, SquaresFour, ChatsCircle, Headphones, Cube, ShoppingBag, FileText } from '@phosphor-icons/react'
 import Link from 'next/link'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,6 +19,8 @@ function MenuLinks(props: { orgslug: string; primaryColor?: string }) {
   const showPodcasts = isEnabled('podcasts')
   const showPlaygrounds = isEnabled('playgrounds')
   const showStore = isEnabled('payments')
+  // Articles: show when feature flag is enabled, or when no flag is present (always available)
+  const showArticles = rf?.articles?.enabled !== false
 
   return (
     <div className='pl-1'>
@@ -27,6 +29,14 @@ function MenuLinks(props: { orgslug: string; primaryColor?: string }) {
           <LinkItem
             link="/courses"
             type="courses"
+            orgslug={props.orgslug}
+            primaryColor={props.primaryColor}
+          ></LinkItem>
+        )}
+        {showArticles && (
+          <LinkItem
+            link="/articles"
+            type="articles"
             orgslug={props.orgslug}
             primaryColor={props.primaryColor}
           ></LinkItem>
@@ -123,6 +133,13 @@ const LinkItem = (props: any) => {
           <>
             <ShoppingBag size={20} weight="fill" />{' '}
             <span>Store</span>
+          </>
+        )}
+
+        {props.type == 'articles' && (
+          <>
+            <FileText size={20} weight="fill" />{' '}
+            <span>Articles</span>
           </>
         )}
 
