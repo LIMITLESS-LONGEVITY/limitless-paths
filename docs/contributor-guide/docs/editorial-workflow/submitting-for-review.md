@@ -34,3 +34,9 @@ A rejection is not a negative judgment — it means the editor has specific feed
 
 !!! tip
     Feedback is part of the collaborative process. Editors provide specific notes to help you create the strongest possible content. Think of it as a second pair of expert eyes.
+
+---
+
+## What's Next?
+
+If you're an Editor or Publisher, learn how to review and publish articles in [Reviewing & Publishing](reviewing-and-publishing.md). Otherwise, check the [Glossary](../reference/glossary.md) and [FAQ](../reference/faq.md) for quick answers to common questions.

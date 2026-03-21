@@ -44,3 +44,9 @@ As an editor or publisher, you ensure every article meets PATHS quality standard
     ## Reopening Archived Articles
 
     Archived articles can be sent back to **Draft** by clicking **Reopen**. This restarts the editorial cycle, allowing the author to update the content before it goes through review again.
+
+---
+
+## What's Next?
+
+For quick definitions and answers, see the [Glossary](../reference/glossary.md) and [FAQ](../reference/faq.md).

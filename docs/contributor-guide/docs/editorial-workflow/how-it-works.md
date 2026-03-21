@@ -29,3 +29,9 @@ graph LR
 
 !!! tip
     You'll always see your article's current status as a colored badge in the dashboard and in the editor.
+
+---
+
+## What's Next?
+
+Ready to submit your article for review? See [Submitting for Review](submitting-for-review.md).
