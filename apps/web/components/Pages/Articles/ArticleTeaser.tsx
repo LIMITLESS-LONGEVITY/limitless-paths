@@ -224,7 +224,7 @@ export default function ArticleTeaser({ article, orgslug }: ArticleTeaserProps) 
               Unlock this article and all premium content by upgrading your membership.
             </p>
             <Link
-              href="/"
+              href={getUriWithOrg(orgslug, '/account/billing')}
               className="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 hover:bg-amber-500 text-amber-900 font-semibold rounded-lg transition-colors"
             >
               Upgrade Membership

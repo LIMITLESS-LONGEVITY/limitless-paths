@@ -19,6 +19,11 @@ export type CreateTierBody = {
   priority?: number
   is_active?: boolean
   permissions?: TierPermissions
+  stripe_product_id?: string
+  stripe_price_monthly_id?: string
+  stripe_price_yearly_id?: string
+  price_monthly_display?: string
+  price_yearly_display?: string
 }
 
 export type UpdateTierBody = Partial<CreateTierBody>
@@ -33,6 +38,11 @@ export type MembershipTier = {
   permissions: TierPermissions
   creation_date: string
   update_date: string
+  stripe_product_id?: string | null
+  stripe_price_monthly_id?: string | null
+  stripe_price_yearly_id?: string | null
+  price_monthly_display?: string | null
+  price_yearly_display?: string | null
 }
 
 export async function getTiers(access_token?: string): Promise<MembershipTier[]> {

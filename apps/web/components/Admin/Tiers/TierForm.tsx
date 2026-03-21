@@ -17,6 +17,11 @@ export default function TierForm({ initialValues, onSubmit, onCancel, isEdit }: 
     priority: initialValues?.priority ?? 0,
     is_active: initialValues?.is_active ?? true,
     permissions: initialValues?.permissions ?? {},
+    stripe_product_id: initialValues?.stripe_product_id ?? '',
+    stripe_price_monthly_id: initialValues?.stripe_price_monthly_id ?? '',
+    stripe_price_yearly_id: initialValues?.stripe_price_yearly_id ?? '',
+    price_monthly_display: initialValues?.price_monthly_display ?? '',
+    price_yearly_display: initialValues?.price_yearly_display ?? '',
   })
   const [permissionsJson, setPermissionsJson] = useState(
     JSON.stringify(initialValues?.permissions ?? {}, null, 2)
@@ -150,6 +155,63 @@ export default function TierForm({ initialValues, onSubmit, onCancel, isEdit }: 
           spellCheck={false}
         />
         {jsonError && <p className="text-xs text-red-400 mt-1">{jsonError}</p>}
+      </div>
+
+      {/* Stripe Configuration */}
+      <div className="pt-2 border-t border-white/[0.08]">
+        <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-3">Stripe Configuration</p>
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-white/40 block mb-1.5">Stripe Product ID</label>
+            <input
+              type="text"
+              value={form.stripe_product_id ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, stripe_product_id: e.target.value }))}
+              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white font-mono placeholder:text-white/25 focus:outline-none focus:border-white/20"
+              placeholder="prod_..."
+            />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 block mb-1.5">Monthly Price ID</label>
+            <input
+              type="text"
+              value={form.stripe_price_monthly_id ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, stripe_price_monthly_id: e.target.value }))}
+              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white font-mono placeholder:text-white/25 focus:outline-none focus:border-white/20"
+              placeholder="price_..."
+            />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 block mb-1.5">Yearly Price ID</label>
+            <input
+              type="text"
+              value={form.stripe_price_yearly_id ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, stripe_price_yearly_id: e.target.value }))}
+              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white font-mono placeholder:text-white/25 focus:outline-none focus:border-white/20"
+              placeholder="price_..."
+            />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 block mb-1.5">Monthly Display Price</label>
+            <input
+              type="text"
+              value={form.price_monthly_display ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, price_monthly_display: e.target.value }))}
+              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-white/20"
+              placeholder="$19/mo"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-white/40 block mb-1.5">Yearly Display Price</label>
+            <input
+              type="text"
+              value={form.price_yearly_display ?? ''}
+              onChange={(e) => setForm((f) => ({ ...f, price_yearly_display: e.target.value }))}
+              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/25 focus:outline-none focus:border-white/20"
+              placeholder="$190/yr"
+            />
+          </div>
+        </div>
       </div>
 
       {error && <p className="text-sm text-red-400">{error}</p>}
