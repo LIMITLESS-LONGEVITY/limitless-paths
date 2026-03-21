@@ -134,6 +134,7 @@ export default async function proxy(req: NextRequest) {
   // Fall back to extractSubdomain for correctness when instanceInfo is available.
   const hostbare = stripPort(fullhost)
   const isAdminSubdomain = hostbare?.startsWith('admin.') ||
+    hostbare?.startsWith('paths-admin.') ||
     (fullhost ? extractSubdomain(fullhost, instanceInfo.frontend_domain) === 'admin' : false)
   if (isAdminSubdomain) {
     const response = NextResponse.rewrite(new URL(`/admin${pathname}${search}`, req.url))
