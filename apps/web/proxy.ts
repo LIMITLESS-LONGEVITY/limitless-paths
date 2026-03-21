@@ -39,11 +39,16 @@ async function getInstanceInfo(): Promise<InstanceInfo> {
 
 // Set instance info cookies on a response so client-side can read them synchronously
 function setInstanceCookies(response: NextResponse, info: InstanceInfo) {
-  response.cookies.set({ name: 'learnhouse_multi_org', value: String(info.multi_org_enabled), path: '/' })
-  response.cookies.set({ name: 'learnhouse_default_org', value: info.default_org_slug, path: '/' })
-  response.cookies.set({ name: 'learnhouse_frontend_domain', value: info.frontend_domain, path: '/' })
-  response.cookies.set({ name: 'learnhouse_top_domain', value: info.top_domain, path: '/' })
-  response.cookies.set({ name: 'learnhouse_mode', value: info.mode, path: '/' })
+  // Derive cookie domain from top_domain so cookies are shared across subdomains
+  // (e.g., paths.* and paths-admin.* both need these)
+  const topDomain = getConfig('NEXT_PUBLIC_LEARNHOUSE_TOP_DOMAIN') || info.top_domain
+  const cookieDomain = topDomain && topDomain !== 'localhost' ? `.${topDomain}` : undefined
+  const opts = { path: '/', ...(cookieDomain ? { domain: cookieDomain } : {}) }
+  response.cookies.set({ name: 'learnhouse_multi_org', value: String(info.multi_org_enabled), ...opts })
+  response.cookies.set({ name: 'learnhouse_default_org', value: info.default_org_slug, ...opts })
+  response.cookies.set({ name: 'learnhouse_frontend_domain', value: info.frontend_domain, ...opts })
+  response.cookies.set({ name: 'learnhouse_top_domain', value: info.top_domain, ...opts })
+  response.cookies.set({ name: 'learnhouse_mode', value: info.mode, ...opts })
   return response
 }
 
