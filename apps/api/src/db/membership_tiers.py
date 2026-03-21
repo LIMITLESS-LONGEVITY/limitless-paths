@@ -11,6 +11,12 @@ class MembershipTierBase(SQLModel):
     is_active: bool = Field(default=True)
     priority: int = Field(default=0)
     permissions: dict = Field(default_factory=dict, sa_column=Column(JSON))
+    # Stripe integration fields
+    stripe_product_id: Optional[str] = None
+    stripe_price_monthly_id: Optional[str] = None
+    stripe_price_yearly_id: Optional[str] = None
+    price_monthly_display: Optional[str] = None
+    price_yearly_display: Optional[str] = None
 
 
 class MembershipTier(MembershipTierBase, table=True):
@@ -37,3 +43,9 @@ class MembershipTierUpdate(SQLModel):
     is_active: Optional[bool] = None
     priority: Optional[int] = None
     permissions: Optional[dict] = None
+    # Stripe integration fields
+    stripe_product_id: Optional[str] = None
+    stripe_price_monthly_id: Optional[str] = None
+    stripe_price_yearly_id: Optional[str] = None
+    price_monthly_display: Optional[str] = None
+    price_yearly_display: Optional[str] = None
