@@ -2,18 +2,30 @@ import { getAPIUrl } from '@services/config/config'
 import {
   RequestBodyFormWithAuthHeader,
 } from '@services/utils/ts/requests'
+import type { BlockContext } from '@services/blocks/blockContext'
 
 export async function uploadNewAudioFile(
   file: any,
-  activity_uuid: string,
+  context: BlockContext | string,
   access_token: string
 ) {
   const formData = new FormData()
   formData.append('file_object', file)
-  formData.append('activity_uuid', activity_uuid)
+
+  let url: string
+  if (typeof context === 'string') {
+    // Legacy: activity_uuid passed directly
+    formData.append('activity_uuid', context)
+    url = `${getAPIUrl()}blocks/audio`
+  } else if (context.type === 'article') {
+    url = `${getAPIUrl()}articles/${context.uuid}/blocks/audio`
+  } else {
+    formData.append('activity_uuid', context.uuid)
+    url = `${getAPIUrl()}blocks/audio`
+  }
 
   const result = await fetch(
-    `${getAPIUrl()}blocks/audio`,
+    url,
     RequestBodyFormWithAuthHeader('POST', formData, null, access_token)
   )
 

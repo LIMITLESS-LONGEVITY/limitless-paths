@@ -3,19 +3,30 @@ import {
   RequestBodyFormWithAuthHeader,
   RequestBodyWithAuthHeader,
 } from '@services/utils/ts/requests'
+import type { BlockContext } from '@services/blocks/blockContext'
 
 export async function uploadNewVideoFile(
   file: any,
-  activity_uuid: string,
+  context: BlockContext | string,
   access_token: string
 ) {
-  // Send file thumbnail as form data
   const formData = new FormData()
   formData.append('file_object', file)
-  formData.append('activity_uuid', activity_uuid)
+
+  let url: string
+  if (typeof context === 'string') {
+    // Legacy: activity_uuid passed directly
+    formData.append('activity_uuid', context)
+    url = `${getAPIUrl()}blocks/video`
+  } else if (context.type === 'article') {
+    url = `${getAPIUrl()}articles/${context.uuid}/blocks/video`
+  } else {
+    formData.append('activity_uuid', context.uuid)
+    url = `${getAPIUrl()}blocks/video`
+  }
 
   const result = await fetch(
-    `${getAPIUrl()}blocks/video`,
+    url,
     RequestBodyFormWithAuthHeader('POST', formData, null, access_token)
   )
 

@@ -3,19 +3,30 @@ import {
   RequestBodyFormWithAuthHeader,
   RequestBodyWithAuthHeader,
 } from '@services/utils/ts/requests'
+import type { BlockContext } from '@services/blocks/blockContext'
 
 export async function uploadNewImageFile(
   file: any,
-  activity_uuid: string,
+  context: BlockContext | string,
   access_token: string
 ) {
-  // Send file thumbnail as form data
   const formData = new FormData()
   formData.append('file_object', file)
-  formData.append('activity_uuid', activity_uuid)
+
+  let url: string
+  if (typeof context === 'string') {
+    // Legacy: activity_uuid passed directly
+    formData.append('activity_uuid', context)
+    url = `${getAPIUrl()}blocks/image`
+  } else if (context.type === 'article') {
+    url = `${getAPIUrl()}articles/${context.uuid}/blocks/image`
+  } else {
+    formData.append('activity_uuid', context.uuid)
+    url = `${getAPIUrl()}blocks/image`
+  }
 
   const result = await fetch(
-    `${getAPIUrl()}blocks/image`,
+    url,
     RequestBodyFormWithAuthHeader('POST', formData, null, access_token)
   )
 
@@ -34,7 +45,6 @@ export async function uploadNewImageFile(
 }
 
 export async function getImageFile(file_id: string, access_token: string) {
-  // todo : add course id to url
   return fetch(
     `${getAPIUrl()}blocks/image?file_id=${file_id}`,
     RequestBodyWithAuthHeader('GET', null, null, access_token)

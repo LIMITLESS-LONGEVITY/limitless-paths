@@ -263,3 +263,33 @@ export function getPodcastAudioStreamUrl(
 ) {
   return `${getApiUrl()}api/v1/stream/audio/${orgUUID}/${podcastUUID}/${episodeUUID}/${filename}`
 }
+
+// --- Article block media ---
+
+export function getArticleBlockMediaDirectory(
+  orgUUID: string,
+  articleUUID: string,
+  blockId: string,
+  fileId: string,
+  type: string
+) {
+  return `${getMediaUrl()}content/orgs/${orgUUID}/articles/${articleUUID}/blocks/${type}/${blockId}/${fileId}`
+}
+
+export function getArticleVideoStreamUrl(
+  orgUUID: string,
+  articleUUID: string,
+  blockUUID: string,
+  filename: string
+) {
+  return `${getApiUrl()}api/v1/stream/article/video/${orgUUID}/${articleUUID}/${blockUUID}/${filename}`
+}
+
+export function getArticleAudioStreamUrl(
+  orgUUID: string,
+  articleUUID: string,
+  blockUUID: string,
+  filename: string
+) {
+  return `${getApiUrl()}api/v1/stream/article/audio/${orgUUID}/${articleUUID}/${blockUUID}/${filename}`
+}
