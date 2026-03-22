@@ -16,6 +16,7 @@ from src.db.courses.courses import Course
 from src.db.courses.activities import Activity
 from src.db.podcasts.podcasts import Podcast
 from src.db.podcasts.episodes import PodcastEpisode
+from src.db.articles import Article
 from src.db.users import AnonymousUser, PublicUser, APITokenUser
 from src.core.events.database import get_db_session
 from src.security.auth import get_current_user
@@ -633,6 +634,270 @@ async def head_podcast_audio(
         "episodes",
         episode_uuid,
         "audio",
+        filename,
+    )
+
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Audio not found")
+
+    file_size, mime_type, exists = get_file_info(file_path)
+
+    if not exists:
+        raise HTTPException(status_code=404, detail="Audio not found")
+
+    return Response(
+        status_code=200,
+        headers={
+            "Accept-Ranges": "bytes",
+            "Content-Length": str(file_size),
+            "Content-Type": mime_type,
+            "Cache-Control": "public, max-age=86400",
+        },
+    )
+
+
+# --- Article streaming ---
+
+
+async def _verify_article_access(
+    request: Request,
+    article_uuid: str,
+    current_user: PublicUser | AnonymousUser | APITokenUser,
+    db_session: Session,
+) -> None:
+    """
+    Verify user has read access to the article.
+
+    SECURITY: This ensures that:
+    - Anonymous users can only access public+published articles
+    - Authenticated users can access articles they have permission to view
+    """
+    article_stmt = select(Article).where(Article.article_uuid == article_uuid)
+    article = db_session.exec(article_stmt).first()
+
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+
+    # RBAC check - verify user can read this article
+    checker = ResourceAccessChecker(request, db_session, current_user)
+    decision = await checker.check_access(article_uuid, AccessAction.READ, AccessContext.PUBLIC_VIEW)
+
+    if not decision.allowed:
+        raise HTTPException(status_code=403, detail=decision.reason)
+
+
+@router.get("/article/video/{org_uuid}/{article_uuid}/{block_uuid}/{filename:path}")
+async def stream_article_video(
+    request: Request,
+    org_uuid: str = Path(..., description="Organization UUID"),
+    article_uuid: str = Path(..., description="Article UUID"),
+    block_uuid: str = Path(..., description="Block UUID"),
+    filename: str = Path(..., description="Video filename"),
+    current_user: PublicUser | AnonymousUser | APITokenUser = Depends(get_current_user),
+    db_session: Session = Depends(get_db_session),
+):
+    """
+    Stream a video file from an article video block with proper Range request support.
+
+    SECURITY: Validates user has read access to the article via RBAC.
+    """
+    await _verify_article_access(request, article_uuid, current_user, db_session)
+
+    file_path = validate_video_path(
+        CONTENT_DIR,
+        "orgs",
+        org_uuid,
+        "articles",
+        article_uuid,
+        "blocks",
+        "videoBlock",
+        block_uuid,
+        filename,
+    )
+
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Video not found")
+
+    file_size, mime_type, exists = get_file_info(file_path)
+
+    if not exists:
+        raise HTTPException(status_code=404, detail="Video not found")
+
+    range_header = request.headers.get("range")
+    start, end = parse_range_header(range_header, file_size)
+    content_length = end - start + 1
+
+    headers = {
+        "Accept-Ranges": "bytes",
+        "Content-Type": mime_type,
+        "Cache-Control": "public, max-age=86400",
+        "X-Content-Type-Options": "nosniff",
+    }
+
+    if range_header:
+        headers["Content-Range"] = f"bytes {start}-{end}/{file_size}"
+        headers["Content-Length"] = str(content_length)
+
+        return StreamingResponse(
+            stream_video_file(file_path, start, end, CHUNK_SIZE),
+            status_code=206,
+            headers=headers,
+            media_type=mime_type,
+        )
+    else:
+        headers["Content-Length"] = str(file_size)
+
+        return StreamingResponse(
+            stream_video_file(file_path, 0, file_size - 1, CHUNK_SIZE),
+            status_code=200,
+            headers=headers,
+            media_type=mime_type,
+        )
+
+
+@router.head("/article/video/{org_uuid}/{article_uuid}/{block_uuid}/{filename:path}")
+async def head_article_video(
+    request: Request,
+    org_uuid: str = Path(..., description="Organization UUID"),
+    article_uuid: str = Path(..., description="Article UUID"),
+    block_uuid: str = Path(..., description="Block UUID"),
+    filename: str = Path(..., description="Video filename"),
+    current_user: PublicUser | AnonymousUser | APITokenUser = Depends(get_current_user),
+    db_session: Session = Depends(get_db_session),
+):
+    """
+    HEAD request for article video - returns metadata without body.
+
+    SECURITY: Validates user has read access to the article via RBAC.
+    """
+    await _verify_article_access(request, article_uuid, current_user, db_session)
+
+    file_path = validate_video_path(
+        CONTENT_DIR,
+        "orgs",
+        org_uuid,
+        "articles",
+        article_uuid,
+        "blocks",
+        "videoBlock",
+        block_uuid,
+        filename,
+    )
+
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Video not found")
+
+    file_size, mime_type, exists = get_file_info(file_path)
+
+    if not exists:
+        raise HTTPException(status_code=404, detail="Video not found")
+
+    return Response(
+        status_code=200,
+        headers={
+            "Accept-Ranges": "bytes",
+            "Content-Length": str(file_size),
+            "Content-Type": mime_type,
+            "Cache-Control": "public, max-age=86400",
+        },
+    )
+
+
+@router.get("/article/audio/{org_uuid}/{article_uuid}/{block_uuid}/{filename:path}")
+async def stream_article_audio(
+    request: Request,
+    org_uuid: str = Path(..., description="Organization UUID"),
+    article_uuid: str = Path(..., description="Article UUID"),
+    block_uuid: str = Path(..., description="Block UUID"),
+    filename: str = Path(..., description="Audio filename"),
+    current_user: PublicUser | AnonymousUser | APITokenUser = Depends(get_current_user),
+    db_session: Session = Depends(get_db_session),
+):
+    """
+    Stream an audio file from an article audio block with proper Range request support.
+
+    SECURITY: Validates user has read access to the article via RBAC.
+    """
+    await _verify_article_access(request, article_uuid, current_user, db_session)
+
+    file_path = validate_video_path(
+        CONTENT_DIR,
+        "orgs",
+        org_uuid,
+        "articles",
+        article_uuid,
+        "blocks",
+        "audioBlock",
+        block_uuid,
+        filename,
+    )
+
+    if not file_path:
+        raise HTTPException(status_code=404, detail="Audio not found")
+
+    file_size, mime_type, exists = get_file_info(file_path)
+
+    if not exists:
+        raise HTTPException(status_code=404, detail="Audio not found")
+
+    range_header = request.headers.get("range")
+    start, end = parse_range_header(range_header, file_size)
+    content_length = end - start + 1
+
+    headers = {
+        "Accept-Ranges": "bytes",
+        "Content-Type": mime_type,
+        "Cache-Control": "public, max-age=86400",
+        "X-Content-Type-Options": "nosniff",
+    }
+
+    if range_header:
+        headers["Content-Range"] = f"bytes {start}-{end}/{file_size}"
+        headers["Content-Length"] = str(content_length)
+
+        return StreamingResponse(
+            stream_video_file(file_path, start, end, CHUNK_SIZE),
+            status_code=206,
+            headers=headers,
+            media_type=mime_type,
+        )
+    else:
+        headers["Content-Length"] = str(file_size)
+
+        return StreamingResponse(
+            stream_video_file(file_path, 0, file_size - 1, CHUNK_SIZE),
+            status_code=200,
+            headers=headers,
+            media_type=mime_type,
+        )
+
+
+@router.head("/article/audio/{org_uuid}/{article_uuid}/{block_uuid}/{filename:path}")
+async def head_article_audio(
+    request: Request,
+    org_uuid: str = Path(..., description="Organization UUID"),
+    article_uuid: str = Path(..., description="Article UUID"),
+    block_uuid: str = Path(..., description="Block UUID"),
+    filename: str = Path(..., description="Audio filename"),
+    current_user: PublicUser | AnonymousUser | APITokenUser = Depends(get_current_user),
+    db_session: Session = Depends(get_db_session),
+):
+    """
+    HEAD request for article audio - returns metadata without body.
+
+    SECURITY: Validates user has read access to the article via RBAC.
+    """
+    await _verify_article_access(request, article_uuid, current_user, db_session)
+
+    file_path = validate_video_path(
+        CONTENT_DIR,
+        "orgs",
+        org_uuid,
+        "articles",
+        article_uuid,
+        "blocks",
+        "audioBlock",
+        block_uuid,
         filename,
     )
 
