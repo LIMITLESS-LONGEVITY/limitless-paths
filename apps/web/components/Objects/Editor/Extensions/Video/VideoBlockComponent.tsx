@@ -7,9 +7,8 @@ import {
 import React from 'react'
 import toast from 'react-hot-toast'
 import { uploadNewVideoFile } from '../../../../../services/blocks/Video/video'
-import { getVideoBlockStreamUrl } from '@services/media/media'
+import { getVideoBlockStreamUrl, getArticleVideoStreamUrl } from '@services/media/media'
 import { useOrg } from '@components/Contexts/OrgContext'
-import { useCourse } from '@components/Contexts/CourseContext'
 import { useEditorProvider } from '@components/Contexts/Editor/EditorContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { constructAcceptValue } from '@/lib/constants'
@@ -43,12 +42,6 @@ const getVideoSizeFromWidth = (width: number | string | undefined): VideoSize =>
 
 interface Organization {
   org_uuid: string
-}
-
-interface Course {
-  courseStructure: {
-    course_uuid: string
-  }
 }
 
 interface EditorState {
@@ -89,9 +82,7 @@ interface VideoBlockObject {
 interface ExtendedNodeViewProps extends Omit<NodeViewProps, 'extension'> {
   extension: Node & {
     options: {
-      activity: {
-        activity_uuid: string
-      }
+      context: any
     }
   }
 }
@@ -100,8 +91,8 @@ function VideoBlockComponent(props: ExtendedNodeViewProps) {
   const { t } = useTranslation()
   const { node, extension, updateAttributes } = props
   const org = useOrg() as Organization | null
-  const course = useCourse() as Course | null
   const editorState = useEditorProvider() as EditorState
+  const context = extension.options.context
   const session = useLHSession() as Session
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const uploadZoneRef = React.useRef<HTMLDivElement>(null)
@@ -202,7 +193,7 @@ function VideoBlockComponent(props: ExtendedNodeViewProps) {
 
       const object = await uploadNewVideoFile(
         file,
-        extension.options.activity.activity_uuid,
+        context,
         access_token
       )
 
@@ -241,12 +232,12 @@ function VideoBlockComponent(props: ExtendedNodeViewProps) {
     setSelectedSize(size)
   }
 
-  const videoUrl = blockObject && org?.org_uuid && course?.courseStructure.course_uuid ? getVideoBlockStreamUrl(
-    org.org_uuid,
-    course.courseStructure.course_uuid,
-    blockObject.content.activity_uuid || extension.options.activity.activity_uuid,
-    blockObject.block_uuid,
-    fileId || ''
+  const videoUrl = blockObject && org?.org_uuid ? (
+    context?.type === 'article'
+      ? getArticleVideoStreamUrl(org.org_uuid, context.uuid, blockObject.block_uuid, fileId || '')
+      : context?.courseUuid
+        ? getVideoBlockStreamUrl(org.org_uuid, context.courseUuid, blockObject.content.activity_uuid || context.uuid, blockObject.block_uuid, fileId || '')
+        : null
   ) : null
 
   const handleDownload = () => {

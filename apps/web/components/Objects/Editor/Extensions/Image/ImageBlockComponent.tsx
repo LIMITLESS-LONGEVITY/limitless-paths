@@ -4,9 +4,8 @@ import { Resizable } from 're-resizable'
 import { Image, Download, AlignLeft, AlignCenter, AlignRight, Expand, Upload, Loader2, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { uploadNewImageFile } from '../../../../../services/blocks/Image/images'
-import { getActivityBlockMediaDirectory } from '@services/media/media'
+import { getActivityBlockMediaDirectory, getArticleBlockMediaDirectory } from '@services/media/media'
 import { useOrg } from '@components/Contexts/OrgContext'
-import { useCourse } from '@components/Contexts/CourseContext'
 import { useEditorProvider } from '@components/Contexts/Editor/EditorContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { constructAcceptValue } from '@/lib/constants';
@@ -18,8 +17,8 @@ const SUPPORTED_FILES = constructAcceptValue(['jpg', 'png', 'webp', 'gif'])
 function ImageBlockComponent(props: any) {
   const { t } = useTranslation()
   const org = useOrg() as any
-  const course = useCourse() as any
   const editorState = useEditorProvider() as any
+  const context = props.extension.options.context
   const session = useLHSession() as any
   const access_token = session?.data?.tokens?.access_token;
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -57,7 +56,7 @@ function ImageBlockComponent(props: any) {
     try {
       let object = await uploadNewImageFile(
         file,
-        props.extension.options.activity.activity_uuid,
+        context,
         access_token
       )
       setblockObject(object)
@@ -102,14 +101,9 @@ function ImageBlockComponent(props: any) {
   const handleDownload = () => {
     if (!fileId) return;
 
-    const imageUrl = getActivityBlockMediaDirectory(
-      org?.org_uuid,
-      course?.courseStructure.course_uuid,
-      blockObject.content.activity_uuid || props.extension.options.activity.activity_uuid,
-      blockObject.block_uuid,
-      fileId,
-      'imageBlock'
-    );
+    const imageUrl = context?.type === 'article'
+      ? getArticleBlockMediaDirectory(org?.org_uuid, context.uuid, blockObject.block_uuid, fileId, 'imageBlock')
+      : getActivityBlockMediaDirectory(org?.org_uuid, context?.courseUuid, blockObject.content.activity_uuid || context?.uuid, blockObject.block_uuid, fileId, 'imageBlock');
 
     const link = document.createElement('a');
     link.href = imageUrl || '';
@@ -133,16 +127,13 @@ function ImageBlockComponent(props: any) {
     });
   };
 
-  const imageUrl = blockObject ? getActivityBlockMediaDirectory(
-    org?.org_uuid,
-    course?.courseStructure.course_uuid,
-    blockObject.content.activity_uuid || props.extension.options.activity.activity_uuid,
-    blockObject.block_uuid,
-    fileId || '',
-    'imageBlock'
+  const imageUrl = blockObject ? (
+    context?.type === 'article'
+      ? getArticleBlockMediaDirectory(org?.org_uuid, context.uuid, blockObject.block_uuid, fileId || '', 'imageBlock')
+      : getActivityBlockMediaDirectory(org?.org_uuid, context?.courseUuid, blockObject.content.activity_uuid || context?.uuid, blockObject.block_uuid, fileId || '', 'imageBlock')
   ) : null;
 
-  useEffect(() => {}, [course, org])
+  useEffect(() => {}, [context, org])
 
   const getAlignmentClass = () => {
     switch (alignment) {

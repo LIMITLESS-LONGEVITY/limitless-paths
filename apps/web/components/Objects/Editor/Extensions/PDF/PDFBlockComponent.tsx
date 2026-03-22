@@ -3,9 +3,8 @@ import React, { useEffect } from 'react'
 import { FileText, Download, Expand, Upload, Loader2, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { uploadNewPDFFile } from '../../../../../services/blocks/Pdf/pdf'
-import { getActivityBlockMediaDirectory } from '@services/media/media'
+import { getActivityBlockMediaDirectory, getArticleBlockMediaDirectory } from '@services/media/media'
 import { useOrg } from '@components/Contexts/OrgContext'
-import { useCourse } from '@components/Contexts/CourseContext'
 import { useEditorProvider } from '@components/Contexts/Editor/EditorContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { constructAcceptValue } from '@/lib/constants';
@@ -17,8 +16,8 @@ const SUPPORTED_FILES = constructAcceptValue(['pdf'])
 function PDFBlockComponent(props: any) {
   const { t } = useTranslation()
   const org = useOrg() as any
-  const course = useCourse() as any
   const session = useLHSession() as any
+  const context = props.extension.options.context
   const access_token = session?.data?.tokens?.access_token;
   const [pdf, setPDF] = React.useState<File | null>(null)
   const [isLoading, setIsLoading] = React.useState(false)
@@ -49,7 +48,7 @@ function PDFBlockComponent(props: any) {
     try {
       let object = await uploadNewPDFFile(
         pdf,
-        props.extension.options.activity.activity_uuid, access_token
+        context, access_token
       )
       setblockObject(object)
       props.updateAttributes({
@@ -68,14 +67,9 @@ function PDFBlockComponent(props: any) {
   const handleDownload = () => {
     if (!fileId) return;
 
-    const pdfUrl = getActivityBlockMediaDirectory(
-      org?.org_uuid,
-      course?.courseStructure.course_uuid,
-      blockObject.content.activity_uuid || props.extension.options.activity.activity_uuid,
-      blockObject.block_uuid,
-      fileId,
-      'pdfBlock'
-    );
+    const pdfUrl = context?.type === 'article'
+      ? getArticleBlockMediaDirectory(org?.org_uuid, context.uuid, blockObject.block_uuid, fileId, 'pdfBlock')
+      : getActivityBlockMediaDirectory(org?.org_uuid, context?.courseUuid, blockObject.content.activity_uuid || context?.uuid, blockObject.block_uuid, fileId, 'pdfBlock');
 
     const link = document.createElement('a');
     link.href = pdfUrl || '';
@@ -92,16 +86,13 @@ function PDFBlockComponent(props: any) {
     setIsModalOpen(true);
   };
 
-  const pdfUrl = blockObject ? getActivityBlockMediaDirectory(
-    org?.org_uuid,
-    course?.courseStructure.course_uuid,
-    blockObject.content.activity_uuid || props.extension.options.activity.activity_uuid,
-    blockObject.block_uuid,
-    fileId || '',
-    'pdfBlock'
+  const pdfUrl = blockObject ? (
+    context?.type === 'article'
+      ? getArticleBlockMediaDirectory(org?.org_uuid, context.uuid, blockObject.block_uuid, fileId || '', 'pdfBlock')
+      : getActivityBlockMediaDirectory(org?.org_uuid, context?.courseUuid, blockObject.content.activity_uuid || context?.uuid, blockObject.block_uuid, fileId || '', 'pdfBlock')
   ) : null;
 
-  useEffect(() => { }, [course, org])
+  useEffect(() => { }, [context, org])
 
   // View mode without PDF
   if (!isEditable && !blockObject) {

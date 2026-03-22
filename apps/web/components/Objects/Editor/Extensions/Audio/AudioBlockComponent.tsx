@@ -8,10 +8,9 @@ import {
 import React from 'react'
 import toast from 'react-hot-toast'
 import { uploadNewAudioFile } from '../../../../../services/blocks/Audio/audio'
-import { getAudioBlockStreamUrl, getPodcastAudioStreamUrl } from '@services/media/media'
+import { getAudioBlockStreamUrl, getArticleAudioStreamUrl, getPodcastAudioStreamUrl } from '@services/media/media'
 import { useOrg } from '@components/Contexts/OrgContext'
 import { useOrgMembership } from '@components/Contexts/OrgContext'
-import { useCourse } from '@components/Contexts/CourseContext'
 import { useEditorProvider } from '@components/Contexts/Editor/EditorContext'
 import { useLHSession } from '@components/Contexts/LHSessionContext'
 import { constructAcceptValue } from '@/lib/constants'
@@ -56,12 +55,6 @@ interface Organization {
   org_uuid: string
 }
 
-interface Course {
-  courseStructure: {
-    course_uuid: string
-  }
-}
-
 interface EditorState {
   isEditable: boolean
 }
@@ -77,9 +70,7 @@ interface Session {
 interface ExtendedNodeViewProps extends Omit<NodeViewProps, 'extension'> {
   extension: Node & {
     options: {
-      activity: {
-        activity_uuid: string
-      }
+      context: any
     }
   }
 }
@@ -460,8 +451,8 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
   const { node, extension, updateAttributes } = props
   const org = useOrg() as Organization | null
   const { orgslug } = useOrgMembership()
-  const course = useCourse() as Course | null
   const editorState = useEditorProvider() as EditorState
+  const context = extension.options.context
   const session = useLHSession() as Session
 
   const fileInputRef = React.useRef<HTMLInputElement>(null)
@@ -626,7 +617,7 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
       const progressInterval = setInterval(() => {
         setUploadProgress((prev) => Math.min(prev + 10, 90))
       }, 200)
-      const object = await uploadNewAudioFile(file, extension.options.activity.activity_uuid, access_token)
+      const object = await uploadNewAudioFile(file, context, access_token)
       clearInterval(progressInterval)
       setUploadProgress(100)
       const newBlockObject: AudioBlockObject = { ...object, source_type: 'upload', size: selectedSize }
@@ -654,14 +645,23 @@ function AudioBlockComponent(props: ExtendedNodeViewProps) {
 
   // Build audio URLs
   const uploadAudioUrl =
-    blockObject?.source_type === 'upload' && blockObject.content && org?.org_uuid && course?.courseStructure.course_uuid
-      ? getAudioBlockStreamUrl(
-          org.org_uuid,
-          course.courseStructure.course_uuid,
-          blockObject.content.activity_uuid || extension.options.activity.activity_uuid,
-          blockObject.block_uuid || '',
-          `${blockObject.content.file_id}.${blockObject.content.file_format}`
-        )
+    blockObject?.source_type === 'upload' && blockObject.content && org?.org_uuid
+      ? (context?.type === 'article'
+          ? getArticleAudioStreamUrl(
+              org.org_uuid,
+              context.uuid,
+              blockObject.block_uuid || '',
+              `${blockObject.content.file_id}.${blockObject.content.file_format}`
+            )
+          : context?.courseUuid
+            ? getAudioBlockStreamUrl(
+                org.org_uuid,
+                context.courseUuid,
+                blockObject.content.activity_uuid || context.uuid,
+                blockObject.block_uuid || '',
+                `${blockObject.content.file_id}.${blockObject.content.file_format}`
+              )
+            : null)
       : null
 
   const episodeAudioUrl =
