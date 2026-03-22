@@ -8,19 +8,19 @@ Ready to share your expertise? Creating an article on PATHS takes less than a mi
 
 From your Dashboard, click **Articles** in the left sidebar. You'll see a list of all articles you have access to.
 
-![Articles list view](../assets/screenshots/articles-list-view.png)
+![Articles list view](../assets/screenshots/articles-list.png)
 
 **2. Click New Article**
 
 Click the **New Article** button in the top right corner.
 
-![New Article button](../assets/screenshots/new-article-button.png)
+![New Article button](../assets/screenshots/articles-list.png)
 
 **3. Give your article a title**
 
 The editor opens with a blank page. Type your article title at the top — this is what readers will see as your headline.
 
-![Empty editor with title field](../assets/screenshots/empty-editor.png)
+![Empty editor with title field](../assets/screenshots/editor-empty.png)
 
 **4. Write your content**
 

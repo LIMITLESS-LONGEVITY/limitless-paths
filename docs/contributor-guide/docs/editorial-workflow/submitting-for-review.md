@@ -9,7 +9,7 @@ When your article is ready for a second pair of eyes, submit it for editorial re
 3. Click **Submit for Review**.
 4. Your article's status changes from **Draft** to **In Review**.
 
-![Submit for Review button in the editor](../assets/screenshots/submit-for-review-button.png)
+![Submit for Review button in the editor](../assets/screenshots/workflow-submit.png)
 
 ## What Happens Next
 
@@ -24,7 +24,7 @@ A rejection is not a negative judgment — it means the editor has specific feed
 1. Open the article from your dashboard.
 2. Look for the editor's notes — they'll appear in the article's feedback area.
 
-![Editor feedback and notes on a returned article](../assets/screenshots/editor-feedback-notes.png)
+![Editor feedback and notes on a returned article](../assets/screenshots/workflow-status-badge.png)
 
 **To resubmit:**
 

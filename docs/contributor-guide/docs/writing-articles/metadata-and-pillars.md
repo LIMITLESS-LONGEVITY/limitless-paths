@@ -6,7 +6,7 @@ Before your article can be published, it needs some metadata — information tha
 
 When editing an article, you'll find the metadata panel in the sidebar. This is where you set the key details about your piece.
 
-![Metadata sidebar](../assets/screenshots/metadata-sidebar.png)
+![Metadata sidebar](../assets/screenshots/editor-metadata.png)
 
 Here's what each field does:
 

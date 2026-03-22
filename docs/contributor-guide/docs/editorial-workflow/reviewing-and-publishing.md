@@ -12,7 +12,7 @@ As an editor or publisher, you ensure every article meets PATHS quality standard
 
     Open the article and read through it carefully. Assess the content for quality, accuracy, and alignment with PATHS editorial standards.
 
-    ![Review interface showing an article in review](../assets/screenshots/review-interface.png)
+    ![Review interface showing an article in review](../assets/screenshots/workflow-review.png)
 
     ## Approving
 
@@ -22,7 +22,7 @@ As an editor or publisher, you ensure every article meets PATHS quality standard
 
     If the article needs changes, click **Reject**. You'll be prompted to add notes explaining what needs to change. The article returns to **Draft** and the author sees your feedback.
 
-    ![Approve and Reject buttons on the review screen](../assets/screenshots/approve-reject-buttons.png)
+    ![Approve and Reject buttons on the review screen](../assets/screenshots/workflow-review.png)
 
     !!! important
         When rejecting, always include clear, specific feedback. A blank rejection leaves the author without direction.
@@ -33,13 +33,11 @@ As an editor or publisher, you ensure every article meets PATHS quality standard
 
     Find articles with **Approved** status in the dashboard. Open the article and click **Publish**. The article is immediately live and visible to readers.
 
-    ![Publish button on an approved article](../assets/screenshots/publish-button.png)
+    ![Publish button on an approved article](../assets/screenshots/workflow-publish.png)
 
     ## Archiving Content
 
     To remove a published article from public view, click **Archive**. The article is preserved but no longer visible to readers. Use this for outdated content or seasonal material you may want to bring back later.
-
-    ![Archive action on a published article](../assets/screenshots/archive-action.png)
 
     ## Reopening Archived Articles
 

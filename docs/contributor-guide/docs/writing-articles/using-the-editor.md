@@ -22,7 +22,7 @@ The toolbar at the top of the editor gives you everything you need:
 
 To add an image, place your cursor where you want the image to appear, then use the image tool in the toolbar. You can upload an image from your computer directly into the editor.
 
-![Adding an image in the editor](../assets/screenshots/editor-add-image.png)
+![Adding an image in the editor](../assets/screenshots/editor-toolbar.png)
 
 !!! info "Image tips"
     Use high-quality images with a minimum width of 800px. The editor will resize them to fit, but starting with a sharp image ensures the best result.
@@ -56,7 +56,7 @@ Every time you click **Save**, the platform creates a version snapshot of your a
 - Preview any previous version
 - Restore a previous version if you need to undo changes
 
-![Version history panel](../assets/screenshots/version-history.png)
+![Version history panel](../assets/screenshots/editor-versions.png)
 
 This gives you a safety net — experiment freely, knowing you can always go back.
 
