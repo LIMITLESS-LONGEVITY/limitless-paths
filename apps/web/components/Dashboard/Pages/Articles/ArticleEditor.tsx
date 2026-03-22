@@ -23,6 +23,21 @@ import { Save, History, X, Clock, RotateCcw } from 'lucide-react'
 import Link from 'next/link'
 import InfoCallout from '@components/Objects/Editor/Extensions/Callout/Info/InfoCallout'
 import WarningCallout from '@components/Objects/Editor/Extensions/Callout/Warning/WarningCallout'
+import ImageBlock from '@components/Objects/Editor/Extensions/Image/ImageBlock'
+import VideoBlock from '@components/Objects/Editor/Extensions/Video/VideoBlock'
+import AudioBlock from '@components/Objects/Editor/Extensions/Audio/AudioBlock'
+import PDFBlock from '@components/Objects/Editor/Extensions/PDF/PDFBlock'
+import MathEquationBlock from '@components/Objects/Editor/Extensions/MathEquation/MathEquationBlock'
+import EmbedObjects from '@components/Objects/Editor/Extensions/EmbedObjects/EmbedObjects'
+import Flipcard from '@components/Objects/Editor/Extensions/Flipcard/Flipcard'
+import Buttons from '@components/Objects/Editor/Extensions/Buttons/Buttons'
+import WebPreview from '@components/Objects/Editor/Extensions/WebPreview/WebPreview'
+import { SlashCommands } from '@components/Objects/Editor/Extensions/SlashCommands'
+import DragHandle from '@components/Objects/Editor/Extensions/DragHandle/DragHandle'
+import PasteFileHandler from '@components/Objects/Editor/Extensions/PasteFileHandler/PasteFileHandler'
+import AIStreamingMark from '@components/Objects/Editor/Extensions/AIStreaming/AIStreamingMark'
+import AISelectionHighlight from '@components/Objects/Editor/Extensions/AISelectionHighlight/AISelectionHighlight'
+import EditorOptionsProvider from '@components/Contexts/Editor/EditorContext'
 
 const lowlight = createLowlight(common)
 
@@ -102,6 +117,35 @@ function ArticleEditorInner({ articleUuid, org, orgslug }: ArticleEditorInnerPro
       TableHeader,
       TableCell,
       getLinkExtension(),
+      // Media blocks
+      ImageBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      VideoBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      AudioBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      PDFBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      MathEquationBlock,
+      // Content blocks
+      EmbedObjects,
+      Flipcard,
+      Buttons,
+      WebPreview,
+      // Editor UX
+      SlashCommands,
+      DragHandle,
+      PasteFileHandler.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+        getAccessToken: () => access_token,
+      }),
+      // AI
+      AIStreamingMark,
+      AISelectionHighlight,
     ],
     content: '',
     immediatelyRender: false,
@@ -358,7 +402,9 @@ interface ArticleEditorProps {
 export default function ArticleEditor({ articleUuid, org, orgslug }: ArticleEditorProps) {
   return (
     <OrgProvider orgslug={orgslug}>
-      <ArticleEditorInner articleUuid={articleUuid} org={org} orgslug={orgslug} />
+      <EditorOptionsProvider options={{ isEditable: true }}>
+        <ArticleEditorInner articleUuid={articleUuid} org={org} orgslug={orgslug} />
+      </EditorOptionsProvider>
     </OrgProvider>
   )
 }
