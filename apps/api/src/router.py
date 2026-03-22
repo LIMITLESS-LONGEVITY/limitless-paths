@@ -29,6 +29,7 @@ from src.routers.utils import router as utils_router
 from src.routers.auth_validate import router as auth_validate_router
 from src.routers.content_pillars import router as content_pillars_router
 from src.routers.articles import router as articles_router
+from src.routers.article_blocks import router as article_blocks_router
 from src.routers.org_admin import router as org_admin_router
 from src.routers.billing import router as billing_router
 from src.security.auth import get_current_user
@@ -297,6 +298,14 @@ v1_router.include_router(
     articles_router,
     prefix="/articles",
     tags=["Articles"],
+)
+
+# CMS: Article Blocks (media uploads)
+v1_router.include_router(
+    article_blocks_router,
+    prefix="/articles",
+    tags=["Article Blocks"],
+    dependencies=[Depends(get_non_api_token_user)],
 )
 
 # Billing (Stripe checkout, status, cancel, portal, webhook)
