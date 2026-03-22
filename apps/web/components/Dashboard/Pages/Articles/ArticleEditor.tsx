@@ -119,16 +119,16 @@ function ArticleEditorInner({ articleUuid, org, orgslug }: ArticleEditorInnerPro
       getLinkExtension(),
       // Media blocks
       ImageBlock.configure({
-        context: { type: 'article' as const, uuid: articleUuid },
+        context: { type: 'article' as const, uuid: `article_${articleUuid}` },
       }),
       VideoBlock.configure({
-        context: { type: 'article' as const, uuid: articleUuid },
+        context: { type: 'article' as const, uuid: `article_${articleUuid}` },
       }),
       AudioBlock.configure({
-        context: { type: 'article' as const, uuid: articleUuid },
+        context: { type: 'article' as const, uuid: `article_${articleUuid}` },
       }),
       PDFBlock.configure({
-        context: { type: 'article' as const, uuid: articleUuid },
+        context: { type: 'article' as const, uuid: `article_${articleUuid}` },
       }),
       MathEquationBlock,
       // Content blocks
@@ -140,7 +140,7 @@ function ArticleEditorInner({ articleUuid, org, orgslug }: ArticleEditorInnerPro
       SlashCommands,
       DragHandle,
       PasteFileHandler.configure({
-        context: { type: 'article' as const, uuid: articleUuid },
+        context: { type: 'article' as const, uuid: `article_${articleUuid}` },
         getAccessToken: () => access_token,
       }),
       // AI
