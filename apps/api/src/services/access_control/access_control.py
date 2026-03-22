@@ -139,6 +139,7 @@ def can_user_access_article(
 
     Decision tree:
     1. Admin bypass — any role with action_update or action_publish → True
+    1b. Creator bypass — article author can always access their own articles
     2. Published check — article must be PUBLISHED
     3. Org-specific check — non-default org → user must be org member
     4. Course reference bypass — article linked to course user can access
@@ -149,6 +150,10 @@ def can_user_access_article(
     if user_article_permissions is not None:
         if user_article_permissions.get("action_update") or user_article_permissions.get("action_publish"):
             return True
+
+    # 1b. Creator bypass — authors can always access their own articles (drafts, in-review, etc.)
+    if user_id is not None and article.author_id == user_id:
+        return True
 
     # 2. Published check
     if article.status != ArticleStatusEnum.PUBLISHED.value:
