@@ -3,10 +3,12 @@ import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { uploadNewImageFile } from '@services/blocks/Image/images'
 import { uploadNewVideoFile } from '@services/blocks/Video/video'
 import { uploadNewPDFFile } from '@services/blocks/Pdf/pdf'
+import type { BlockContext } from '@services/blocks/blockContext'
 import toast from 'react-hot-toast'
 
 interface PasteFileHandlerOptions {
   activity: any
+  context?: BlockContext
   getAccessToken: () => string | undefined
 }
 
@@ -15,7 +17,7 @@ type BlockType = 'blockImage' | 'blockVideo' | 'blockPDF'
 interface FileTypeMapping {
   blockType: BlockType
   label: string
-  upload: (file: File, activityUuid: string, accessToken: string) => Promise<any>
+  upload: (file: File, context: BlockContext | string, accessToken: string) => Promise<any>
 }
 
 const MIME_TYPE_MAP: Record<string, FileTypeMapping> = {
@@ -39,12 +41,13 @@ const PasteFileHandler = Extension.create<PasteFileHandlerOptions>({
   },
 
   addProseMirrorPlugins() {
-    const { activity, getAccessToken } = this.options
+    const { activity, context, getAccessToken } = this.options
     const editor = this.editor
 
     const handleFiles = (files: FileList | File[], pos?: number) => {
       const accessToken = getAccessToken()
-      if (!accessToken || !activity) return false
+      const ctx: BlockContext | null = context || (activity ? { type: 'activity' as const, uuid: activity.activity_uuid, courseUuid: '' } : null)
+      if (!accessToken || !ctx) return false
 
       let handled = false
 
@@ -54,7 +57,6 @@ const PasteFileHandler = Extension.create<PasteFileHandlerOptions>({
 
         handled = true
         const { blockType, label, upload } = mapping
-        const activityUuid = activity.activity_uuid
 
         const toastId = toast.loading(`Uploading ${label}...`)
 
@@ -63,7 +65,7 @@ const PasteFileHandler = Extension.create<PasteFileHandlerOptions>({
         // blockObject in React state only once on mount — updating
         // node attrs via ProseMirror transactions doesn't trigger
         // a re-render of the component's internal state.
-        upload(file, activityUuid, accessToken)
+        upload(file, ctx, accessToken)
           .then((data) => {
             toast.dismiss(toastId)
             toast.success(`${label.charAt(0).toUpperCase() + label.slice(1)} uploaded`)

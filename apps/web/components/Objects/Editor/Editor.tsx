@@ -154,14 +154,29 @@ function Editor(props: Editor) {
       ImageBlock.configure({
         editable: true,
         activity: props.activity,
+        context: {
+          type: 'activity' as const,
+          uuid: props.activity?.activity_uuid,
+          courseUuid: props.course?.course_uuid,
+        },
       }),
       VideoBlock.configure({
         editable: true,
         activity: props.activity,
+        context: {
+          type: 'activity' as const,
+          uuid: props.activity?.activity_uuid,
+          courseUuid: props.course?.course_uuid,
+        },
       }),
       AudioBlock.configure({
         editable: true,
         activity: props.activity,
+        context: {
+          type: 'activity' as const,
+          uuid: props.activity?.activity_uuid,
+          courseUuid: props.course?.course_uuid,
+        },
       }),
       MathEquationBlock.configure({
         editable: true,
@@ -170,6 +185,11 @@ function Editor(props: Editor) {
       PDFBlock.configure({
         editable: true,
         activity: props.activity,
+        context: {
+          type: 'activity' as const,
+          uuid: props.activity?.activity_uuid,
+          courseUuid: props.course?.course_uuid,
+        },
       }),
       QuizBlock.configure({
         editable: true,
@@ -227,6 +247,11 @@ function Editor(props: Editor) {
       }),
       PasteFileHandler.configure({
         activity: props.activity,
+        context: {
+          type: 'activity' as const,
+          uuid: props.activity?.activity_uuid,
+          courseUuid: props.course?.course_uuid,
+        },
         getAccessToken: () => props.session?.data?.tokens?.access_token,
       }),
       MagicBlock.configure({
