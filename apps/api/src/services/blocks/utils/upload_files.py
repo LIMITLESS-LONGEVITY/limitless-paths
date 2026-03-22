@@ -7,16 +7,18 @@ from src.services.utils.upload_content import upload_file
 async def upload_file_and_return_file_object(
     request: Request,
     file: UploadFile,
-    activity_uuid: str,
     block_id: str,
     list_of_allowed_file_formats: list,
     type_of_block: str,
     org_uuid: str,
-    course_uuid: str,
+    *,
+    activity_uuid: str | None = None,
+    course_uuid: str | None = None,
+    article_uuid: str | None = None,
 ):
-    """Upload file for blocks."""
+    """Upload file for blocks. Provide either (activity_uuid + course_uuid) or article_uuid."""
     file_id = str(uuid.uuid4())
-    
+
     # Map legacy format list to type system
     allowed_types = []
     if any(fmt in ['jpg', 'jpeg', 'png', 'gif', 'webp'] for fmt in list_of_allowed_file_formats):
@@ -27,14 +29,20 @@ async def upload_file_and_return_file_object(
         allowed_types.append('document')
     if any(fmt in ['mp3', 'wav', 'ogg', 'm4a'] for fmt in list_of_allowed_file_formats):
         allowed_types.append('audio')
-    
+
     if not allowed_types:
         raise HTTPException(status_code=400, detail="No valid file types specified")
+
+    # Build directory based on context
+    if article_uuid:
+        directory = f"articles/{article_uuid}/blocks/{type_of_block}/{block_id}"
+    else:
+        directory = f"courses/{course_uuid}/activities/{activity_uuid}/dynamic/blocks/{type_of_block}/{block_id}"
 
     # Upload file
     filename = await upload_file(
         file=file,
-        directory=f"courses/{course_uuid}/activities/{activity_uuid}/dynamic/blocks/{type_of_block}/{block_id}",
+        directory=directory,
         type_of_dir='orgs',
         uuid=org_uuid,
         allowed_types=allowed_types,
@@ -44,7 +52,7 @@ async def upload_file_and_return_file_object(
     # Get file metadata
     file.file.seek(0)
     content = await file.read()
-    
+
     # Extract actual name on disk and extension
     parts = filename.rsplit(".", 1)
     name_on_disk = parts[0]
@@ -57,4 +65,5 @@ async def upload_file_and_return_file_object(
         file_size=len(content),
         file_type=file.content_type,
         activity_uuid=activity_uuid,
+        article_uuid=article_uuid,
     )

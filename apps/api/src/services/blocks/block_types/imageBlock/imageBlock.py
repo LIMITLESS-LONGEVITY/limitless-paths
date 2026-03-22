@@ -42,12 +42,12 @@ async def create_image_block(
     block_data = await upload_file_and_return_file_object(
         request,
         image_file,
-        activity_uuid,
         block_uuid,
         ["jpg", "jpeg", "png", "gif", "webp"],
         block_type,
         org.org_uuid,
-        str(course.course_uuid),
+        activity_uuid=activity_uuid,
+        course_uuid=str(course.course_uuid),
     )
     
     # create block

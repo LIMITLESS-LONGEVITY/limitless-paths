@@ -43,12 +43,12 @@ async def create_pdf_block(
     block_data = await upload_file_and_return_file_object(
         request,
         pdf_file,
-        activity_uuid,
         block_uuid,
         ["pdf"],
         block_type,
         org.org_uuid,
-        str(course.course_uuid),
+        activity_uuid=activity_uuid,
+        course_uuid=str(course.course_uuid),
     )
 
     # create block
