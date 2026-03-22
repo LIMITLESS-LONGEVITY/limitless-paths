@@ -172,6 +172,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <ImagePlus size={18} />,
     category: 'media',
     keywords: ['image', 'picture', 'photo', 'upload'],
+    nodeType: 'blockImage',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockImage' }).run()
     },
@@ -183,6 +184,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <Video size={18} />,
     category: 'media',
     keywords: ['video', 'movie', 'upload', 'embed'],
+    nodeType: 'blockVideo',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockVideo' }).run()
     },
@@ -194,6 +196,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <SiYoutube size={18} />,
     category: 'media',
     keywords: ['youtube', 'video', 'embed', 'stream'],
+    nodeType: 'blockEmbed',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockEmbed' }).run()
     },
@@ -205,6 +208,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <FileText size={18} />,
     category: 'media',
     keywords: ['pdf', 'document', 'file', 'embed'],
+    nodeType: 'blockPDF',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockPDF' }).run()
     },
@@ -216,6 +220,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <Headphones size={18} />,
     category: 'media',
     keywords: ['audio', 'music', 'sound', 'podcast', 'mp3', 'episode'],
+    nodeType: 'blockAudio',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockAudio' }).run()
     },
@@ -229,6 +234,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <div style={{ background: 'conic-gradient(from 32deg at 53.75% 50%, rgb(35, 40, 93) 4deg, rgba(20, 0, 52, 0.95) 59deg, rgba(164, 45, 238, 0.88) 281deg)' }} className="p-1 rounded-md"><Image src={lrnaiIcon} alt="Magic Block" width={14} height={14} className="outline outline-1 outline-neutral-200/20 rounded" /></div>,
     category: 'interactive',
     keywords: ['magic', 'ai', 'interactive', 'simulation', 'chart', 'generate', 'create'],
+    nodeType: 'blockMagic',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockMagic' }).run()
     },
@@ -241,6 +247,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <BadgeHelp size={18} />,
     category: 'interactive',
     keywords: ['quiz', 'question', 'test', 'interactive'],
+    nodeType: 'blockQuiz',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockQuiz' }).run()
     },
@@ -252,6 +259,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <Sigma size={18} />,
     category: 'interactive',
     keywords: ['math', 'equation', 'latex', 'formula'],
+    nodeType: 'blockMathEquation',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockMathEquation' }).run()
     },
@@ -263,6 +271,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <Globe size={18} />,
     category: 'interactive',
     keywords: ['web', 'preview', 'link', 'website', 'url'],
+    nodeType: 'blockWebPreview',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockWebPreview' }).run()
     },
@@ -274,6 +283,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <RotateCw size={18} />,
     category: 'interactive',
     keywords: ['flipcard', 'flashcard', 'card', 'memory', 'learning'],
+    nodeType: 'flipcard',
     command: (editor) => {
       editor.chain().focus().insertContent({
         type: 'flipcard',
@@ -294,6 +304,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <CodeSquare size={18} />,
     category: 'interactive',
     keywords: ['code', 'playground', 'coding', 'challenge', 'judge', 'execute', 'run', 'programming'],
+    nodeType: 'blockCode',
     command: (editor) => {
       editor.chain().focus().insertContent({
         type: 'blockCode',
@@ -322,6 +333,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <GitBranch size={18} />,
     category: 'interactive',
     keywords: ['scenarios', 'branching', 'interactive', 'choice', 'story'],
+    nodeType: 'scenarios',
     command: (editor) => {
       editor.chain().focus().insertContent({
         type: 'scenarios',
@@ -394,6 +406,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <Tags size={18} />,
     category: 'ui',
     keywords: ['badge', 'tag', 'label', 'chip'],
+    nodeType: 'badge',
     command: (editor) => {
       editor.chain().focus().insertContent({
         type: 'badge',
@@ -408,6 +421,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <MousePointerClick size={18} />,
     category: 'ui',
     keywords: ['button', 'click', 'action', 'cta'],
+    nodeType: 'button',
     command: (editor) => {
       editor.chain().focus().insertContent({
         type: 'button',
@@ -422,6 +436,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <User size={18} />,
     category: 'ui',
     keywords: ['user', 'mention', 'person', 'profile'],
+    nodeType: 'blockUser',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockUser' }).run()
     },
@@ -433,6 +448,7 @@ export const slashCommands: SlashCommandItem[] = [
     icon: <Cuboid size={18} />,
     category: 'ui',
     keywords: ['embed', 'external', 'iframe', 'widget'],
+    nodeType: 'blockEmbed',
     command: (editor) => {
       editor.chain().focus().insertContent({ type: 'blockEmbed' }).run()
     },
@@ -452,16 +468,30 @@ export const slashCommands: SlashCommandItem[] = [
   },
 ]
 
-export function filterCommands(query: string): SlashCommandItem[] {
-  if (!query) return slashCommands
+export function filterCommands(query: string, commands: SlashCommandItem[] = slashCommands): SlashCommandItem[] {
+  if (!query) return commands
 
   const lowerQuery = query.toLowerCase()
-  return slashCommands.filter(
+  return commands.filter(
     (item) =>
       item.title.toLowerCase().includes(lowerQuery) ||
       item.description.toLowerCase().includes(lowerQuery) ||
       item.keywords.some((keyword) => keyword.toLowerCase().includes(lowerQuery))
   )
+}
+
+/**
+ * Returns only slash commands whose nodeType is registered in the editor.
+ * Commands without a nodeType (e.g. paragraph, headings, lists) are always shown.
+ */
+export function getAvailableCommands(editor: any): SlashCommandItem[] {
+  const registeredNodes = new Set(
+    editor.extensionManager.extensions.map((e: any) => e.name)
+  )
+  return slashCommands.filter((cmd) => {
+    if (!cmd.nodeType) return true
+    return registeredNodes.has(cmd.nodeType)
+  })
 }
 
 export function groupCommandsByCategory(

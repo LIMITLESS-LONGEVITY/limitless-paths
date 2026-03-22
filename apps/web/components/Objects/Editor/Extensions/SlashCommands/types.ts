@@ -11,6 +11,8 @@ export interface SlashCommandItem {
   keywords: string[]
   command: (editor: Editor) => void
   requiredPlan?: PlanLevel
+  /** Tiptap node name this command inserts. Used to filter commands by registered extensions. */
+  nodeType?: string
 }
 
 export type SlashCommandCategory =

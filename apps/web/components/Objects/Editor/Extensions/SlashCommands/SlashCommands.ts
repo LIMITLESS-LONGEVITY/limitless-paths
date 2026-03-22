@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core'
 import Suggestion from '@tiptap/suggestion'
 import { ReactRenderer } from '@tiptap/react'
 import tippy, { Instance as TippyInstance } from 'tippy.js'
-import { filterCommands } from './slashCommandsConfig'
+import { filterCommands, getAvailableCommands } from './slashCommandsConfig'
 import SlashCommandsList from './SlashCommandsList'
 import { SlashCommandItem, SlashCommandsListRef } from './types'
 import { PluginKey } from '@tiptap/pm/state'
@@ -47,7 +47,8 @@ export const SlashCommands = Extension.create<SlashCommandsOptions>({
           return !isInCodeBlock
         },
         items: ({ query }: { query: string }) => {
-          return filterCommands(query)
+          const available = getAvailableCommands(this.editor)
+          return filterCommands(query, available)
         },
         render: () => {
           let component: ReactRenderer<SlashCommandsListRef> | null = null

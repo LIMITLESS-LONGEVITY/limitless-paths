@@ -13,6 +13,16 @@ import { common, createLowlight } from 'lowlight'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import InfoCallout from '@components/Objects/Editor/Extensions/Callout/Info/InfoCallout'
 import WarningCallout from '@components/Objects/Editor/Extensions/Callout/Warning/WarningCallout'
+import ImageBlock from '@components/Objects/Editor/Extensions/Image/ImageBlock'
+import VideoBlock from '@components/Objects/Editor/Extensions/Video/VideoBlock'
+import AudioBlock from '@components/Objects/Editor/Extensions/Audio/AudioBlock'
+import PDFBlock from '@components/Objects/Editor/Extensions/PDF/PDFBlock'
+import MathEquationBlock from '@components/Objects/Editor/Extensions/MathEquation/MathEquationBlock'
+import EmbedObjects from '@components/Objects/Editor/Extensions/EmbedObjects/EmbedObjects'
+import Flipcard from '@components/Objects/Editor/Extensions/Flipcard/Flipcard'
+import Buttons from '@components/Objects/Editor/Extensions/Buttons/Buttons'
+import WebPreview from '@components/Objects/Editor/Extensions/WebPreview/WebPreview'
+import EditorOptionsProvider from '@components/Contexts/Editor/EditorContext'
 import { ArrowLeft, Clock, User, Calendar, Lock } from 'lucide-react'
 import { getUriWithOrg } from '@services/config/config'
 
@@ -80,7 +90,7 @@ interface ArticleReaderProps {
   orgslug: string
 }
 
-function ArticleEditorContent({ content }: { content: any }) {
+function ArticleEditorContent({ content, articleUuid }: { content: any; articleUuid: string }) {
   const parsedContent = useMemo(() => {
     try {
       const parsed =
@@ -107,6 +117,24 @@ function ArticleEditorContent({ content }: { content: any }) {
       TableHeader,
       TableCell,
       getLinkExtension(),
+      // Media blocks (read-only)
+      ImageBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      VideoBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      AudioBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      PDFBlock.configure({
+        context: { type: 'article' as const, uuid: articleUuid },
+      }),
+      MathEquationBlock,
+      EmbedObjects,
+      Flipcard,
+      Buttons,
+      WebPreview,
     ],
     content: parsedContent,
     editable: false,
@@ -114,10 +142,12 @@ function ArticleEditorContent({ content }: { content: any }) {
   })
 
   return (
-    <EditorContent
-      editor={editor}
-      className="prose prose-sm sm:prose max-w-none focus:outline-none"
-    />
+    <EditorOptionsProvider options={{ isEditable: false }}>
+      <EditorContent
+        editor={editor}
+        className="prose prose-sm sm:prose max-w-none focus:outline-none"
+      />
+    </EditorOptionsProvider>
   )
 }
 
@@ -206,7 +236,7 @@ export default function ArticleReader({ article, orgslug }: ArticleReaderProps) 
         {/* TipTap content */}
         {article.content && (
           <div className="mb-12">
-            <ArticleEditorContent content={article.content} />
+            <ArticleEditorContent content={article.content} articleUuid={article.article_uuid} />
           </div>
         )}
 
