@@ -13,7 +13,7 @@ export const calculateDuration: CollectionBeforeChangeHook = async ({
   operation,
 }) => {
   // Skip if duration is explicitly set or no modules
-  if (data.estimatedDuration || !data.modules?.length) return data
+  if (data.estimatedDuration != null || !data.modules?.length) return data
 
   try {
     let totalDuration = 0
