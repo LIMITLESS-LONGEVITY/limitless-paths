@@ -79,6 +79,7 @@ export interface Config {
     courses: Course;
     modules: Module;
     lessons: Lesson;
+    'ai-usage': AiUsage;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -103,6 +104,7 @@ export interface Config {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     modules: ModulesSelect<false> | ModulesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
+    'ai-usage': AiUsageSelect<false> | AiUsageSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -121,11 +123,13 @@ export interface Config {
     header: Header;
     footer: Footer;
     'site-settings': SiteSetting;
+    'ai-config': AiConfig;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'ai-config': AiConfigSelect<false> | AiConfigSelect<true>;
   };
   locale: null;
   widgets: {
@@ -944,6 +948,35 @@ export interface Lesson {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-usage".
+ */
+export interface AiUsage {
+  id: number;
+  user: number | User;
+  /**
+   * AI feature identifier (e.g., tutor-chat, quiz-generate, quiz-save)
+   */
+  feature: string;
+  provider: string;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  /**
+   * Estimated cost in USD
+   */
+  estimatedCost: number;
+  contextCollection?: string | null;
+  contextId?: string | null;
+  /**
+   * Whether guardrails triggered a refusal
+   */
+  refused?: boolean | null;
+  durationMs?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1188,6 +1221,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lessons';
         value: number | Lesson;
+      } | null)
+    | ({
+        relationTo: 'ai-usage';
+        value: number | AiUsage;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1677,6 +1714,25 @@ export interface LessonsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-usage_select".
+ */
+export interface AiUsageSelect<T extends boolean = true> {
+  user?: T;
+  feature?: T;
+  provider?: T;
+  model?: T;
+  inputTokens?: T;
+  outputTokens?: T;
+  estimatedCost?: T;
+  contextCollection?: T;
+  contextId?: T;
+  refused?: T;
+  durationMs?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -2009,6 +2065,76 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * AI feature configuration — rate limits, model overrides, and feature toggles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-config".
+ */
+export interface AiConfig {
+  id: number;
+  /**
+   * Global kill switch for all AI features
+   */
+  enabled?: boolean | null;
+  /**
+   * Daily quotas for subscriber tiers. Staff are soft-limited separately.
+   */
+  rateLimits?:
+    | {
+        /**
+         * Feature identifier (e.g., tutor-chat, quiz-generate)
+         */
+        feature: string;
+        tier: 'free' | 'regular' | 'premium' | 'enterprise';
+        /**
+         * 0 = no access, -1 = unlimited
+         */
+        dailyLimit: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Warning thresholds for staff. Logged but not enforced.
+   */
+  staffSoftLimits?:
+    | {
+        feature: string;
+        /**
+         * Daily usage count that triggers a warning log
+         */
+        dailyWarning: number;
+        id?: string | null;
+      }[]
+    | null;
+  tokenBudgets?: {
+    /**
+     * Max output tokens per tutor response
+     */
+    tutorMaxTokens?: number | null;
+    /**
+     * Max output tokens per quiz generation
+     */
+    quizMaxTokens?: number | null;
+  };
+  /**
+   * Default provider name (matches AI_PROVIDER_{NAME}_* env vars). Change to switch providers without a deploy.
+   */
+  defaultProvider?: string | null;
+  /**
+   * Override the default model for a feature. Leave empty to use defaults from code.
+   */
+  modelOverrides?:
+    | {
+        feature: string;
+        provider: string;
+        model: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
@@ -2062,6 +2188,46 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
   siteDescription?: T;
   defaultTier?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-config_select".
+ */
+export interface AiConfigSelect<T extends boolean = true> {
+  enabled?: T;
+  rateLimits?:
+    | T
+    | {
+        feature?: T;
+        tier?: T;
+        dailyLimit?: T;
+        id?: T;
+      };
+  staffSoftLimits?:
+    | T
+    | {
+        feature?: T;
+        dailyWarning?: T;
+        id?: T;
+      };
+  tokenBudgets?:
+    | T
+    | {
+        tutorMaxTokens?: T;
+        quizMaxTokens?: T;
+      };
+  defaultProvider?: T;
+  modelOverrides?:
+    | T
+    | {
+        feature?: T;
+        provider?: T;
+        model?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -2220,6 +2386,25 @@ export interface ImageGalleryBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'imageGallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "QuizQuestionBlock".
+ */
+export interface QuizQuestionBlock {
+  question: string;
+  options: {
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * 0-based index of the correct option
+   */
+  correctAnswer: number;
+  explanation?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'quizQuestion';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
