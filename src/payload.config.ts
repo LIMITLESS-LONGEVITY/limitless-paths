@@ -25,6 +25,7 @@ import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { tutorEndpoint } from './endpoints/ai/tutor'
 import { quizGenerateEndpoint } from './endpoints/ai/quizGenerate'
+import { quizSaveEndpoint } from './endpoints/ai/quizSave'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -70,7 +71,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, AIUsage],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [tutorEndpoint, quizGenerateEndpoint],
+  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
