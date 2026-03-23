@@ -79,6 +79,8 @@ export interface Config {
     courses: Course;
     modules: Module;
     lessons: Lesson;
+    enrollments: Enrollment;
+    'lesson-progress': LessonProgress;
     'ai-usage': AiUsage;
     redirects: Redirect;
     forms: Form;
@@ -104,6 +106,8 @@ export interface Config {
     courses: CoursesSelect<false> | CoursesSelect<true>;
     modules: ModulesSelect<false> | ModulesSelect<true>;
     lessons: LessonsSelect<false> | LessonsSelect<true>;
+    enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
+    'lesson-progress': LessonProgressSelect<false> | LessonProgressSelect<true>;
     'ai-usage': AiUsageSelect<false> | AiUsageSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
@@ -948,6 +952,51 @@ export interface Lesson {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: number;
+  user: number | User;
+  course: number | Course;
+  enrolledAt: string;
+  status: 'active' | 'completed' | 'cancelled' | 'expired';
+  completedAt?: string | null;
+  /**
+   * 0-100, auto-calculated from lesson progress
+   */
+  completionPercentage: number;
+  /**
+   * Placeholder for Phase 5 billing integration
+   */
+  paymentStatus: 'free' | 'paid' | 'pending' | 'refunded';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-progress".
+ */
+export interface LessonProgress {
+  id: number;
+  user: number | User;
+  lesson: number | Lesson;
+  enrollment: number | Enrollment;
+  status: 'not_started' | 'in_progress' | 'completed';
+  completedAt?: string | null;
+  /**
+   * Seconds watched (populated by frontend)
+   */
+  videoWatchTime?: number | null;
+  /**
+   * Total video length in seconds
+   */
+  videoTotalDuration?: number | null;
+  lastAccessedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ai-usage".
  */
 export interface AiUsage {
@@ -1221,6 +1270,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lessons';
         value: number | Lesson;
+      } | null)
+    | ({
+        relationTo: 'enrollments';
+        value: number | Enrollment;
+      } | null)
+    | ({
+        relationTo: 'lesson-progress';
+        value: number | LessonProgress;
       } | null)
     | ({
         relationTo: 'ai-usage';
@@ -1709,6 +1766,37 @@ export interface LessonsSelect<T extends boolean = true> {
         file?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments_select".
+ */
+export interface EnrollmentsSelect<T extends boolean = true> {
+  user?: T;
+  course?: T;
+  enrolledAt?: T;
+  status?: T;
+  completedAt?: T;
+  completionPercentage?: T;
+  paymentStatus?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-progress_select".
+ */
+export interface LessonProgressSelect<T extends boolean = true> {
+  user?: T;
+  lesson?: T;
+  enrollment?: T;
+  status?: T;
+  completedAt?: T;
+  videoWatchTime?: T;
+  videoTotalDuration?: T;
+  lastAccessedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

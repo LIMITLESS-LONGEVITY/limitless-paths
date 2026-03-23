@@ -7,6 +7,8 @@ import { fileURLToPath } from 'url'
 import { AIUsage } from './collections/AIUsage'
 import { Articles } from './collections/Articles'
 import { Courses } from './collections/Courses'
+import { Enrollments } from './collections/Enrollments'
+import { LessonProgress } from './collections/LessonProgress'
 import { Modules } from './collections/Modules'
 import { Lessons } from './collections/Lessons'
 import { Categories } from './collections/Categories'
@@ -26,6 +28,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { tutorEndpoint } from './endpoints/ai/tutor'
 import { quizGenerateEndpoint } from './endpoints/ai/quizGenerate'
 import { quizSaveEndpoint } from './endpoints/ai/quizSave'
+import { enrollEndpoint } from './endpoints/enrollments/enroll'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -69,9 +72,9 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, AIUsage],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint],
+  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, enrollEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
