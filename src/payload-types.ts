@@ -74,6 +74,7 @@ export interface Config {
     users: User;
     'membership-tiers': MembershipTier;
     'content-pillars': ContentPillar;
+    tenants: Tenant;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -93,6 +94,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     'membership-tiers': MembershipTiersSelect<false> | MembershipTiersSelect<true>;
     'content-pillars': ContentPillarsSelect<false> | ContentPillarsSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -110,10 +112,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -351,6 +355,12 @@ export interface User {
   emailVerified?: boolean | null;
   stripeCustomerId?: string | null;
   avatar?: (number | null) | Media;
+  tenants?:
+    | {
+        tenant: number | Tenant;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -392,6 +402,18 @@ export interface MembershipTier {
     | null;
   displayOrder?: number | null;
   isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: number;
+  name: string;
+  slug: string;
+  contentAccessLevel?: ('free' | 'regular' | 'premium' | 'enterprise') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -972,6 +994,10 @@ export interface PayloadLockedDocument {
         value: number | ContentPillar;
       } | null)
     | ({
+        relationTo: 'tenants';
+        value: number | Tenant;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1280,6 +1306,12 @@ export interface UsersSelect<T extends boolean = true> {
   emailVerified?: T;
   stripeCustomerId?: T;
   avatar?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1333,6 +1365,17 @@ export interface ContentPillarsSelect<T extends boolean = true> {
   defaultAccessLevel?: T;
   displayOrder?: T;
   isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  contentAccessLevel?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1659,6 +1702,18 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteName?: string | null;
+  siteDescription?: string | null;
+  defaultTier?: (number | null) | MembershipTier;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1699,6 +1754,18 @@ export interface FooterSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  siteDescription?: T;
+  defaultTier?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

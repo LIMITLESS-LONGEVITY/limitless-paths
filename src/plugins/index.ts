@@ -3,6 +3,7 @@ import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { searchPlugin } from '@payloadcms/plugin-search'
+import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -24,6 +25,17 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 }
 
 export const plugins: Plugin[] = [
+  multiTenantPlugin({
+    collections: {
+      // Collections scoped by tenant will be added in Phase 2
+    },
+    tenantsSlug: 'tenants',
+    cleanupAfterTenantDelete: true,
+    enabled: true,
+    userHasAccessToAllTenants: ({ req: { user } }) => {
+      return Boolean(user?.role === 'admin')
+    },
+  }),
   redirectsPlugin({
     collections: ['pages', 'posts'],
     overrides: {
