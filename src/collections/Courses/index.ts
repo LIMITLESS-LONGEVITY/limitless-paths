@@ -1,12 +1,31 @@
 import type { CollectionConfig } from 'payload'
 import { canReadContent } from '../../access/canReadContent'
-import { canEditContent } from '../../access/canEditContent'
+import type { Access } from 'payload'
 import { canCreateContent } from '../../access/canCreateContent'
 import { isAdmin } from '../../access/isAdmin'
 import { validateEditorialTransition } from '../../hooks/editorialWorkflow'
 import { calculateDuration } from './hooks/calculateDuration'
 import { computeLockedStatus } from '../../hooks/computeLockedStatus'
 import { richTextEditor } from '../../fields/lexicalEditor'
+
+/**
+ * Update access for Courses. Same as canEditContent but uses
+ * `instructor` field instead of `author` for contributor scope.
+ */
+const canEditCourse: Access = ({ req: { user } }) => {
+  if (!user) return false
+  const role = user.role as string
+  if (['admin', 'publisher', 'editor'].includes(role)) return true
+  if (role === 'contributor') {
+    return {
+      and: [
+        { instructor: { equals: user.id } },
+        { editorialStatus: { equals: 'draft' } },
+      ],
+    }
+  }
+  return false
+}
 
 export const Courses: CollectionConfig = {
   slug: 'courses',
@@ -70,7 +89,7 @@ export const Courses: CollectionConfig = {
   access: {
     create: canCreateContent,
     read: canReadContent,
-    update: canEditContent,
+    update: canEditCourse,
     delete: isAdmin,
   },
 }

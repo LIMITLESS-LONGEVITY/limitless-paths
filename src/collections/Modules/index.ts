@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { canCreateContent } from '../../access/canCreateContent'
-import { canEditContent } from '../../access/canEditContent'
+import { canEditStructural } from '../../access/canEditStructural'
 import { authenticated } from '../../access/authenticated'
 import { isAdmin } from '../../access/isAdmin'
 
@@ -35,7 +35,7 @@ export const Modules: CollectionConfig = {
   access: {
     create: canCreateContent,
     read: authenticated,
-    update: canEditContent,
+    update: canEditStructural,
     delete: isAdmin,
   },
 }
