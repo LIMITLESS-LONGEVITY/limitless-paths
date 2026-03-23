@@ -419,7 +419,12 @@ export interface Category {
  */
 export interface User {
   id: number;
-  name?: string | null;
+  firstName: string;
+  lastName: string;
+  role: 'user' | 'contributor' | 'editor' | 'publisher' | 'admin';
+  emailVerified?: boolean | null;
+  stripeCustomerId?: string | null;
+  avatar?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1338,7 +1343,12 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  name?: T;
+  firstName?: T;
+  lastName?: T;
+  role?: T;
+  emailVerified?: T;
+  stripeCustomerId?: T;
+  avatar?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
