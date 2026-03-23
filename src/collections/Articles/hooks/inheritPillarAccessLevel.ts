@@ -17,6 +17,7 @@ export const inheritPillarAccessLevel: CollectionBeforeChangeHook = async ({
     const pillar = await req.payload.findByID({
       collection: 'content-pillars',
       id: data.pillar as string,
+      req,
     })
     if (pillar?.defaultAccessLevel) {
       data.accessLevel = pillar.defaultAccessLevel
