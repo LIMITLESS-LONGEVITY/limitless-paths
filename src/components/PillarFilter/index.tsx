@@ -1,0 +1,57 @@
+'use client'
+import { cn } from '@/utilities/ui'
+import { useRouter, useSearchParams } from 'next/navigation'
+import React from 'react'
+
+type Pillar = {
+  id: string
+  name: string
+  slug: string
+}
+
+export const PillarFilter: React.FC<{
+  pillars: Pillar[]
+  basePath: string
+}> = ({ pillars, basePath }) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const activePillar = searchParams.get('pillar')
+
+  const handleClick = (slug: string | null) => {
+    if (slug) {
+      router.push(`${basePath}?pillar=${slug}`)
+    } else {
+      router.push(basePath)
+    }
+  }
+
+  return (
+    <div className="flex gap-2 flex-wrap">
+      <button
+        onClick={() => handleClick(null)}
+        className={cn(
+          'px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors',
+          !activePillar
+            ? 'bg-amber-500/20 text-amber-500'
+            : 'bg-muted text-muted-foreground hover:bg-muted/80',
+        )}
+      >
+        All
+      </button>
+      {pillars.map((pillar) => (
+        <button
+          key={pillar.id}
+          onClick={() => handleClick(pillar.slug)}
+          className={cn(
+            'px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors',
+            activePillar === pillar.slug
+              ? 'bg-amber-500/20 text-amber-500'
+              : 'bg-muted text-muted-foreground hover:bg-muted/80',
+          )}
+        >
+          {pillar.name}
+        </button>
+      ))}
+    </div>
+  )
+}
