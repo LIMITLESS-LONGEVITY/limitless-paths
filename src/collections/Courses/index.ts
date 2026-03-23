@@ -4,41 +4,36 @@ import { canEditContent } from '../../access/canEditContent'
 import { canCreateContent } from '../../access/canCreateContent'
 import { isAdmin } from '../../access/isAdmin'
 import { validateEditorialTransition } from '../../hooks/editorialWorkflow'
-import { inheritPillarAccessLevel } from './hooks/inheritPillarAccessLevel'
+// calculateDuration: uncomment once Modules & Lessons collections exist (Task 6)
+// import { calculateDuration } from './hooks/calculateDuration'
 import { computeLockedStatus } from '../../hooks/computeLockedStatus'
 import { richTextEditor } from '../../fields/lexicalEditor'
 
-export const Articles: CollectionConfig = {
-  slug: 'articles',
+export const Courses: CollectionConfig = {
+  slug: 'courses',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'editorialStatus', 'accessLevel', 'pillar', 'author', 'updatedAt'],
+    defaultColumns: ['title', 'editorialStatus', 'accessLevel', 'pillar', 'instructor', 'updatedAt'],
   },
   versions: {
     drafts: true,
-    maxPerDoc: 25,
+    maxPerDoc: 10,
   },
   fields: [
     { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true },
-    { name: 'excerpt', type: 'textarea' },
     {
-      name: 'content',
+      name: 'description',
       type: 'richText',
       editor: richTextEditor,
     },
     { name: 'featuredImage', type: 'upload', relationTo: 'media' },
-    {
-      name: 'pillar',
-      type: 'relationship',
-      relationTo: 'content-pillars',
-      required: true,
-    },
+    { name: 'pillar', type: 'relationship', relationTo: 'content-pillars' },
     {
       name: 'accessLevel',
       type: 'select',
       required: true,
-      defaultValue: 'free',
+      defaultValue: 'premium',
       options: [
         { label: 'Free', value: 'free' },
         { label: 'Regular', value: 'regular' },
@@ -59,28 +54,20 @@ export const Articles: CollectionConfig = {
         { label: 'Archived', value: 'archived' },
       ],
     },
+    { name: 'instructor', type: 'relationship', relationTo: 'users' },
+    // modules: uncomment once Modules collection exists (Task 6)
+    // { name: 'modules', type: 'relationship', relationTo: 'modules', hasMany: true },
+    { name: 'relatedArticles', type: 'relationship', relationTo: 'articles', hasMany: true },
     {
-      name: 'author',
-      type: 'relationship',
-      relationTo: 'users',
-      required: true,
+      name: 'estimatedDuration',
+      type: 'number',
+      admin: { description: 'Total duration in minutes (auto-calculated from lessons)' },
     },
-    {
-      name: 'reviewer',
-      type: 'relationship',
-      relationTo: 'users',
-    },
-    { name: 'reviewerNotes', type: 'textarea' },
     { name: 'publishedAt', type: 'date' },
-    {
-      name: 'relatedCourses',
-      type: 'relationship',
-      relationTo: 'courses',
-      hasMany: true,
-    },
   ],
   hooks: {
-    beforeChange: [validateEditorialTransition, inheritPillarAccessLevel],
+    // calculateDuration: uncomment once Modules & Lessons collections exist (Task 6)
+    beforeChange: [validateEditorialTransition],
     afterRead: [computeLockedStatus],
   },
   access: {
