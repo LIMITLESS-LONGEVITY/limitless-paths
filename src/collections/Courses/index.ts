@@ -4,8 +4,7 @@ import { canEditContent } from '../../access/canEditContent'
 import { canCreateContent } from '../../access/canCreateContent'
 import { isAdmin } from '../../access/isAdmin'
 import { validateEditorialTransition } from '../../hooks/editorialWorkflow'
-// calculateDuration: uncomment once Modules & Lessons collections exist (Task 6)
-// import { calculateDuration } from './hooks/calculateDuration'
+import { calculateDuration } from './hooks/calculateDuration'
 import { computeLockedStatus } from '../../hooks/computeLockedStatus'
 import { richTextEditor } from '../../fields/lexicalEditor'
 
@@ -55,8 +54,7 @@ export const Courses: CollectionConfig = {
       ],
     },
     { name: 'instructor', type: 'relationship', relationTo: 'users' },
-    // modules: uncomment once Modules collection exists (Task 6)
-    // { name: 'modules', type: 'relationship', relationTo: 'modules', hasMany: true },
+    { name: 'modules', type: 'relationship', relationTo: 'modules', hasMany: true },
     { name: 'relatedArticles', type: 'relationship', relationTo: 'articles', hasMany: true },
     {
       name: 'estimatedDuration',
@@ -66,8 +64,7 @@ export const Courses: CollectionConfig = {
     { name: 'publishedAt', type: 'date' },
   ],
   hooks: {
-    // calculateDuration: uncomment once Modules & Lessons collections exist (Task 6)
-    beforeChange: [validateEditorialTransition],
+    beforeChange: [validateEditorialTransition, calculateDuration],
     afterRead: [computeLockedStatus],
   },
   access: {

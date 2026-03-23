@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url'
 
 import { Articles } from './collections/Articles'
 import { Courses } from './collections/Courses'
+import { Modules } from './collections/Modules'
+import { Lessons } from './collections/Lessons'
 import { Categories } from './collections/Categories'
 import { ContentPillars } from './collections/ContentPillars'
 import { Media } from './collections/Media'
@@ -62,7 +64,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteSettings],
   plugins,
