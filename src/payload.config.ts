@@ -23,6 +23,7 @@ import { AIConfig } from './globals/AIConfig/config'
 import { SiteSettings } from './globals/SiteSettings/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
+import { tutorEndpoint } from './endpoints/ai/tutor'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -68,6 +69,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, AIUsage],
   cors: [getServerSideURL()].filter(Boolean),
+  endpoints: [tutorEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
