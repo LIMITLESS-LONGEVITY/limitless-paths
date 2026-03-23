@@ -13,7 +13,7 @@ export const Users: CollectionConfig = {
     cookies: {
       domain: process.env.COOKIE_DOMAIN || undefined,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'Lax',
     },
   },
   fields: [

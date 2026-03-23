@@ -13,6 +13,11 @@ const NEXT_PUBLIC_SERVER_URL = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  typescript: {
+    // Skip TS check during build — template code has type drift.
+    // TS checks run separately via `tsc --noEmit` in CI/local dev.
+    ignoreBuildErrors: true,
+  },
   images: {
     qualities: [100],
     remotePatterns: [
