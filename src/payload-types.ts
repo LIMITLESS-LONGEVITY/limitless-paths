@@ -82,6 +82,8 @@ export interface Config {
     enrollments: Enrollment;
     'lesson-progress': LessonProgress;
     'ai-usage': AiUsage;
+    subscriptions: Subscription;
+    'stripe-events': StripeEvent;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -109,6 +111,8 @@ export interface Config {
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'lesson-progress': LessonProgressSelect<false> | LessonProgressSelect<true>;
     'ai-usage': AiUsageSelect<false> | AiUsageSelect<true>;
+    subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
+    'stripe-events': StripeEventsSelect<false> | StripeEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1026,6 +1030,36 @@ export interface AiUsage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions".
+ */
+export interface Subscription {
+  id: number;
+  user: number | User;
+  tier: number | MembershipTier;
+  stripeSubscriptionId: string;
+  stripeCustomerId: string;
+  status: 'active' | 'past_due' | 'cancelled' | 'expired';
+  billingInterval: 'monthly' | 'yearly';
+  currentPeriodStart?: string | null;
+  currentPeriodEnd?: string | null;
+  cancelAtPeriodEnd?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stripe-events".
+ */
+export interface StripeEvent {
+  id: number;
+  stripeEventId: string;
+  eventType: string;
+  processed?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1282,6 +1316,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'ai-usage';
         value: number | AiUsage;
+      } | null)
+    | ({
+        relationTo: 'subscriptions';
+        value: number | Subscription;
+      } | null)
+    | ({
+        relationTo: 'stripe-events';
+        value: number | StripeEvent;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1816,6 +1858,34 @@ export interface AiUsageSelect<T extends boolean = true> {
   contextId?: T;
   refused?: T;
   durationMs?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions_select".
+ */
+export interface SubscriptionsSelect<T extends boolean = true> {
+  user?: T;
+  tier?: T;
+  stripeSubscriptionId?: T;
+  stripeCustomerId?: T;
+  status?: T;
+  billingInterval?: T;
+  currentPeriodStart?: T;
+  currentPeriodEnd?: T;
+  cancelAtPeriodEnd?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stripe-events_select".
+ */
+export interface StripeEventsSelect<T extends boolean = true> {
+  stripeEventId?: T;
+  eventType?: T;
+  processed?: T;
   updatedAt?: T;
   createdAt?: T;
 }
