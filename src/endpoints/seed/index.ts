@@ -67,13 +67,13 @@ export const seed = async ({
   ]
 
   for (const tier of tiers) {
-    const existing = await payload.find({
+    const existing = await payload.find({ overrideAccess: true,
       collection: 'membership-tiers',
       where: { slug: { equals: tier.slug } },
       limit: 1,
     })
     if (existing.totalDocs === 0) {
-      await payload.create({ collection: 'membership-tiers', data: tier })
+      await payload.create({ overrideAccess: true, collection: 'membership-tiers', data: tier })
       payload.logger.info(`  Created tier: ${tier.name}`)
     } else {
       payload.logger.info(`  Tier already exists: ${tier.name}`)
@@ -91,13 +91,13 @@ export const seed = async ({
   ]
 
   for (const pillar of pillars) {
-    const existing = await payload.find({
+    const existing = await payload.find({ overrideAccess: true,
       collection: 'content-pillars',
       where: { slug: { equals: pillar.slug } },
       limit: 1,
     })
     if (existing.totalDocs === 0) {
-      await payload.create({ collection: 'content-pillars', data: { ...pillar, isActive: true } })
+      await payload.create({ overrideAccess: true, collection: 'content-pillars', data: { ...pillar, isActive: true } })
       payload.logger.info(`  Created pillar: ${pillar.name}`)
     } else {
       payload.logger.info(`  Pillar already exists: ${pillar.name}`)
@@ -105,13 +105,13 @@ export const seed = async ({
   }
 
   // Seed default tenant
-  const existingTenant = await payload.find({
+  const existingTenant = await payload.find({ overrideAccess: true,
     collection: 'tenants',
     where: { slug: { equals: 'limitless' } },
     limit: 1,
   })
   if (existingTenant.totalDocs === 0) {
-    await payload.create({
+    await payload.create({ overrideAccess: true,
       collection: 'tenants',
       data: { name: 'LIMITLESS', slug: 'limitless' },
     })
@@ -121,12 +121,12 @@ export const seed = async ({
   }
 
   // Seed site settings
-  const freeTier = await payload.find({
+  const freeTier = await payload.find({ overrideAccess: true,
     collection: 'membership-tiers',
     where: { slug: { equals: 'free' } },
     limit: 1,
   })
-  await payload.updateGlobal({
+  await payload.updateGlobal({ overrideAccess: true,
     slug: 'site-settings',
     data: {
       siteName: 'PATHS by LIMITLESS',
