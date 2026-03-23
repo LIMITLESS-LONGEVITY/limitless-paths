@@ -15,6 +15,8 @@ import { Categories } from './collections/Categories'
 import { ContentPillars } from './collections/ContentPillars'
 import { Media } from './collections/Media'
 import { MembershipTiers } from './collections/MembershipTiers'
+import { Subscriptions } from './collections/Subscriptions'
+import { StripeEvents } from './collections/StripeEvents'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Tenants } from './collections/Tenants'
@@ -72,7 +74,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, enrollEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
