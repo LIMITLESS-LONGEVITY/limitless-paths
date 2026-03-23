@@ -40,12 +40,11 @@ export const Users: CollectionConfig = {
         { label: 'Admin', value: 'admin' },
       ],
     },
-    // TODO: uncomment once membership-tiers collection is registered
-    // {
-    //   name: 'tier',
-    //   type: 'relationship',
-    //   relationTo: 'membership-tiers',
-    // },
+    {
+      name: 'tier',
+      type: 'relationship',
+      relationTo: 'membership-tiers',
+    },
     // Note: 'tenant' field is auto-injected by @payloadcms/plugin-multi-tenant
     // and serves as the organization relationship for access control.
     {

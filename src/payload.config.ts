@@ -5,7 +5,9 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from './collections/Categories'
+import { ContentPillars } from './collections/ContentPillars'
 import { Media } from './collections/Media'
+import { MembershipTiers } from './collections/MembershipTiers'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
@@ -56,7 +58,7 @@ export default buildConfig({
     },
     push: true,
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins,
