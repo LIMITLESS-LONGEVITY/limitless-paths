@@ -25,10 +25,19 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Payload CMS needs DATABASE_URL at build time for schema generation.
+# Render injects env vars at runtime but not during Docker build.
+# Use a dummy URL for build — Payload only needs the format, not a live connection.
+ARG DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+ARG PAYLOAD_SECRET=build-time-secret-not-used-in-production
+ARG NEXT_PUBLIC_SERVER_URL=https://paths-api.limitless-longevity.health
+ENV DATABASE_URL=${DATABASE_URL}
+ENV PAYLOAD_SECRET=${PAYLOAD_SECRET}
+ENV NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
