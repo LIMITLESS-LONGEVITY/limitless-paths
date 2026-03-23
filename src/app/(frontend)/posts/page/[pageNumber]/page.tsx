@@ -70,7 +70,8 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 }
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  return []
+}
   const { totalDocs } = await payload.count({
     collection: 'posts',
     overrideAccess: false,

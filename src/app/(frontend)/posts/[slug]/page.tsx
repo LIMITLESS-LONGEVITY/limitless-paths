@@ -16,7 +16,8 @@ import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
+  return []
+}
   const posts = await payload.find({
     collection: 'posts',
     draft: false,
@@ -105,4 +106,4 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
-})
+}
