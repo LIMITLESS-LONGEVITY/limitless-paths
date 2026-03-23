@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import { AIUsage } from './collections/AIUsage'
 import { Articles } from './collections/Articles'
 import { Courses } from './collections/Courses'
+import { Enrollments } from './collections/Enrollments'
 import { Modules } from './collections/Modules'
 import { Lessons } from './collections/Lessons'
 import { Categories } from './collections/Categories'
@@ -69,7 +70,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, AIUsage],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, AIUsage],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
