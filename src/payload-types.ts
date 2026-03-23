@@ -75,6 +75,10 @@ export interface Config {
     'membership-tiers': MembershipTier;
     'content-pillars': ContentPillar;
     tenants: Tenant;
+    articles: Article;
+    courses: Course;
+    modules: Module;
+    lessons: Lesson;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -95,6 +99,10 @@ export interface Config {
     'membership-tiers': MembershipTiersSelect<false> | MembershipTiersSelect<true>;
     'content-pillars': ContentPillarsSelect<false> | ContentPillarsSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    courses: CoursesSelect<false> | CoursesSelect<true>;
+    modules: ModulesSelect<false> | ModulesSelect<true>;
+    lessons: LessonsSelect<false> | LessonsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -206,11 +214,11 @@ export interface Page {
   layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
   meta?: {
     title?: string | null;
+    description?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
     image?: (number | null) | Media;
-    description?: string | null;
   };
   publishedAt?: string | null;
   /**
@@ -249,11 +257,11 @@ export interface Post {
   categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
+    description?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
     image?: (number | null) | Media;
-    description?: string | null;
   };
   publishedAt?: string | null;
   authors?: (number | User)[] | null;
@@ -777,6 +785,165 @@ export interface ContentPillar {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  excerpt?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage?: (number | null) | Media;
+  pillar: number | ContentPillar;
+  accessLevel: 'free' | 'regular' | 'premium' | 'enterprise';
+  editorialStatus: 'draft' | 'in_review' | 'approved' | 'published' | 'archived';
+  author: number | User;
+  reviewer?: (number | null) | User;
+  reviewerNotes?: string | null;
+  publishedAt?: string | null;
+  relatedCourses?: (number | Course)[] | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses".
+ */
+export interface Course {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage?: (number | null) | Media;
+  pillar?: (number | null) | ContentPillar;
+  accessLevel: 'free' | 'regular' | 'premium' | 'enterprise';
+  editorialStatus: 'draft' | 'in_review' | 'approved' | 'published' | 'archived';
+  instructor?: (number | null) | User;
+  modules?: (number | Module)[] | null;
+  relatedArticles?: (number | Article)[] | null;
+  /**
+   * Total duration in minutes (auto-calculated from lessons)
+   */
+  estimatedDuration?: number | null;
+  publishedAt?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "modules".
+ */
+export interface Module {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  description?: string | null;
+  course: number | Course;
+  lessons?: (number | Lesson)[] | null;
+  order: number;
+  /**
+   * Duration in minutes (auto-calculated from lessons)
+   */
+  estimatedDuration?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lessons".
+ */
+export interface Lesson {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  module: number | Module;
+  order: number;
+  lessonType?: ('text' | 'video' | 'audio' | 'mixed') | null;
+  videoEmbed?: {
+    platform?: ('youtube' | 'vimeo') | null;
+    url?: string | null;
+    videoId?: string | null;
+  };
+  /**
+   * Duration in minutes
+   */
+  estimatedDuration?: number | null;
+  resources?:
+    | {
+        title: string;
+        file?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -828,10 +995,19 @@ export interface Search {
   id: number;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: number | Post;
-  };
+  doc:
+    | {
+        relationTo: 'posts';
+        value: number | Post;
+      }
+    | {
+        relationTo: 'articles';
+        value: number | Article;
+      }
+    | {
+        relationTo: 'courses';
+        value: number | Course;
+      };
   slug?: string | null;
   meta?: {
     title?: string | null;
@@ -998,6 +1174,22 @@ export interface PayloadLockedDocument {
         value: number | Tenant;
       } | null)
     | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'courses';
+        value: number | Course;
+      } | null)
+    | ({
+        relationTo: 'modules';
+        value: number | Module;
+      } | null)
+    | ({
+        relationTo: 'lessons';
+        value: number | Lesson;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1096,8 +1288,8 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
-        image?: T;
         description?: T;
+        image?: T;
       };
   publishedAt?: T;
   generateSlug?: T;
@@ -1204,8 +1396,8 @@ export interface PostsSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
-        image?: T;
         description?: T;
+        image?: T;
       };
   publishedAt?: T;
   authors?: T;
@@ -1376,6 +1568,110 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   contentAccessLevel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  featuredImage?: T;
+  pillar?: T;
+  accessLevel?: T;
+  editorialStatus?: T;
+  author?: T;
+  reviewer?: T;
+  reviewerNotes?: T;
+  publishedAt?: T;
+  relatedCourses?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "courses_select".
+ */
+export interface CoursesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  description?: T;
+  featuredImage?: T;
+  pillar?: T;
+  accessLevel?: T;
+  editorialStatus?: T;
+  instructor?: T;
+  modules?: T;
+  relatedArticles?: T;
+  estimatedDuration?: T;
+  publishedAt?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "modules_select".
+ */
+export interface ModulesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  description?: T;
+  course?: T;
+  lessons?: T;
+  order?: T;
+  estimatedDuration?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lessons_select".
+ */
+export interface LessonsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  content?: T;
+  module?: T;
+  order?: T;
+  lessonType?: T;
+  videoEmbed?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        videoId?: T;
+      };
+  estimatedDuration?: T;
+  resources?:
+    | T
+    | {
+        title?: T;
+        file?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1837,6 +2133,93 @@ export interface CodeBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoEmbedBlock".
+ */
+export interface VideoEmbedBlock {
+  platform: 'youtube' | 'vimeo';
+  url: string;
+  videoId?: string | null;
+  caption?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'videoEmbed';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AudioEmbedBlock".
+ */
+export interface AudioEmbedBlock {
+  platform: 'youtube' | 'soundcloud' | 'spotify';
+  url: string;
+  caption?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'audioEmbed';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalloutBlock".
+ */
+export interface CalloutBlock {
+  type: 'info' | 'warning' | 'tip' | 'quote';
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'callout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlockBlock".
+ */
+export interface CodeBlockBlock {
+  language?: ('javascript' | 'typescript' | 'python' | 'html' | 'css' | 'bash' | 'json' | 'plaintext') | null;
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'codeBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PDFViewerBlock".
+ */
+export interface PDFViewerBlock {
+  file: number | Media;
+  title?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'pdfViewer';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageGalleryBlock".
+ */
+export interface ImageGalleryBlock {
+  images: {
+    image: number | Media;
+    caption?: string | null;
+    id?: string | null;
+  }[];
+  layout?: ('grid' | 'carousel') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageGallery';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
