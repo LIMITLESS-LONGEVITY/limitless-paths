@@ -15,7 +15,8 @@ import { Page, Post } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 
 const generateTitle: GenerateTitle<Post | Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
+  const title = (doc as any)?.title
+  return title ? `${title} — PATHS by LIMITLESS` : 'PATHS by LIMITLESS'
 }
 
 const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
@@ -27,7 +28,10 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
 export const plugins: Plugin[] = [
   multiTenantPlugin({
     collections: {
-      // Collections scoped by tenant will be added in Phase 2
+      articles: {},
+      courses: {},
+      modules: {},
+      lessons: {},
     },
     tenantsSlug: 'tenants',
     cleanupAfterTenantDelete: true,
@@ -63,6 +67,8 @@ export const plugins: Plugin[] = [
     generateURL: (docs) => docs.reduce((url, doc) => `${url}/${doc.slug}`, ''),
   }),
   seoPlugin({
+    collections: ['pages', 'posts', 'articles', 'courses'],
+    uploadsCollection: 'media',
     generateTitle,
     generateURL,
   }),
@@ -93,7 +99,11 @@ export const plugins: Plugin[] = [
     },
   }),
   searchPlugin({
-    collections: ['posts'],
+    collections: ['posts', 'articles', 'courses'],
+    defaultPriorities: {
+      articles: 10,
+      courses: 20,
+    },
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
       fields: ({ defaultFields }) => {

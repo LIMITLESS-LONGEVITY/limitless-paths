@@ -1,0 +1,104 @@
+import { getPayload, type Payload } from 'payload'
+import config from '@/payload.config'
+import { describe, it, beforeAll, expect } from 'vitest'
+
+let payload: Payload
+let adminUser: any
+let pillarId: string
+
+describe('Articles collection', () => {
+  beforeAll(async () => {
+    const payloadConfig = await config
+    payload = await getPayload({ config: payloadConfig })
+
+    // Create admin user for tests
+    try {
+      adminUser = await payload.create({
+        collection: 'users',
+        data: {
+          email: 'articles-test-admin@test.com',
+          password: 'TestPassword123!',
+          firstName: 'Admin',
+          lastName: 'Test',
+          role: 'admin',
+        },
+      })
+    } catch {
+      const found = await payload.find({
+        collection: 'users',
+        where: { email: { equals: 'articles-test-admin@test.com' } },
+      })
+      adminUser = found.docs[0]
+    }
+
+    // Create a pillar for tests
+    try {
+      const pillar = await payload.create({
+        collection: 'content-pillars',
+        data: { name: 'Test Pillar', slug: 'test-pillar-articles', isActive: true },
+      })
+      pillarId = pillar.id as string
+    } catch {
+      const found = await payload.find({
+        collection: 'content-pillars',
+        where: { slug: { equals: 'test-pillar-articles' } },
+      })
+      pillarId = found.docs[0]?.id as string
+    }
+  })
+
+  it('creates an article with required fields', async () => {
+    const article = await payload.create({
+      collection: 'articles',
+      data: {
+        title: 'Test Article',
+        slug: 'test-article-crud',
+        pillar: pillarId,
+        author: adminUser.id,
+        editorialStatus: 'draft',
+        accessLevel: 'free',
+      },
+    })
+    expect(article.title).toBe('Test Article')
+    expect(article.editorialStatus).toBe('draft')
+    expect(article.accessLevel).toBe('free')
+  })
+
+  it('defaults editorialStatus to draft', async () => {
+    const article = await payload.create({
+      collection: 'articles',
+      data: {
+        title: 'Default Status',
+        slug: 'test-article-default-status',
+        pillar: pillarId,
+        author: adminUser.id,
+      },
+    })
+    expect(article.editorialStatus).toBe('draft')
+  })
+
+  it('supports versioning', async () => {
+    const article = await payload.create({
+      collection: 'articles',
+      data: {
+        title: 'Versioned Article',
+        slug: 'test-article-versioned',
+        pillar: pillarId,
+        author: adminUser.id,
+      },
+    })
+
+    // Update should create a version
+    await payload.update({
+      collection: 'articles',
+      id: article.id,
+      data: { title: 'Versioned Article v2' },
+    })
+
+    const versions = await payload.findVersions({
+      collection: 'articles',
+      where: { parent: { equals: article.id } },
+    })
+    expect(versions.totalDocs).toBeGreaterThanOrEqual(1)
+  })
+})
