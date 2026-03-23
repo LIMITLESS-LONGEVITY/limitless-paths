@@ -1,118 +1,71 @@
-# ───────────────────────────────────────────────
-# Stage 1: Frontend dependency install
-# ───────────────────────────────────────────────
-FROM oven/bun:1-alpine AS frontend-deps
-RUN apk update && apk add --no-cache libc6-compat && rm -rf /var/cache/apk/*
+# To use this Dockerfile, you have to set `output: 'standalone'` in your next.config.js file.
+# From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
+
+FROM node:22.17.0-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY apps/web/package.json apps/web/bun.lock* ./
-RUN bun install --frozen-lockfile
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-# ───────────────────────────────────────────────
-# Stage 2: Frontend build
-# ───────────────────────────────────────────────
-FROM oven/bun:1-alpine AS frontend-builder
+
+# Rebuild the source code only when needed
+FROM base AS builder
 WORKDIR /app
-COPY --from=frontend-deps /app/node_modules ./node_modules
-COPY apps/web .
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 
-# Disable telemetry during build
-ENV NEXT_TELEMETRY_DISABLED=1
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+# ENV NEXT_TELEMETRY_DISABLED 1
 
-# Remove .env files to avoid leaking secrets into the build
-RUN rm -f .env*
+RUN \
+  if [ -f yarn.lock ]; then yarn run build; \
+  elif [ -f package-lock.json ]; then npm run build; \
+  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
-RUN bun run build
-
-# ───────────────────────────────────────────────
-# Stage 3: Frontend production image
-# ───────────────────────────────────────────────
-FROM node:24-alpine AS frontend-runner
-WORKDIR /app
-
-RUN apk update && apk add --no-cache curl && rm -rf /var/cache/apk/*
-
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-
-RUN addgroup --system --gid 1001 nodejs \
-    && adduser --system --uid 1001 nextjs
-
-COPY --from=frontend-builder /app/public ./public
-
-RUN mkdir .next && chown nextjs:nodejs .next
-
-# Leverage output traces to reduce image size
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=frontend-builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Copy server wrapper for runtime environment variable injection
-COPY --chown=nextjs:nodejs apps/web/server-wrapper.js ./
-RUN chmod +x server-wrapper.js
-
-# ───────────────────────────────────────────────
-# Stage 4: Collab server build
-# ───────────────────────────────────────────────
-FROM oven/bun:1-alpine AS collab-builder
+# Production image, copy all the files and run next
+FROM base AS runner
 WORKDIR /app
 
-COPY apps/collab/package.json apps/collab/bun.lock* ./
-RUN bun install --frozen-lockfile
+ENV NODE_ENV production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED 1
 
-COPY apps/collab/tsconfig.json ./
-COPY apps/collab/src/ ./src/
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-RUN bun run build
+# Remove this line if you do not have this folder
+COPY --from=builder /app/public ./public
 
-# ───────────────────────────────────────────────
-# Stage 5: Final image combining frontend + backend + collab
-# ───────────────────────────────────────────────
-FROM python:3.14.3-slim-bookworm AS runner
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
 
-# Single apt layer: nginx, curl, netcat, node, pm2
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends nginx curl netcat-openbsd ca-certificates gnupg unzip \
-    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && npm install -g pm2 \
-    && curl -fsSL https://bun.sh/install | bash \
-    && apt-get purge -y gnupg \
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /root/.npm \
-    && rm /etc/nginx/sites-enabled/default
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-ENV PATH="/root/.bun/bin:${PATH}"
+USER nextjs
 
-# Copy the frontend standalone build
-COPY --from=frontend-runner /app /app/web
+EXPOSE 3000
 
-# Backend: install deps first (better layer caching)
-WORKDIR /app/api
-COPY ./apps/api/uv.lock ./apps/api/pyproject.toml ./
-RUN pip install --no-cache-dir --upgrade pip uv \
-    && uv sync --no-dev
-COPY ./apps/api ./
+ENV PORT 3000
 
-# Remove Enterprise Edition folder for public builds
-ARG LEARNHOUSE_PUBLIC=false
-RUN if [ "$LEARNHOUSE_PUBLIC" = "true" ]; then rm -rf /app/api/ee; fi
-
-# Collab server: copy built JS + production deps
-WORKDIR /app/collab
-COPY --from=collab-builder /app/dist ./dist
-COPY apps/collab/package.json apps/collab/bun.lock* ./
-RUN bun install --production
-
-# Copy configs and scripts
-WORKDIR /app
-COPY ./docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./apps/api/docker-entrypoint.sh /app/api/docker-entrypoint.sh
-COPY ./docker/start.sh /app/start.sh
-RUN chmod +x /app/api/docker-entrypoint.sh /app/start.sh
-
-ENV PORT=8000 LEARNHOUSE_PORT=9000 COLLAB_PORT=4000 HOSTNAME=0.0.0.0 LEARNHOUSE_OSS=true NEXT_PUBLIC_LEARNHOUSE_OSS=true
-
-EXPOSE 80 9000 4000
-
-CMD ["sh", "/app/start.sh"]
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD HOSTNAME="0.0.0.0" node server.js

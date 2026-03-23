@@ -1,5 +1,0 @@
-{
-  "installCommand": "echo skipped",
-  "buildCommand": "pip install --break-system-packages -r requirements.txt && python -m mkdocs build",
-  "outputDirectory": "site"
-}
