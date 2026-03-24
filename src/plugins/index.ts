@@ -36,8 +36,8 @@ export const plugins: Plugin[] = [
     tenantsSlug: 'tenants',
     cleanupAfterTenantDelete: true,
     enabled: true,
-    userHasAccessToAllTenants: ({ req: { user } }) => {
-      return Boolean(user?.role === 'admin')
+    userHasAccessToAllTenants: ({ req }) => {
+      return Boolean(req?.user?.role === 'admin')
     },
   }),
   redirectsPlugin({
