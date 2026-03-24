@@ -5,6 +5,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { AIUsage } from './collections/AIUsage'
+import { ContentChunks } from './collections/ContentChunks'
 import { Articles } from './collections/Articles'
 import { Courses } from './collections/Courses'
 import { Enrollments } from './collections/Enrollments'
@@ -31,6 +32,9 @@ import { tutorEndpoint } from './endpoints/ai/tutor'
 import { quizGenerateEndpoint } from './endpoints/ai/quizGenerate'
 import { quizSaveEndpoint } from './endpoints/ai/quizSave'
 import { enrollEndpoint } from './endpoints/enrollments/enroll'
+import { semanticSearchEndpoint } from './endpoints/ai/search'
+import { recommendationsEndpoint } from './endpoints/ai/recommendations'
+import { relatedContentEndpoint } from './endpoints/ai/relatedContent'
 import { stripeWebhookEndpoint } from './endpoints/stripe/webhooks'
 import { billingCheckoutEndpoint } from './endpoints/billing/checkout'
 import { billingPortalEndpoint } from './endpoints/billing/portal'
@@ -77,9 +81,9 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, Subscriptions, StripeEvents],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint],
+  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,

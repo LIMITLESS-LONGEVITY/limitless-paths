@@ -5,6 +5,7 @@ import { checkRateLimit } from '../../ai/rateLimiter'
 import { logUsage } from '../../ai/usageLogger'
 import { buildTutorSystemPrompt } from '../../ai/prompts/tutor'
 import { extractTextFromLexical } from '../../ai/utils'
+import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
 
 export const tutorEndpoint: Endpoint = {
@@ -85,36 +86,48 @@ export const tutorEndpoint: Endpoint = {
       )
     }
 
-    // 6. Fetch context document (overrideAccess: false to enforce user's access level)
-    let contextDoc: any
-    try {
-      if (body.contextType === 'articles') {
-        contextDoc = await req.payload.findByID({
-          collection: 'articles',
+    // 6. Retrieve relevant chunks via RAG
+    let chunks = await retrieveRelevantChunks(body.message, req.payload, req, {
+      limit: 5,
+    })
+
+    // 7. Ensure current document is represented
+    // If no chunks from current doc in results, fetch its most relevant chunk
+    const currentDocInResults = chunks.some(
+      (c) => c.sourceId === body.contextId && c.sourceCollection === body.contextType,
+    )
+    if (!currentDocInResults) {
+      try {
+        const contextDoc = await req.payload.findByID({
+          collection: body.contextType as 'articles' | 'lessons',
           id: body.contextId,
           req,
           overrideAccess: false,
         })
-      } else if (body.contextType === 'lessons') {
-        contextDoc = await req.payload.findByID({
-          collection: 'lessons',
-          id: body.contextId,
-          req,
-          overrideAccess: false,
-        })
-      } else {
-        return Response.json(
-          { error: 'Invalid contextType. Must be "articles" or "lessons".' },
-          { status: 400 },
-        )
-      }
-    } catch {
-      return Response.json({ error: 'Content not found' }, { status: 404 })
+        if (contextDoc) {
+          // Add a priority chunk from the current doc
+          chunks = [
+            {
+              id: 'priority',
+              text: extractTextFromLexical(contextDoc.content).slice(0, 2000),
+              sourceCollection: body.contextType,
+              sourceId: body.contextId,
+              sourceTitle: contextDoc.title as string,
+              accessLevel: (contextDoc as any).accessLevel ?? 'free',
+              chunkIndex: 0,
+              relevanceScore: 1,
+            },
+            ...chunks.slice(0, 4), // Keep top 4 RAG results + priority
+          ]
+        }
+      } catch {}
     }
 
-    // 7. Build messages
-    const contentText = extractTextFromLexical(contextDoc.content)
-    const systemPrompt = buildTutorSystemPrompt(contextDoc.title, contentText)
+    // 8. Build messages with RAG context
+    const systemPrompt = buildTutorSystemPrompt(
+      chunks.find((c) => c.sourceId === body.contextId)?.sourceTitle ?? 'this content',
+      chunks,
+    )
 
     const messages: ChatMessage[] = [
       { role: 'system', content: systemPrompt },
@@ -125,7 +138,7 @@ export const tutorEndpoint: Endpoint = {
       { role: 'user', content: body.message },
     ]
 
-    // 8. Stream response
+    // 9. Stream response
     const modelConfig = getModelConfig('tutor')
     const maxTokens = (aiConfig.tokenBudgets as any)?.tutorMaxTokens ?? modelConfig.maxOutputTokens
 
@@ -145,7 +158,7 @@ export const tutorEndpoint: Endpoint = {
           controller.enqueue(encoder.encode('data: [DONE]\n\n'))
           controller.close()
 
-          // 9. Log usage (fire-and-forget)
+          // 10. Log usage (fire-and-forget)
           const usage = result.value
           logUsage(req, {
             feature: 'tutor-chat',
