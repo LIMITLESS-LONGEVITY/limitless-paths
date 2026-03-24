@@ -5,6 +5,7 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { AIUsage } from './collections/AIUsage'
+import { ContentChunks } from './collections/ContentChunks'
 import { Articles } from './collections/Articles'
 import { Courses } from './collections/Courses'
 import { Enrollments } from './collections/Enrollments'
@@ -77,7 +78,7 @@ export default buildConfig({
     },
     push: false,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, Subscriptions, StripeEvents],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
