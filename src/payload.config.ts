@@ -32,6 +32,9 @@ import { tutorEndpoint } from './endpoints/ai/tutor'
 import { quizGenerateEndpoint } from './endpoints/ai/quizGenerate'
 import { quizSaveEndpoint } from './endpoints/ai/quizSave'
 import { enrollEndpoint } from './endpoints/enrollments/enroll'
+import { semanticSearchEndpoint } from './endpoints/ai/search'
+import { recommendationsEndpoint } from './endpoints/ai/recommendations'
+import { relatedContentEndpoint } from './endpoints/ai/relatedContent'
 import { stripeWebhookEndpoint } from './endpoints/stripe/webhooks'
 import { billingCheckoutEndpoint } from './endpoints/billing/checkout'
 import { billingPortalEndpoint } from './endpoints/billing/portal'
@@ -80,7 +83,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint],
+  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
