@@ -14,11 +14,8 @@ export const Articles: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'editorialStatus', 'accessLevel', 'pillar', 'author', 'updatedAt'],
-    components: {
-      edit: {
-        Sidebar: ['/components/RelatedContentPanel#RelatedContentPanel'],
-      },
-    },
+    // RelatedContentPanel temporarily removed — admin component registration needs investigation
+    // See: src/components/RelatedContentPanel/index.tsx (component exists, registration format TBD)
   },
   versions: {
     drafts: true,
