@@ -30,7 +30,7 @@ export const ContentListItem: React.FC<{
       )}
     >
       {item.featuredImage && (
-        <div className="flex-shrink-0 w-[140px] h-[90px] rounded-lg overflow-hidden bg-muted">
+        <div className="hidden sm:block flex-shrink-0 w-[140px] h-[90px] rounded-lg overflow-hidden bg-muted">
           {typeof item.featuredImage !== 'string' && (
             <Media resource={item.featuredImage} className="w-full h-full object-cover" />
           )}
