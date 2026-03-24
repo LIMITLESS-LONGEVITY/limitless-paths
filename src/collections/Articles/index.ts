@@ -6,6 +6,7 @@ import { isAdmin } from '../../access/isAdmin'
 import { validateEditorialTransition } from '../../hooks/editorialWorkflow'
 import { inheritPillarAccessLevel } from './hooks/inheritPillarAccessLevel'
 import { computeLockedStatus } from '../../hooks/computeLockedStatus'
+import { indexContentChunks } from '../../hooks/indexContentChunks'
 import { richTextEditor } from '../../fields/lexicalEditor'
 
 export const Articles: CollectionConfig = {
@@ -82,6 +83,7 @@ export const Articles: CollectionConfig = {
   hooks: {
     beforeChange: [validateEditorialTransition, inheritPillarAccessLevel],
     afterRead: [computeLockedStatus],
+    afterChange: [indexContentChunks],
   },
   access: {
     create: canCreateContent,
