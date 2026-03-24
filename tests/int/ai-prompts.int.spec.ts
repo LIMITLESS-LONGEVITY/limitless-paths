@@ -30,12 +30,24 @@ describe('Lexical text extraction', () => {
 })
 
 describe('Tutor prompt', () => {
-  it('builds system prompt with title and content', () => {
-    const prompt = buildTutorSystemPrompt('Mitochondria 101', 'The mitochondria is the powerhouse of the cell.')
+  it('builds RAG-aware system prompt with title and chunks', () => {
+    const chunks = [
+      {
+        id: '1',
+        text: 'The mitochondria is the powerhouse of the cell.',
+        sourceCollection: 'articles',
+        sourceId: 'art-1',
+        sourceTitle: 'Mitochondria 101',
+        accessLevel: 'free',
+        chunkIndex: 0,
+        relevanceScore: 0.95,
+      },
+    ]
+    const prompt = buildTutorSystemPrompt('Mitochondria 101', chunks)
     expect(prompt).toContain('Mitochondria 101')
     expect(prompt).toContain('The mitochondria is the powerhouse of the cell.')
     expect(prompt).toContain('tutor')
-    expect(prompt).toContain('outside the scope')
+    expect(prompt).toContain('context')
   })
 })
 
