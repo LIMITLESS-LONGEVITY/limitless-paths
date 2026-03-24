@@ -128,7 +128,50 @@ export const seed = async ({
     payload.logger.info('  Tenant already exists: LIMITLESS')
   }
 
-  // Seed site settings
+  // Assign tenant to the seeding user (fixes multi-tenant access)
+  const tenant = await payload.find({
+    req,
+    overrideAccess: true,
+    collection: 'tenants',
+    where: { slug: { equals: 'limitless' } },
+    limit: 1,
+  })
+
+  if (req.user && tenant.docs[0]) {
+    const userId = req.user.id
+    const tenantId = tenant.docs[0].id
+
+    // Check if user already has this tenant
+    const currentUser = await payload.findByID({
+      req,
+      overrideAccess: true,
+      collection: 'users',
+      id: userId,
+    })
+
+    const userTenants = (currentUser as any).tenants || []
+    const hasTenant = userTenants.some((t: any) => {
+      const tid = typeof t.tenant === 'object' ? t.tenant?.id : t.tenant
+      return tid === tenantId || String(tid) === String(tenantId)
+    })
+
+    if (!hasTenant) {
+      await payload.update({
+        req,
+        overrideAccess: true,
+        collection: 'users',
+        id: userId,
+        data: {
+          tenants: [...userTenants, { tenant: tenantId }],
+        } as any,
+      })
+      payload.logger.info(`  Assigned tenant LIMITLESS to user ${(req.user as any).email}`)
+    } else {
+      payload.logger.info(`  User already has tenant LIMITLESS`)
+    }
+  }
+
+  // Assign free tier to user if no tier set
   const freeTier = await payload.find({
     req,
     overrideAccess: true,
@@ -136,6 +179,26 @@ export const seed = async ({
     where: { slug: { equals: 'free' } },
     limit: 1,
   })
+  // Assign free tier to user if no tier set
+  if (req.user && freeTier.docs[0]) {
+    const currentUser = await payload.findByID({
+      req,
+      overrideAccess: true,
+      collection: 'users',
+      id: req.user.id,
+    })
+    if (!(currentUser as any).tier) {
+      await payload.update({
+        req,
+        overrideAccess: true,
+        collection: 'users',
+        id: req.user.id,
+        data: { tier: freeTier.docs[0].id } as any,
+      })
+      payload.logger.info(`  Assigned free tier to user`)
+    }
+  }
+
   await payload.updateGlobal({
     req,
     overrideAccess: true,
