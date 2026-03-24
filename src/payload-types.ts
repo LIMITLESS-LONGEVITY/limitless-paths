@@ -82,6 +82,7 @@ export interface Config {
     enrollments: Enrollment;
     'lesson-progress': LessonProgress;
     'ai-usage': AiUsage;
+    'content-chunks': ContentChunk;
     subscriptions: Subscription;
     'stripe-events': StripeEvent;
     redirects: Redirect;
@@ -111,6 +112,7 @@ export interface Config {
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'lesson-progress': LessonProgressSelect<false> | LessonProgressSelect<true>;
     'ai-usage': AiUsageSelect<false> | AiUsageSelect<true>;
+    'content-chunks': ContentChunksSelect<false> | ContentChunksSelect<true>;
     subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
     'stripe-events': StripeEventsSelect<false> | StripeEventsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
@@ -1030,6 +1032,23 @@ export interface AiUsage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "content-chunks".
+ */
+export interface ContentChunk {
+  id: number;
+  text: string;
+  sourceCollection: string;
+  sourceId: string;
+  sourceTitle: string;
+  accessLevel: 'free' | 'regular' | 'premium' | 'enterprise';
+  pillar?: (number | null) | ContentPillar;
+  chunkIndex: number;
+  tokenCount: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscriptions".
  */
 export interface Subscription {
@@ -1316,6 +1335,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'ai-usage';
         value: number | AiUsage;
+      } | null)
+    | ({
+        relationTo: 'content-chunks';
+        value: number | ContentChunk;
       } | null)
     | ({
         relationTo: 'subscriptions';
@@ -1858,6 +1881,22 @@ export interface AiUsageSelect<T extends boolean = true> {
   contextId?: T;
   refused?: T;
   durationMs?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "content-chunks_select".
+ */
+export interface ContentChunksSelect<T extends boolean = true> {
+  text?: T;
+  sourceCollection?: T;
+  sourceId?: T;
+  sourceTitle?: T;
+  accessLevel?: T;
+  pillar?: T;
+  chunkIndex?: T;
+  tokenCount?: T;
   updatedAt?: T;
   createdAt?: T;
 }

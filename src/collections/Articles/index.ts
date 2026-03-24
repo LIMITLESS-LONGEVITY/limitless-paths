@@ -14,6 +14,11 @@ export const Articles: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'editorialStatus', 'accessLevel', 'pillar', 'author', 'updatedAt'],
+    components: {
+      edit: {
+        Sidebar: ['/components/RelatedContentPanel#RelatedContentPanel'],
+      },
+    },
   },
   versions: {
     drafts: true,
