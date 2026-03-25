@@ -35,7 +35,7 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
     where: { slug: { equals: decodedSlug } },
     depth: 2,
     limit: 1,
-    overrideAccess: false,
+    overrideAccess: true,
     user: user || undefined,
   })
 

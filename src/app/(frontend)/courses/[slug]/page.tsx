@@ -29,7 +29,7 @@ export default async function CourseDetailPage({ params: paramsPromise }: Args) 
     where: { slug: { equals: decodeURIComponent(slug) } },
     depth: 3, // Populate modules -> lessons
     limit: 1,
-    overrideAccess: false,
+    overrideAccess: true,
     user: user || undefined,
   })
 
