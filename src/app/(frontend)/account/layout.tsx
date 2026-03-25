@@ -17,7 +17,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
     user = auth.user
   } catch {}
 
-  if (!user) return redirect('/admin')
+  if (!user) return redirect('/login')
 
   return (
     <div className="pt-24 pb-24">

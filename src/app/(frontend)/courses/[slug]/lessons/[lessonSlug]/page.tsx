@@ -21,7 +21,7 @@ export default async function LessonPage({ params: paramsPromise }: Args) {
     const auth = await payload.auth({ headers: headersList })
     user = auth.user
   } catch {}
-  if (!user) return redirect(`/admin?redirect=/courses/${slug}/lessons/${lessonSlug}`)
+  if (!user) return redirect(`/login?redirect=/courses/${slug}/lessons/${lessonSlug}`)
 
   // Fetch course with modules and lessons
   const courseResult = await payload.find({

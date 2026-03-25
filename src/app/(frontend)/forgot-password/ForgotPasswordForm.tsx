@@ -1,15 +1,10 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
-import { useAuth } from '@/providers/Auth'
 
-export default function LoginForm() {
-  const router = useRouter()
-  const auth = useAuth()
+export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
@@ -19,19 +14,23 @@ export default function LoginForm() {
     setSubmitting(true)
 
     try {
-      const res = await fetch('/api/users/login', {
+      const res = await fetch('/api/users/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email }),
       })
-      const data = await res.json()
 
       if (res.ok) {
-        if (data.user) auth.setUser(data.user)
-        setMessage({ type: 'success', text: 'Signed in! Redirecting...' })
-        setTimeout(() => router.push('/courses'), 1000)
+        setMessage({
+          type: 'success',
+          text: 'Check your email for a password reset link.',
+        })
       } else {
-        setMessage({ type: 'error', text: data.errors?.[0]?.message || 'Invalid email or password.' })
+        const data = await res.json()
+        setMessage({
+          type: 'error',
+          text: data.errors?.[0]?.message || 'Something went wrong. Please try again.',
+        })
       }
     } catch {
       setMessage({ type: 'error', text: 'Something went wrong. Please try again.' })
@@ -51,10 +50,10 @@ export default function LoginForm() {
       >
         <div className="text-center mb-8">
           <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide">
-            Sign In
+            Forgot Password
           </h1>
           <p className="mt-2 text-sm text-brand-silver">
-            Welcome back to PATHS
+            Enter your email and we&apos;ll send you a reset link
           </p>
         </div>
 
@@ -70,26 +69,6 @@ export default function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="jane@example.com"
-              className={inputClasses}
-            />
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-medium text-brand-silver" htmlFor="password">
-                Password
-              </label>
-              <Link href="/forgot-password" className="text-brand-gold text-xs hover:underline">
-                Forgot password?
-              </Link>
-            </div>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Your password"
               className={inputClasses}
             />
           </div>
@@ -116,14 +95,14 @@ export default function LoginForm() {
               submitting && 'opacity-50 cursor-not-allowed',
             )}
           >
-            {submitting ? 'Signing In...' : 'Sign In'}
+            {submitting ? 'Sending...' : 'Send Reset Link'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm text-brand-silver">
-          Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-brand-gold hover:underline">
-            Create one
+          Remember your password?{' '}
+          <Link href="/login" className="text-brand-gold hover:underline">
+            Sign in
           </Link>
         </p>
       </div>
