@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
 import { generateMeta } from '@/utilities/generateMeta'
+import { headers as getHeaders } from 'next/headers'
 import ArticleClient from './page.client'
 
 export const dynamic = 'force-dynamic'
@@ -20,12 +21,22 @@ export default async function ArticlePage({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const decodedSlug = decodeURIComponent(slug)
   const payload = await getPayload({ config: configPromise })
+  const headersList = await getHeaders()
+
+  // Authenticate so computeLockedStatus has user context for tier checks
+  let user: any = null
+  try {
+    const auth = await payload.auth({ headers: headersList })
+    user = auth.user
+  } catch {}
 
   const result = await payload.find({
     collection: 'articles',
     where: { slug: { equals: decodedSlug } },
     depth: 2,
     limit: 1,
+    overrideAccess: false,
+    user: user || undefined,
   })
 
   const article = result.docs[0]

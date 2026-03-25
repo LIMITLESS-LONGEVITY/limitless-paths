@@ -15,12 +15,22 @@ type Args = { params: Promise<{ slug?: string }> }
 export default async function CourseDetailPage({ params: paramsPromise }: Args) {
   const { slug = '' } = await paramsPromise
   const payload = await getPayload({ config: configPromise })
+  const headersList = await getHeaders()
+
+  // Authenticate first so the course query has user context for computeLockedStatus
+  let user: any = null
+  try {
+    const auth = await payload.auth({ headers: headersList })
+    user = auth.user
+  } catch {}
 
   const result = await payload.find({
     collection: 'courses',
     where: { slug: { equals: decodeURIComponent(slug) } },
     depth: 3, // Populate modules -> lessons
     limit: 1,
+    overrideAccess: false,
+    user: user || undefined,
   })
 
   const course = result.docs[0]
@@ -33,9 +43,6 @@ export default async function CourseDetailPage({ params: paramsPromise }: Args) 
   let lessonProgress: Record<string, string> = {}
 
   try {
-    const headersList = await getHeaders()
-    const { user } = await payload.auth({ headers: headersList })
-
     if (user) {
       // Check enrollment
       const enrollments = await payload.find({
