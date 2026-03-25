@@ -20,20 +20,23 @@ const getImageURL = (image?: Media | Config['db']['defaultIDType'] | null) => {
 }
 
 export const generateMeta = async (args: {
-  doc: Partial<Page> | Partial<Post> | null
+  doc: (Partial<Page> | Partial<Post> | Record<string, any>) | null
 }): Promise<Metadata> => {
   const { doc } = args
 
   const ogImage = getImageURL(doc?.meta?.image)
 
-  const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | Payload Website Template'
-    : 'Payload Website Template'
+  // Fall back to doc.title if meta.title is not set
+  const rawTitle = doc?.meta?.title || doc?.title
+  const title = rawTitle ? rawTitle + ' | PATHS by LIMITLESS' : 'PATHS by LIMITLESS'
+
+  // Fall back to doc.excerpt or doc.description if meta.description is not set
+  const description = doc?.meta?.description || doc?.excerpt || doc?.description || ''
 
   return {
-    description: doc?.meta?.description,
+    description: description || undefined,
     openGraph: mergeOpenGraph({
-      description: doc?.meta?.description || '',
+      description,
       images: ogImage
         ? [
             {

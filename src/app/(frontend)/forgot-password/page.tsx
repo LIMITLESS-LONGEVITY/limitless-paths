@@ -4,7 +4,7 @@ import ForgotPasswordForm from './ForgotPasswordForm'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Forgot Password | PATHS by LIMITLESS',
+  title: 'Forgot Password',
   description: 'Reset your PATHS account password.',
 }
 

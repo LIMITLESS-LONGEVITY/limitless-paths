@@ -109,7 +109,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     collection: 'courses',
     where: { slug: { equals: decodeURIComponent(slug) } },
     limit: 1,
-    select: { title: true, meta: true },
+    select: { title: true, meta: true, description: true, slug: true },
   })
   return generateMeta({ doc: result.docs[0] })
 }

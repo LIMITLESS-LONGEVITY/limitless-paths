@@ -4,8 +4,8 @@ import LoginForm from './LoginForm'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Sign In | PATHS by LIMITLESS',
-  description: 'Sign in to your PATHS account.',
+  title: 'Sign In',
+  description: 'Sign in to your PATHS account to access longevity courses and articles.',
 }
 
 export default function LoginPage() {

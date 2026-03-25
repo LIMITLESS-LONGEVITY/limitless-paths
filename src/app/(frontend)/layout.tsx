@@ -47,6 +47,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
+  title: {
+    template: '%s | PATHS by LIMITLESS',
+    default: 'PATHS by LIMITLESS — Longevity Education Platform',
+  },
+  description:
+    'Evidence-based longevity education for executives and high-performers. Courses, articles, and AI-powered learning — all in one platform.',
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',

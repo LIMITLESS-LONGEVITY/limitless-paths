@@ -66,7 +66,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
     collection: 'articles',
     where: { slug: { equals: decodeURIComponent(slug) } },
     limit: 1,
-    select: { title: true, meta: true },
+    select: { title: true, meta: true, excerpt: true, slug: true },
   })
   const article = result.docs[0]
   return generateMeta({ doc: article })

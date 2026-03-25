@@ -104,5 +104,15 @@ export default async function CoursesPage({ searchParams }: Args) {
 }
 
 export function generateMetadata(): Metadata {
-  return { title: 'Courses — PATHS by LIMITLESS' }
+  return {
+    title: 'Courses',
+    description:
+      'Structured longevity courses for executives and high-performers. Learn sleep, nutrition, stress, and more.',
+    openGraph: {
+      title: 'Courses | PATHS by LIMITLESS',
+      description:
+        'Structured longevity courses for executives and high-performers.',
+      type: 'website',
+    },
+  }
 }

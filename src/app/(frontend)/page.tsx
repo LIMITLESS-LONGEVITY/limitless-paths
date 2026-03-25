@@ -72,13 +72,16 @@ export default async function HomePage() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'PATHS by LIMITLESS — Master the Science of Living Longer',
+    title: {
+      absolute: 'PATHS by LIMITLESS — Master the Science of Living Longer',
+    },
     description:
       'Evidence-based longevity education for executives and high-performers. Courses, articles, and AI-powered learning — all in one platform.',
     openGraph: {
-      title: 'PATHS by LIMITLESS — Longevity Education',
+      title: 'PATHS by LIMITLESS — Longevity Education Platform',
       description:
-        'Evidence-based longevity education for executives and high-performers.',
+        'Evidence-based longevity education for executives and high-performers. Courses, articles, and AI-powered learning.',
+      type: 'website',
     },
   }
 }

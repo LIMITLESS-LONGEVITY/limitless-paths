@@ -11,6 +11,9 @@ export default function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Search — PATHS',
+    title: 'Search',
+    description:
+      'Search courses, articles, and longevity resources on PATHS by LIMITLESS.',
+    robots: { index: false, follow: true },
   }
 }

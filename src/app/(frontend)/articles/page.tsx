@@ -111,6 +111,14 @@ export default async function ArticlesPage({ searchParams }: Args) {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Articles — PATHS by LIMITLESS',
+    title: 'Articles',
+    description:
+      'Expert insights on longevity, nutrition, and performance. Evidence-based articles from leading health scientists.',
+    openGraph: {
+      title: 'Articles | PATHS by LIMITLESS',
+      description:
+        'Expert insights on longevity, nutrition, and performance from leading health scientists.',
+      type: 'website',
+    },
   }
 }
