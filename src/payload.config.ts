@@ -41,6 +41,7 @@ import { billingCheckoutEndpoint } from './endpoints/billing/checkout'
 import { billingPortalEndpoint } from './endpoints/billing/portal'
 import { registerEndpoint } from './endpoints/auth/register'
 import { contactSalesEndpoint } from './endpoints/contact-sales'
+import { resendVerificationEndpoint } from './endpoints/auth/resend-verification'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -91,7 +92,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint],
+  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint, resendVerificationEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,

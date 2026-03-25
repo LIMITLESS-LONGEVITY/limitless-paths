@@ -22,6 +22,17 @@ export default async function AccountLayout({ children }: { children: React.Reac
   return (
     <div className="pt-24 pb-24">
       <div className="container">
+        {!user._verified && (
+          <div className="mb-6 rounded-xl border border-brand-gold/20 bg-brand-gold-dim px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <p className="text-sm text-brand-silver flex-1">
+              Your email is not verified. Check your inbox or{' '}
+              <a href="/verify-email?pending=true" className="text-brand-gold hover:underline">
+                resend verification email
+              </a>
+              .
+            </p>
+          </div>
+        )}
         <h1 className="text-2xl font-bold mb-8">Account</h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <AccountNav />

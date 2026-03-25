@@ -6,6 +6,7 @@ import * as migration_20260323_175345 from './20260323_175345';
 import * as migration_20260324_165232 from './20260324_165232';
 import * as migration_20260324_165300_vector from './20260324_165300_vector';
 import * as migration_20260325_113832 from './20260325_113832';
+import * as migration_20260325_170000_email_verification from './20260325_170000_email_verification';
 
 export const migrations = [
   {
@@ -47,5 +48,10 @@ export const migrations = [
     up: migration_20260325_113832.up,
     down: migration_20260325_113832.down,
     name: '20260325_113832'
+  },
+  {
+    up: migration_20260325_170000_email_verification.up,
+    down: migration_20260325_170000_email_verification.down,
+    name: '20260325_170000_email_verification',
   },
 ];

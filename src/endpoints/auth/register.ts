@@ -98,6 +98,7 @@ export const registerEndpoint: Endpoint = {
           message: 'Account created successfully',
           user: { id: user.id, email: user.email, firstName: user.firstName },
           token: loginResult.token,
+          emailVerificationSent: true,
         },
         {
           status: 201,

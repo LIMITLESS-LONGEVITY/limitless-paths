@@ -40,8 +40,8 @@ export default function RegisterForm() {
 
       if (res.ok) {
         if (data.user) auth.setUser(data.user)
-        setMessage({ type: 'success', text: 'Account created! Redirecting...' })
-        setTimeout(() => router.push('/courses'), 1500)
+        setMessage({ type: 'success', text: 'Account created! Check your email...' })
+        setTimeout(() => router.push('/verify-email?pending=true'), 1500)
       } else {
         setMessage({ type: 'error', text: data.error || 'Registration failed.' })
       }
