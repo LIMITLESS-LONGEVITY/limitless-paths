@@ -3,9 +3,11 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
+import { useAuth } from '@/providers/Auth'
 
 export default function RegisterForm() {
   const router = useRouter()
+  const auth = useAuth()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -37,6 +39,7 @@ export default function RegisterForm() {
       const data = await res.json()
 
       if (res.ok) {
+        if (data.user) auth.setUser(data.user)
         setMessage({ type: 'success', text: 'Account created! Redirecting...' })
         setTimeout(() => router.push('/courses'), 1500)
       } else {

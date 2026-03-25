@@ -3,9 +3,11 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
+import { useAuth } from '@/providers/Auth'
 
 export default function LoginForm() {
   const router = useRouter()
+  const auth = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -25,6 +27,7 @@ export default function LoginForm() {
       const data = await res.json()
 
       if (res.ok) {
+        if (data.user) auth.setUser(data.user)
         setMessage({ type: 'success', text: 'Signed in! Redirecting...' })
         setTimeout(() => router.push('/courses'), 1000)
       } else {

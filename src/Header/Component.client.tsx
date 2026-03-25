@@ -8,6 +8,7 @@ import type { Header } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
+import { AuthSection } from './AuthSection'
 
 interface HeaderClientProps {
   data: Header
@@ -50,9 +51,11 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           <Logo className="text-brand-light" />
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:block">
+        {/* Desktop: nav + auth */}
+        <div className="hidden md:flex items-center gap-6">
           <HeaderNav data={data} />
+          <div className="w-px h-5 bg-brand-glass-border" aria-hidden="true" />
+          <AuthSection />
         </div>
 
         {/* Mobile hamburger */}
@@ -76,10 +79,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-brand-dark/95 backdrop-blur-md border-t border-brand-glass-border px-6 py-6"
+        <div
+          className="md:hidden bg-brand-dark/95 backdrop-blur-md border-t border-brand-glass-border px-6 py-6"
           style={{ WebkitBackdropFilter: 'blur(12px)' }}
         >
           <HeaderNav data={data} mobile />
+          <div className="h-px bg-brand-glass-border my-4" aria-hidden="true" />
+          <AuthSection mobile />
         </div>
       )}
     </header>
