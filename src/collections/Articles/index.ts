@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugField } from 'payload'
 import { canReadContent } from '../../access/canReadContent'
 import { canEditContent } from '../../access/canEditContent'
 import { canCreateContent } from '../../access/canCreateContent'
@@ -23,7 +24,7 @@ export const Articles: CollectionConfig = {
   },
   fields: [
     { name: 'title', type: 'text', required: true },
-    { name: 'slug', type: 'text', required: true, unique: true },
+    slugField(),
     { name: 'excerpt', type: 'textarea' },
     {
       name: 'content',
@@ -61,6 +62,9 @@ export const Articles: CollectionConfig = {
         { label: 'Published', value: 'published' },
         { label: 'Archived', value: 'archived' },
       ],
+      admin: {
+        description: 'Transitions are role-enforced: Contributors → In Review, Editors → Approved, Publishers → Published.',
+      },
     },
     {
       name: 'author',

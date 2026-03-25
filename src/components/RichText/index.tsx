@@ -24,6 +24,13 @@ import { cn } from '@/utilities/ui'
 import { QuizBlock } from '@/components/QuizBlock'
 import React from 'react'
 
+const calloutStyles: Record<string, { border: string; bg: string; icon: string }> = {
+  info: { border: 'border-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/30', icon: 'ℹ️' },
+  warning: { border: 'border-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30', icon: '⚠️' },
+  tip: { border: 'border-green-400', bg: 'bg-green-50 dark:bg-green-950/30', icon: '💡' },
+  quote: { border: 'border-gray-400', bg: 'bg-gray-50 dark:bg-gray-950/30', icon: '💬' },
+}
+
 type NodeTypes =
   | DefaultNodeTypes
   | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
@@ -55,6 +62,20 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
     quizQuestion: ({ node }) => <QuizBlock {...node.fields} />,
+    callout: ({ node }) => {
+      const { type, content } = node.fields as any
+      const style = calloutStyles[type] || calloutStyles.info
+      return (
+        <div className={cn('my-6 rounded-lg border-l-4 p-4', style.border, style.bg)}>
+          <div className="flex gap-2">
+            <span className="shrink-0">{style.icon}</span>
+            <div className="prose dark:prose-invert prose-sm max-w-none">
+              {content && <ConvertRichText converters={jsxConverters} data={content} />}
+            </div>
+          </div>
+        </div>
+      )
+    },
     videoEmbed: ({ node }) => {
       const { platform, videoId, url, caption } = node.fields as any
       const extractYouTubeId = (u: string) =>

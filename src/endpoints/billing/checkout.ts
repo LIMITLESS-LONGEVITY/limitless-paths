@@ -75,13 +75,22 @@ export const billingCheckoutEndpoint: Endpoint = {
     }
 
     // 6. Get or create Stripe customer
-    const customer = await getOrCreateCustomer({
-      id: req.user.id as string,
-      email: req.user.email as string,
-      firstName: (req.user as any).firstName,
-      lastName: (req.user as any).lastName,
-      stripeCustomerId: (req.user as any).stripeCustomerId,
-    })
+    let customer
+    try {
+      customer = await getOrCreateCustomer({
+        id: req.user.id as string,
+        email: req.user.email as string,
+        firstName: (req.user as any).firstName,
+        lastName: (req.user as any).lastName,
+        stripeCustomerId: (req.user as any).stripeCustomerId,
+      })
+    } catch (err: any) {
+      req.payload.logger.error({ err, message: 'Failed to get or create Stripe customer' })
+      return Response.json(
+        { error: 'Failed to initialize billing. Please try again later.' },
+        { status: 502 },
+      )
+    }
 
     // Save stripeCustomerId if new
     if (!(req.user as any).stripeCustomerId) {
@@ -95,18 +104,26 @@ export const billingCheckoutEndpoint: Endpoint = {
     }
 
     // 7. Create Checkout Session
-    const baseUrl = getServerSideURL()
-    const session = await createCheckoutSession({
-      customerId: customer.id,
-      priceId,
-      successUrl: body.successUrl ?? `${baseUrl}/account/billing?success=true`,
-      cancelUrl: body.cancelUrl ?? `${baseUrl}/account/billing?cancelled=true`,
-      metadata: {
-        userId: req.user.id as string,
-        tierId: body.tierId,
-      },
-    })
+    try {
+      const baseUrl = getServerSideURL()
+      const session = await createCheckoutSession({
+        customerId: customer.id,
+        priceId,
+        successUrl: body.successUrl ?? `${baseUrl}/account/billing?success=true`,
+        cancelUrl: body.cancelUrl ?? `${baseUrl}/account/billing?cancelled=true`,
+        metadata: {
+          userId: req.user.id as string,
+          tierId: body.tierId,
+        },
+      })
 
-    return Response.json({ url: session.url })
+      return Response.json({ url: session.url })
+    } catch (err: any) {
+      req.payload.logger.error({ err, message: 'Stripe checkout session creation failed' })
+      return Response.json(
+        { error: err?.message || 'Failed to create checkout session' },
+        { status: 502 },
+      )
+    }
   },
 }
