@@ -69,6 +69,6 @@ export const Users: CollectionConfig = {
     update: isAdminOrSelf,
     delete: isAdmin,
     admin: ({ req: { user } }) =>
-      Boolean(user?.role && ['admin', 'editor', 'publisher'].includes(user.role)),
+      Boolean(user?.role && ['admin', 'editor', 'publisher', 'contributor'].includes(user.role)),
   },
 }
