@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/utilities/ui'
+import { useAuth } from '@/providers/Auth'
 
 export const LessonNav: React.FC<{
   prevHref?: string | null
@@ -11,6 +12,7 @@ export const LessonNav: React.FC<{
   lessonId: string
   isCompleted: boolean
 }> = ({ prevHref, nextHref, lessonProgressId, enrollmentId, lessonId, isCompleted }) => {
+  const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [completed, setCompleted] = useState(isCompleted)
 
@@ -30,7 +32,7 @@ export const LessonNav: React.FC<{
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            user: '', // Will be set by access control
+            user: user?.id,
             lesson: lessonId,
             enrollment: enrollmentId,
             status: 'completed',
