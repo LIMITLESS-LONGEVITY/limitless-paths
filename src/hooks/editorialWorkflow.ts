@@ -103,9 +103,20 @@ export const validateEditorialTransition: CollectionBeforeChangeHook = ({
     )
   }
 
-  // If transitioning to 'published', set publishedAt
-  if (newStatus === 'published' && !data.publishedAt) {
-    data.publishedAt = new Date().toISOString()
+  // If transitioning to 'published', set publishedAt and sync Payload's _status
+  if (newStatus === 'published') {
+    if (!data.publishedAt) {
+      data.publishedAt = new Date().toISOString()
+    }
+    // Sync with Payload's versioning system — ensures the document is visible
+    // on the frontend. Without this, "Save Draft" in the admin panel keeps
+    // _status=draft even when editorialStatus=published.
+    data._status = 'published'
+  }
+
+  // If transitioning away from 'published', revert _status to draft
+  if (oldStatus === 'published' && newStatus !== 'published') {
+    data._status = 'draft'
   }
 
   return data
