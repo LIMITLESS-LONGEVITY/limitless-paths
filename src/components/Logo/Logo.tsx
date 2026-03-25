@@ -1,29 +1,30 @@
-import clsx from 'clsx'
+import { cn } from '@/utilities/ui'
 import React from 'react'
 
 interface Props {
   className?: string
-  loading?: 'lazy' | 'eager'
-  priority?: 'auto' | 'high' | 'low'
 }
 
 export const Logo = (props: Props) => {
-  const { loading: loadingFromProps, priority: priorityFromProps, className } = props
-
-  const loading = loadingFromProps || 'lazy'
-  const priority = priorityFromProps || 'low'
+  const { className } = props
 
   return (
-    /* eslint-disable @next/next/no-img-element */
-    <img
-      alt="Payload Logo"
-      width={193}
-      height={34}
-      loading={loading}
-      fetchPriority={priority}
-      decoding="async"
-      className={clsx('max-w-[9.375rem] w-full h-[34px]', className)}
-      src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-logo-light.svg"
-    />
+    <span
+      className={cn(
+        'inline-flex items-baseline font-display text-xl tracking-[0.25em] font-light select-none',
+        className,
+      )}
+      aria-label="LIMITLESS"
+    >
+      <span className="text-current">L</span>
+      <span className="text-brand-gold">I</span>
+      <span className="text-current">M</span>
+      <span className="text-current">I</span>
+      <span className="text-current">T</span>
+      <span className="text-current">L</span>
+      <span className="text-current">E</span>
+      <span className="text-current">S</span>
+      <span className="text-current">S</span>
+    </span>
   )
 }

@@ -43,8 +43,9 @@
   --breakpoint-lg: 64rem;
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 86rem;
-  --font-mono: var(--font-geist-mono);
-  --font-sans: var(--font-geist-sans);
+  --font-mono: 'Courier New', monospace;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-cormorant), Georgia, serif;
 }
 
 @layer utilities {
@@ -87,6 +88,19 @@
 }
 
 :root {
+  /* LIMITLESS brand tokens */
+  --limitless-dark: #0A0E1A;
+  --limitless-dark-alt: #0F1424;
+  --limitless-gold: #C9A84C;
+  --limitless-gold-dim: rgba(201, 168, 76, 0.15);
+  --limitless-teal: #00B4D8;
+  --limitless-teal-dim: rgba(0, 180, 216, 0.12);
+  --limitless-silver: #B0B8C1;
+  --limitless-light: #FAFAFA;
+  --limitless-glass-bg: rgba(255, 255, 255, 0.04);
+  --limitless-glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --limitless-glass-border: rgba(255, 255, 255, 0.08);
+
   --background: oklch(100% 0 0deg);
   --foreground: oklch(14.5% 0 0deg);
   --card: oklch(96.5% 0.005 265deg);
@@ -203,6 +217,19 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
+
+  /* LIMITLESS brand utilities */
+  --color-brand-dark: var(--limitless-dark);
+  --color-brand-dark-alt: var(--limitless-dark-alt);
+  --color-brand-gold: var(--limitless-gold);
+  --color-brand-gold-dim: var(--limitless-gold-dim);
+  --color-brand-teal: var(--limitless-teal);
+  --color-brand-teal-dim: var(--limitless-teal-dim);
+  --color-brand-silver: var(--limitless-silver);
+  --color-brand-light: var(--limitless-light);
+  --color-brand-glass-bg: var(--limitless-glass-bg);
+  --color-brand-glass-bg-hover: var(--limitless-glass-bg-hover);
+  --color-brand-glass-border: var(--limitless-glass-border);
 }
 
 @layer base {

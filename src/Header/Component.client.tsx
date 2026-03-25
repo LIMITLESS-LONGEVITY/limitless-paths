@@ -14,29 +14,74 @@ interface HeaderClientProps {
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null)
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
 
   useEffect(() => {
     setHeaderTheme(null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
+    setMobileOpen(false)
+  }, [pathname, setHeaderTheme])
 
   useEffect(() => {
     if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerTheme])
+  }, [headerTheme, theme])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
-        <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? 'bg-brand-dark/90 backdrop-blur-md border-b border-brand-glass-border'
+          : 'bg-transparent'
+      }`}
+      style={scrolled ? { WebkitBackdropFilter: 'blur(12px)' } : undefined}
+      {...(theme ? { 'data-theme': theme } : {})}
+    >
+      <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="shrink-0">
+          <Logo className="text-brand-light" />
         </Link>
-        <HeaderNav data={data} />
+
+        {/* Desktop nav */}
+        <div className="hidden md:block">
+          <HeaderNav data={data} />
+        </div>
+
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden p-2 text-brand-light focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:outline-none rounded"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={mobileOpen}
+        >
+          {mobileOpen ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          )}
+        </button>
       </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className="md:hidden bg-brand-dark/95 backdrop-blur-md border-t border-brand-glass-border px-6 py-6"
+          style={{ WebkitBackdropFilter: 'blur(12px)' }}
+        >
+          <HeaderNav data={data} mobile />
+        </div>
+      )}
     </header>
   )
 }
