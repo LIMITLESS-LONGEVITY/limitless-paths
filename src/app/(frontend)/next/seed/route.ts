@@ -5,7 +5,7 @@ import { headers } from 'next/headers'
 
 export const maxDuration = 60 // This function can run for a maximum of 60 seconds
 
-export async function POST(): Promise<Response> {
+export async function POST(request: Request): Promise<Response> {
   const payload = await getPayload({ config })
   const requestHeaders = await headers()
 
@@ -16,12 +16,16 @@ export async function POST(): Promise<Response> {
     return new Response('Action forbidden.', { status: 403 })
   }
 
+  // Parse query params from the original request (createLocalReq doesn't carry URL)
+  const url = new URL(request.url)
+  const seedContentFlag = url.searchParams.get('content') === 'true'
+
   try {
     // Create a Payload request object to pass to the Local API for transactions
     // At this point you should pass in a user, locale, and any other context you need for the Local API
     const payloadReq = await createLocalReq({ user }, payload)
 
-    await seed({ payload, req: payloadReq })
+    await seed({ payload, req: payloadReq, seedContentFlag })
 
     return Response.json({ success: true })
   } catch (e) {

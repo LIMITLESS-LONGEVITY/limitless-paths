@@ -3,9 +3,11 @@ import type { Payload, PayloadRequest } from 'payload'
 export const seed = async ({
   payload,
   req,
+  seedContentFlag = false,
 }: {
   payload: Payload
   req: PayloadRequest
+  seedContentFlag?: boolean
 }): Promise<void> => {
   payload.logger.info('Seeding default LIMITLESS data...')
 
@@ -215,8 +217,7 @@ export const seed = async ({
 
   // Optionally seed content (articles, courses, modules, lessons)
   // Usage: POST /next/seed?content=true
-  const url = new URL(req.url || '', 'http://localhost')
-  if (url.searchParams.get('content') === 'true') {
+  if (seedContentFlag) {
     const { seedContent } = await import('./content')
     await seedContent({ payload, req })
   }

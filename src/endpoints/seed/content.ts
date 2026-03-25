@@ -66,6 +66,7 @@ export const seedContent = async ({
     payload.logger.error('  Cannot seed content: no "limitless" tenant found. Run foundation seed first.')
     return
   }
+  const tenantId = tenantResult.docs[0].id
 
   if (!req.user) {
     payload.logger.error('  Cannot seed content: no authenticated user on request.')
@@ -102,6 +103,7 @@ export const seedContent = async ({
       overrideAccess: true,
       collection: 'articles',
       data: {
+        tenant: tenantId,
         title: articleData.title,
         slug: articleData.slug,
         excerpt: articleData.excerpt,
@@ -144,6 +146,7 @@ export const seedContent = async ({
       overrideAccess: true,
       collection: 'courses',
       data: {
+        tenant: tenantId,
         title: courseData.title,
         slug: courseData.slug,
         description: courseData.description,
