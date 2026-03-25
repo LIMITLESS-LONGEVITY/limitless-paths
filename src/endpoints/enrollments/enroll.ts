@@ -2,7 +2,7 @@ import type { Endpoint } from 'payload'
 import { getEffectiveAccessLevels } from '../../utilities/accessLevels'
 
 export const enrollEndpoint: Endpoint = {
-  path: '/enrollments/enroll',
+  path: '/enroll',
   method: 'post',
   handler: async (req) => {
     // 1. Authenticate

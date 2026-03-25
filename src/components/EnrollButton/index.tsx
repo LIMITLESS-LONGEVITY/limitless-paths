@@ -18,7 +18,7 @@ export const EnrollButton: React.FC<{
   const handleEnroll = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/enrollments/enroll', {
+      const res = await fetch('/api/enroll', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ courseId }),
@@ -36,7 +36,7 @@ export const EnrollButton: React.FC<{
 
   if (state === 'not-logged-in') {
     return (
-      <Link href="/admin" className="inline-block px-6 py-3 bg-amber-500/20 text-amber-500 rounded-lg font-medium hover:bg-amber-500/30 transition-colors">
+      <Link href="/login" className="inline-block px-6 py-3 bg-amber-500/20 text-amber-500 rounded-lg font-medium hover:bg-amber-500/30 transition-colors">
         Sign in to enroll
       </Link>
     )
