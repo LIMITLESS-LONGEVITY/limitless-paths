@@ -45,8 +45,8 @@ jobs:
         run: pnpm lint
         continue-on-error: true  # ESLint has a pre-existing config issue — don't block CI until fixed
 
-      - name: Run tests
-        run: pnpm vitest run tests/int/editorial-workflow.int.spec.ts tests/int/access-control.int.spec.ts tests/int/ai-provider.int.spec.ts tests/int/ai-rate-limiter.int.spec.ts tests/int/ai-guardrails.int.spec.ts tests/int/ai-prompts.int.spec.ts tests/int/enrollments.int.spec.ts tests/int/lesson-progress.int.spec.ts tests/int/course-reference-bypass.int.spec.ts tests/int/stripe-service.int.spec.ts tests/int/billing-logic.int.spec.ts
+      - name: Run unit tests (no DB required)
+        run: pnpm vitest run tests/int/editorial-workflow.int.spec.ts tests/int/access-control.int.spec.ts tests/int/ai-provider.int.spec.ts tests/int/ai-rate-limiter.int.spec.ts tests/int/ai-guardrails.int.spec.ts tests/int/ai-prompts.int.spec.ts tests/int/enrollments.int.spec.ts tests/int/lesson-progress.int.spec.ts tests/int/course-reference-bypass.int.spec.ts tests/int/stripe-service.int.spec.ts tests/int/billing-logic.int.spec.ts tests/int/chunker.int.spec.ts
         env:
           PAYLOAD_SECRET: ci-test-secret-not-real
           AI_PROVIDER_DEFAULT_BASE_URL: https://api.together.xyz/v1
@@ -58,6 +58,64 @@ jobs:
           PAYLOAD_SECRET: ci-test-secret-not-real
           DATABASE_URL: postgresql://fake:fake@localhost:5432/fake
           NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+          RESEND_API_KEY: re_fake_not_real
+
+  integration:
+    name: Integration Tests (DB)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run integration tests (DB required)
+        run: pnpm vitest run tests/int/articles.int.spec.ts tests/int/courses.int.spec.ts tests/int/modules-lessons.int.spec.ts tests/int/access-matrix.int.spec.ts tests/int/multi-tenant.int.spec.ts tests/int/enrollment-flow.int.spec.ts tests/int/api.int.spec.ts
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test_db
+          PAYLOAD_SECRET: ci-test-secret-minimum-32-characters-long
+          NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+          AI_PROVIDER_DEFAULT_BASE_URL: https://api.together.xyz/v1
+          AI_PROVIDER_DEFAULT_API_KEY: ci-test-key-not-real
 
   e2e:
     name: E2E Tests
