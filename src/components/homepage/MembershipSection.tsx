@@ -26,7 +26,8 @@ export const MembershipSection: React.FC<MembershipSectionProps> = ({ tiers }) =
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
           {tiers.map((tier, i) => {
-            const isPremium = tier.accessLevel === 'premium' || tier.accessLevel === 'enterprise'
+            const isEnterprise = tier.accessLevel === 'enterprise'
+            const isPremium = tier.accessLevel === 'premium' || isEnterprise
 
             return (
               <ScrollReveal key={tier.id} delay={i * 100}>
@@ -35,14 +36,18 @@ export const MembershipSection: React.FC<MembershipSectionProps> = ({ tiers }) =
                 >
                   {isPremium && (
                     <span className="text-brand-gold text-xs font-sans uppercase tracking-[0.2em] font-medium mb-2">
-                      Recommended
+                      {isEnterprise ? 'For Organizations' : 'Recommended'}
                     </span>
                   )}
                   <h3 className="font-display text-2xl font-light text-brand-light mb-1">
                     {tier.name}
                   </h3>
                   <div className="mb-4">
-                    {tier.monthlyPrice ? (
+                    {isEnterprise ? (
+                      <span className="font-display text-2xl text-brand-gold font-light">
+                        Custom Pricing
+                      </span>
+                    ) : tier.monthlyPrice ? (
                       <div className="flex items-baseline gap-1">
                         <span className="font-display text-3xl text-brand-gold font-light">
                           ${tier.monthlyPrice}
@@ -81,11 +86,11 @@ export const MembershipSection: React.FC<MembershipSectionProps> = ({ tiers }) =
                   )}
 
                   <CTAButton
-                    href="/register"
+                    href={isEnterprise ? '/contact-sales' : '/register'}
                     variant={isPremium ? 'gold' : 'ghost'}
                     className="mt-auto w-full text-center"
                   >
-                    Get Started
+                    {isEnterprise ? 'Contact Sales' : 'Get Started'}
                   </CTAButton>
                 </GlassCard>
               </ScrollReveal>
