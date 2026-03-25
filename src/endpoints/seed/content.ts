@@ -146,7 +146,6 @@ export const seedContent = async ({
       overrideAccess: true,
       collection: 'courses',
       data: {
-        tenant: tenantId,
         title: courseData.title,
         slug: courseData.slug,
         description: courseData.description,
@@ -155,7 +154,7 @@ export const seedContent = async ({
         accessLevel: courseData.accessLevel,
         editorialStatus: 'published',
         publishedAt: new Date().toISOString(),
-      },
+      } as any,
     })
     payload.logger.info(`    Created course: ${courseData.title}`)
 
