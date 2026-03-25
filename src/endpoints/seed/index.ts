@@ -212,4 +212,12 @@ export const seed = async ({
   payload.logger.info('  Updated site settings')
 
   payload.logger.info('Seeding complete!')
+
+  // Optionally seed content (articles, courses, modules, lessons)
+  // Usage: POST /next/seed?content=true
+  const url = new URL(req.url || '', 'http://localhost')
+  if (url.searchParams.get('content') === 'true') {
+    const { seedContent } = await import('./content')
+    await seedContent({ payload, req })
+  }
 }
