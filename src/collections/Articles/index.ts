@@ -64,6 +64,9 @@ export const Articles: CollectionConfig = {
       ],
       admin: {
         description: 'Transitions are role-enforced: Contributors → In Review, Editors → Approved, Publishers → Published.',
+        components: {
+          Field: '/components/admin/EditorialStatusField#EditorialStatusField',
+        },
       },
     },
     {

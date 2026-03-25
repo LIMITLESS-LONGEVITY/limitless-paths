@@ -71,6 +71,11 @@ export const Courses: CollectionConfig = {
         { label: 'Published', value: 'published' },
         { label: 'Archived', value: 'archived' },
       ],
+      admin: {
+        components: {
+          Field: '/components/admin/EditorialStatusField#EditorialStatusField',
+        },
+      },
     },
     { name: 'instructor', type: 'relationship', relationTo: 'users' },
     { name: 'modules', type: 'relationship', relationTo: 'modules', hasMany: true },
