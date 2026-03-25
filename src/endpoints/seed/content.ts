@@ -141,22 +141,30 @@ export const seedContent = async ({
       continue
     }
 
-    const courseDoc = await payload.create({
-      req,
-      overrideAccess: true,
-      collection: 'courses',
-      data: {
-        title: courseData.title,
-        slug: courseData.slug,
-        description: courseData.description,
-        pillar: pillarId,
-        instructor: authorId,
-        accessLevel: courseData.accessLevel,
-        editorialStatus: 'published',
-        publishedAt: new Date().toISOString(),
-      } as any,
-    })
-    payload.logger.info(`    Created course: ${courseData.title}`)
+    let courseDoc: any
+    try {
+      courseDoc = await payload.create({
+        req,
+        overrideAccess: true,
+        collection: 'courses',
+        data: {
+          tenant: tenantId,
+          title: courseData.title,
+          slug: courseData.slug,
+          description: courseData.description,
+          pillar: pillarId,
+          instructor: authorId,
+          accessLevel: courseData.accessLevel,
+          editorialStatus: 'published',
+          publishedAt: new Date().toISOString(),
+        } as any,
+      })
+      payload.logger.info(`    Created course: ${courseData.title}`)
+    } catch (err: any) {
+      payload.logger.error(`    Failed to create course "${courseData.title}": ${err?.message || JSON.stringify(err)}`)
+      payload.logger.error(`    Full error: ${JSON.stringify(err?.data || err?.errors || err, null, 2)}`)
+      continue
+    }
 
     // Create modules for this course
     const moduleIds: (number | string)[] = []
