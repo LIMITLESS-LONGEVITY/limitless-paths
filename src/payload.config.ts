@@ -77,7 +77,7 @@ export default buildConfig({
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   email: resendAdapter({
-    defaultFromAddress: process.env.RESEND_FROM_ADDRESS || 'noreply@limitless-longevity.health',
+    defaultFromAddress: process.env.RESEND_FROM_ADDRESS || 'info@limitless-longevity.health',
     defaultFromName: 'PATHS by LIMITLESS',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
