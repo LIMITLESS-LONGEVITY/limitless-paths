@@ -1,12 +1,14 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-// TEMPORARY ENDPOINT — remove after QA password reset
-// Protected by PAYLOAD_SECRET, not user auth (since admin is locked out)
+// TEMPORARY ENDPOINT — remove immediately after QA password reset
+// One-time use, protected by hardcoded token (admin is locked out, no access to PAYLOAD_SECRET)
+const RESET_TOKEN = 'qa-reset-2026-03-25-xK9mP2vL'
+
 export async function POST(request: Request): Promise<Response> {
   const body = await request.json().catch(() => null)
 
-  if (!body?.secret || body.secret !== process.env.PAYLOAD_SECRET) {
+  if (!body?.token || body.token !== RESET_TOKEN) {
     return new Response('Forbidden.', { status: 403 })
   }
 
