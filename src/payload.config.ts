@@ -39,6 +39,7 @@ import { relatedContentEndpoint } from './endpoints/ai/relatedContent'
 import { stripeWebhookEndpoint } from './endpoints/stripe/webhooks'
 import { billingCheckoutEndpoint } from './endpoints/billing/checkout'
 import { billingPortalEndpoint } from './endpoints/billing/portal'
+import { registerEndpoint } from './endpoints/auth/register'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -89,7 +90,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint],
+  endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
