@@ -177,11 +177,12 @@ export const seedContent = async ({
         overrideAccess: true,
         collection: 'modules',
         data: {
+          tenant: tenantId,
           title: moduleData.title,
           description: moduleData.description,
           course: courseDoc.id,
           order: moduleIndex + 1,
-        },
+        } as any,
       })
       payload.logger.info(`      Created module: ${moduleData.title}`)
       moduleIds.push(moduleDoc.id)
@@ -197,6 +198,7 @@ export const seedContent = async ({
           overrideAccess: true,
           collection: 'lessons',
           data: {
+            tenant: tenantId,
             title: lessonData.title,
             slug: lessonData.slug,
             module: moduleDoc.id,
@@ -205,7 +207,7 @@ export const seedContent = async ({
             estimatedDuration: lessonData.estimatedDuration,
             content: lessonData.content,
             ...(lessonData.videoEmbed ? { videoEmbed: lessonData.videoEmbed } : {}),
-          },
+          } as any,
         })
         payload.logger.info(`        Created lesson: ${lessonData.title}`)
         lessonIds.push(lessonDoc.id)
