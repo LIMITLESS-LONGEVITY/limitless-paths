@@ -52,8 +52,26 @@ export const TutorPanel: React.FC<{
         }),
       })
 
+      if (res.status === 401) {
+        setError('Please sign in to use the AI Tutor.')
+        setLoading(false)
+        return
+      }
+
+      if (res.status === 403) {
+        setError('You do not have access to the AI Tutor. Upgrade your plan for access.')
+        setLoading(false)
+        return
+      }
+
       if (res.status === 429) {
-        setError('Daily tutor limit reached. Upgrade your plan for more access.')
+        const data = await res.json().catch(() => null)
+        const isZeroLimit = data?.limit === 0
+        setError(
+          isZeroLimit
+            ? 'AI Tutor is not available on your current plan. Upgrade for access.'
+            : 'Daily tutor limit reached. Upgrade your plan for more access.',
+        )
         setLoading(false)
         return
       }
@@ -65,7 +83,7 @@ export const TutorPanel: React.FC<{
       }
 
       if (!res.ok) {
-        setError('Something went wrong. Try again.')
+        setError('Something went wrong. Please try again.')
         setLoading(false)
         return
       }

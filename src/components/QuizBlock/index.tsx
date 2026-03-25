@@ -13,9 +13,10 @@ type QuizBlockProps = {
 export const QuizBlock: React.FC<QuizBlockProps> = ({
   question,
   options,
-  correctAnswer,
+  correctAnswer: rawCorrectAnswer,
   explanation,
 }) => {
+  const correctAnswer = Number(rawCorrectAnswer)
   const [selected, setSelected] = useState<number | null>(null)
   const [revealed, setRevealed] = useState(false)
 

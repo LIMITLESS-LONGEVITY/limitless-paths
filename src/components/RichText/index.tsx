@@ -22,6 +22,7 @@ import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { cn } from '@/utilities/ui'
 import { QuizBlock } from '@/components/QuizBlock'
+import React from 'react'
 
 type NodeTypes =
   | DefaultNodeTypes
@@ -54,6 +55,65 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
     quizQuestion: ({ node }) => <QuizBlock {...node.fields} />,
+    videoEmbed: ({ node }) => {
+      const { platform, videoId, url, caption } = node.fields as any
+      const extractYouTubeId = (u: string) =>
+        u?.match(/(?:v=|youtu\.be\/|\/embed\/|\/shorts\/)([a-zA-Z0-9_-]+)/)?.[1] || ''
+      const extractVimeoId = (u: string) =>
+        u?.match(/vimeo\.com\/(?:video\/)?(\d+)/)?.[1] || ''
+      const embedUrl = platform === 'youtube'
+        ? `https://www.youtube.com/embed/${videoId || extractYouTubeId(url)}`
+        : `https://player.vimeo.com/video/${videoId || extractVimeoId(url)}`
+      return (
+        <div className="my-6">
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+            <iframe
+              src={embedUrl}
+              title={caption || 'Embedded video'}
+              className="absolute inset-0 w-full h-full rounded-lg"
+              frameBorder={0}
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+          </div>
+          {caption && <p className="text-sm text-muted-foreground mt-2 text-center">{caption}</p>}
+        </div>
+      )
+    },
+    audioEmbed: ({ node }) => {
+      const { platform, url, caption } = node.fields as any
+      return (
+        <div className="my-6">
+          <iframe src={url} className="w-full h-20 rounded-lg" allow="autoplay" />
+          {caption && <p className="text-sm text-muted-foreground mt-2">{caption}</p>}
+        </div>
+      )
+    },
+    pdfViewer: ({ node }) => {
+      const { file, title } = node.fields as any
+      const fileUrl = typeof file === 'object' ? file?.url : ''
+      return (
+        <div className="my-6">
+          {title && <p className="text-sm font-medium mb-2">{title}</p>}
+          <iframe src={fileUrl} className="w-full h-[600px] rounded-lg border border-border" />
+        </div>
+      )
+    },
+    imageGallery: ({ node }) => {
+      const { images, layout } = node.fields as any
+      return (
+        <div className={cn('my-6 gap-4', layout === 'grid' ? 'grid grid-cols-2 md:grid-cols-3' : 'flex overflow-x-auto')}>
+          {(images || []).map((img: any, i: number) => (
+            <div key={i} className="rounded-lg overflow-hidden bg-muted">
+              {img.image && typeof img.image === 'object' && (
+                <img src={img.image.url} alt={img.caption || ''} className="w-full h-auto" />
+              )}
+              {img.caption && <p className="text-xs text-muted-foreground p-2">{img.caption}</p>}
+            </div>
+          ))}
+        </div>
+      )
+    },
   },
 })
 
