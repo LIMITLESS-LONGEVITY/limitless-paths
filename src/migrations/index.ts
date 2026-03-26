@@ -18,6 +18,7 @@ import * as migration_20260327_130000_certificates from './20260327_130000_certi
 import * as migration_20260327_140000_tenant_certification from './20260327_140000_tenant_certification';
 import * as migration_20260327_150000_streak_fields from './20260327_150000_streak_fields';
 import * as migration_20260327_160000_certificates_tenant from './20260327_160000_certificates_tenant';
+import * as migration_20260327_170000_stay_fields from './20260327_170000_stay_fields';
 
 export const migrations = [
   {
@@ -119,5 +120,10 @@ export const migrations = [
     up: migration_20260327_160000_certificates_tenant.up,
     down: migration_20260327_160000_certificates_tenant.down,
     name: '20260327_160000_certificates_tenant',
+  },
+  {
+    up: migration_20260327_170000_stay_fields.up,
+    down: migration_20260327_170000_stay_fields.down,
+    name: '20260327_170000_stay_fields',
   },
 ];

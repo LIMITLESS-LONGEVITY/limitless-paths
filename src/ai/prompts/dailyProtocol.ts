@@ -9,6 +9,7 @@ export function buildDailyProtocolPrompt(
   recentLessons: Array<{ title: string; courseTitle: string }>,
   chunks: RetrievedChunk[],
   healthProfile?: any | null,
+  stayContext?: string | null,
 ): string {
   const courseList = enrolledCourses
     .map((c) => `- ${c.title} (${c.pillarName})`)
@@ -37,7 +38,7 @@ ${recentList}
 
 Relevant content:
 ${contentContext}
-${healthContext ? `\n${healthContext}\n` : ''}
+${healthContext ? `\n${healthContext}\n` : ''}${stayContext ? `\n== Stay Context ==\n${stayContext}\n` : ''}
 Generate a daily protocol with morning, afternoon, and evening blocks. Each block has 2-4 specific, actionable items.
 
 Return ONLY a JSON object:

@@ -5,6 +5,7 @@ import { logUsage } from '../../ai/usageLogger'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
 import { getHealthProfile } from '../../utilities/getHealthProfile'
+import { getStayPhase, getStayDayNumber } from '../../utilities/getStayPhase'
 import { buildDailyProtocolPrompt, parseDailyProtocolResponse } from '../../ai/prompts/dailyProtocol'
 
 export const dailyProtocolEndpoint: Endpoint = {
@@ -115,8 +116,23 @@ export const dailyProtocolEndpoint: Endpoint = {
       // Health profile
       const healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
 
+      // Check for active stay enrollment
+      let stayContext: string | null = null
+      for (const e of enrollments.docs) {
+        const enrollment = e as any
+        const phase = getStayPhase(enrollment)
+        if (phase === 'during-stay') {
+          const dayNumber = getStayDayNumber(enrollment)
+          const course = typeof enrollment.course === 'object' ? enrollment.course : null
+          const location = course?.stayLocation || 'the hotel'
+          const stayType = course?.stayType || 'stay'
+          stayContext = `The student is on Day ${dayNumber} of a ${stayType} longevity stay at ${location}. Include hotel-specific activities: morning wellness routine, spa recovery, Mediterranean nutrition, evening relaxation. Reference the day's scheduled activities from the stay program.`
+          break
+        }
+      }
+
       // Generate
-      const prompt = buildDailyProtocolPrompt(enrolledCourses, recentLessons, chunks, healthProfile)
+      const prompt = buildDailyProtocolPrompt(enrolledCourses, recentLessons, chunks, healthProfile, stayContext)
       const messages: ChatMessage[] = [{ role: 'system', content: prompt }]
 
       const modelConfig = getModelConfig('dailyProtocol')

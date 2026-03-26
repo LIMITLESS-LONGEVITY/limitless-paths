@@ -13,6 +13,7 @@ const CONTENT_NAV = [
   { href: '/courses', label: 'Courses' },
   { href: '/articles', label: 'Articles' },
   { href: '/discover', label: 'Discover' },
+  { href: '/stays', label: 'Stays' },
   { href: '/guide', label: 'Guide' },
 ]
 
