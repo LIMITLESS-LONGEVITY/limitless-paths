@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "guide:search-index": "tsx scripts/build-guide-search-index.ts",
+    "guide:capture": "tsx scripts/capture-guide-screenshots.ts",
+    "guide:verify-screenshots": "tsx scripts/verify-guide-screenshots.ts",
     "prebuild": "tsx scripts/build-guide-search-index.ts",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
