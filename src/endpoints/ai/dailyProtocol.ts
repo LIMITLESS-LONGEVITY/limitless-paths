@@ -113,8 +113,13 @@ export const dailyProtocolEndpoint: Endpoint = {
         { limit: 6 },
       )
 
-      // Health profile
-      const healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+      // Health profile (graceful degradation)
+      let healthProfile: any = null
+      try {
+        healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+      } catch {
+        // Health profile unavailable — continue without personalization
+      }
 
       // Check for active stay enrollment
       let stayContext: string | null = null
