@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
-import { X, Send, MessageCircle, Lock, Copy, Check } from 'lucide-react'
+import { X, Send, MessageCircle, Lock, Copy, Check, Activity, Calendar } from 'lucide-react'
+import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/ui'
 
 const SUGGESTED_QUESTIONS: Record<string, string[]> = {
@@ -76,10 +77,15 @@ export const TutorPanel: React.FC<{
   contextId: string
   contextTitle: string
 }> = ({ open, onClose, contextType, contextId, contextTitle }) => {
+  const { user } = useAuth()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [escalation, setEscalation] = useState<{ topic: string } | null>(null)
+  const [showBookingForm, setShowBookingForm] = useState(false)
+  const [bookingSubmitted, setBookingSubmitted] = useState(false)
+  const [bookingSubmitting, setBookingSubmitting] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -170,7 +176,9 @@ export const TutorPanel: React.FC<{
             if (data === '[DONE]') break
             try {
               const parsed = JSON.parse(data)
-              if (parsed.text) {
+              if (parsed.escalation) {
+                setEscalation({ topic: parsed.topic || 'Health consultation' })
+              } else if (parsed.text) {
                 assistantContent += parsed.text
                 setMessages((prev) => {
                   const updated = [...prev]
@@ -264,6 +272,96 @@ export const TutorPanel: React.FC<{
           {error && (
             <div className="text-sm text-red-400 bg-red-500/5 rounded-lg p-3">{error}</div>
           )}
+
+          {/* Escalation CTA */}
+          {escalation && !showBookingForm && !bookingSubmitted && (
+            <div className="rounded-xl border border-brand-gold/20 bg-brand-gold-dim p-4">
+              <div className="flex items-start gap-3">
+                <Activity className="w-5 h-5 text-brand-gold flex-shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-brand-light mb-1">Clinical Consultation Recommended</p>
+                  <p className="text-xs text-brand-silver mb-3">
+                    This topic may benefit from personalized guidance from our medical team.
+                  </p>
+                  <button
+                    onClick={() => setShowBookingForm(true)}
+                    className="text-xs font-medium text-brand-gold hover:text-brand-gold/80 transition-colors"
+                  >
+                    Book a Telemedicine Consultation →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Inline Booking Form */}
+          {showBookingForm && !bookingSubmitted && (
+            <div className="rounded-xl border border-brand-glass-border bg-brand-glass-bg p-4">
+              <p className="text-xs font-semibold mb-3">Book Telemedicine Consultation</p>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  setBookingSubmitting(true)
+                  const formData = new FormData(e.target as HTMLFormElement)
+                  try {
+                    const res = await fetch('/api/telemedicine-booking', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        email: formData.get('email'),
+                        topic: escalation?.topic,
+                        preferredDate: formData.get('preferredDate'),
+                        message: formData.get('message'),
+                      }),
+                    })
+                    if (res.ok) {
+                      setBookingSubmitted(true)
+                      setShowBookingForm(false)
+                    }
+                  } catch {} finally {
+                    setBookingSubmitting(false)
+                  }
+                }}
+                className="space-y-2"
+              >
+                <div className="grid grid-cols-2 gap-2">
+                  <input name="firstName" defaultValue={user?.firstName || ''} placeholder="First name" required className="px-2.5 py-1.5 bg-brand-glass-bg border border-brand-glass-border rounded text-xs outline-none focus:ring-1 focus:ring-brand-gold/50" />
+                  <input name="lastName" defaultValue={user?.lastName || ''} placeholder="Last name" required className="px-2.5 py-1.5 bg-brand-glass-bg border border-brand-glass-border rounded text-xs outline-none focus:ring-1 focus:ring-brand-gold/50" />
+                </div>
+                <input name="email" type="email" defaultValue={user?.email || ''} placeholder="Email" required className="w-full px-2.5 py-1.5 bg-brand-glass-bg border border-brand-glass-border rounded text-xs outline-none focus:ring-1 focus:ring-brand-gold/50" />
+                <input name="preferredDate" type="text" placeholder="Preferred date/time" className="w-full px-2.5 py-1.5 bg-brand-glass-bg border border-brand-glass-border rounded text-xs outline-none focus:ring-1 focus:ring-brand-gold/50" />
+                <textarea name="message" rows={2} placeholder="Additional notes (optional)" className="w-full px-2.5 py-1.5 bg-brand-glass-bg border border-brand-glass-border rounded text-xs outline-none focus:ring-1 focus:ring-brand-gold/50 resize-none" />
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={bookingSubmitting}
+                    className="flex-1 py-1.5 rounded text-xs font-medium border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-all disabled:opacity-50"
+                  >
+                    {bookingSubmitting ? 'Submitting...' : 'Request Consultation'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowBookingForm(false)}
+                    className="px-3 py-1.5 rounded text-xs text-brand-silver hover:text-brand-light transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Booking confirmation */}
+          {bookingSubmitted && (
+            <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 text-center">
+              <Check className="w-5 h-5 text-green-500 mx-auto mb-1" />
+              <p className="text-xs text-green-500 font-medium">Consultation request sent!</p>
+              <p className="text-[10px] text-brand-silver mt-1">Our clinical team will contact you within 1-2 business days.</p>
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 

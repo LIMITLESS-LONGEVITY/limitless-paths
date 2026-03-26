@@ -148,16 +148,38 @@ export const tutorEndpoint: Endpoint = {
     const maxTokens = (aiConfig.tokenBudgets as any)?.tutorMaxTokens ?? modelConfig.maxOutputTokens
 
     const encoder = new TextEncoder()
+    const ESCALATION_MARKER = '[SUGGEST_CONSULTATION]'
     const stream = new ReadableStream({
       async start(controller) {
         try {
           const generator = streamChat(messages, 'tutor', { maxTokens })
           let result = await generator.next()
+          let fullContent = ''
 
           while (!result.done) {
-            const chunk = `data: ${JSON.stringify({ text: result.value })}\n\n`
-            controller.enqueue(encoder.encode(chunk))
+            let text = result.value
+            fullContent += text
+
+            // Check if the marker is being streamed — hold back the marker text
+            if (fullContent.includes(ESCALATION_MARKER)) {
+              // Strip the marker from what we send to the client
+              text = text.replace(ESCALATION_MARKER, '')
+            }
+
+            if (text) {
+              const chunk = `data: ${JSON.stringify({ text })}\n\n`
+              controller.enqueue(encoder.encode(chunk))
+            }
             result = await generator.next()
+          }
+
+          // Check if escalation was detected in the full response
+          if (fullContent.includes(ESCALATION_MARKER)) {
+            const escalationChunk = `data: ${JSON.stringify({
+              escalation: true,
+              topic: body.message?.slice(0, 200) || 'Health consultation',
+            })}\n\n`
+            controller.enqueue(encoder.encode(escalationChunk))
           }
 
           controller.enqueue(encoder.encode('data: [DONE]\n\n'))
