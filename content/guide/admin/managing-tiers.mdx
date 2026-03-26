@@ -28,6 +28,8 @@ Content is gated by numeric access level. A user with tier level 3 (Premium) can
 
 ## Creating or Editing a Tier
 
+<Screenshot src="admin/tiers-collection.png" alt="Membership Tiers collection showing Free, Regular, Premium, and Enterprise tiers" caption="The Membership Tiers collection with all four default tiers." />
+
 <StepList>
 <Step number={1}>Navigate to **Membership Tiers** in the sidebar.</Step>
 <Step number={2}>Click an existing tier to edit, or **Create New** for a new tier.</Step>
@@ -43,6 +45,8 @@ Without valid `stripeMonthlyPriceId` and `stripeYearlyPriceId` values, the check
 
 ## Linking Tiers to Stripe
 
+<Screenshot src="admin/tier-edit-stripe-fields.png" alt="Tier edit form showing Stripe Monthly and Yearly Price ID fields" caption="Each tier requires Stripe price IDs for both monthly and yearly billing." />
+
 Each tier needs corresponding products and prices in your Stripe dashboard:
 
 1. Create a **Product** in Stripe for each tier (e.g., "PATHS Regular Plan").
@@ -51,9 +55,17 @@ Each tier needs corresponding products and prices in your Stripe dashboard:
 
 ## How Tier Assignment Works
 
-- **Manual:** Admins can assign tiers directly on a user's record.
-- **Automatic:** When a user subscribes via Stripe checkout, the webhook updates their tier automatically based on the price ID.
-- **Downgrade:** When a subscription is canceled or expires, the webhook reverts the user to the Free tier.
+<Accordion>
+<AccordionItem title="Manual assignment">
+Admins can assign tiers directly on a user's record via the Users collection. Open the user, select the desired tier from the dropdown, and save.
+</AccordionItem>
+<AccordionItem title="Automatic via Stripe">
+When a user subscribes via Stripe checkout, the webhook updates their tier automatically based on the price ID. No admin action is needed.
+</AccordionItem>
+<AccordionItem title="Automatic downgrade">
+When a subscription is canceled or expires, the webhook reverts the user to the Free tier automatically. No admin action is needed.
+</AccordionItem>
+</Accordion>
 
 ## Next Steps
 

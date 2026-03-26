@@ -26,6 +26,8 @@ All self-registered users and manually created individual users should be assign
 
 ## Creating a New Tenant
 
+<Screenshot src="admin/tenants-list.png" alt="Tenants collection list showing organizations" caption="The Tenants list — each row represents an organization with its own content scope." />
+
 <StepList>
 <Step number={1}>Navigate to **Tenants** in the sidebar and click **Create New**.</Step>
 <Step number={2}>Enter the organization **name** (e.g., "Acme Hospital Group").</Step>
@@ -46,6 +48,8 @@ The user will now see content scoped to that tenant when they log in.
 
 ## Content Scoping
 
+<Screenshot src="admin/tenant-edit-form.png" alt="Tenant edit form with name, slug, and access level fields" caption="Configure each tenant's name, slug, and organization-wide access level." />
+
 When creating articles or courses for a specific organization, you must set the **tenant** field on the content record. This ensures:
 
 - Only members of that tenant can view the content.
@@ -58,12 +62,16 @@ The multi-tenant plugin makes the `tenant` field required on all scoped collecti
 
 ## Access Level Resolution
 
+<Accordion>
+<AccordionItem title="How access levels are resolved">
 A user's effective access level is the **highest** of:
 
 - Their personal membership tier's access level.
 - Their organization's (tenant's) access level.
 
 This "highest wins" model means an Enterprise-tier organization member always gets full access, regardless of their personal tier.
+</AccordionItem>
+</Accordion>
 
 ## Next Steps
 

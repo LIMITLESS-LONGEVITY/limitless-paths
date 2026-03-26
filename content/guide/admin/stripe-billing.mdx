@@ -25,6 +25,8 @@ The billing flow follows this sequence:
 
 ## Stripe Dashboard Setup
 
+<Screenshot src="admin/stripe-products-reference.png" alt="Stripe dashboard showing PATHS products with monthly and yearly prices" caption="Create products and prices in Stripe, then link them to PATHS membership tiers." />
+
 Before billing works, configure these items in your Stripe dashboard:
 
 1. **Create Products** — One product per membership tier (e.g., "PATHS Regular", "PATHS Premium").
@@ -46,21 +48,27 @@ After creating Stripe prices, link them to PATHS membership tiers:
 
 Without valid price IDs, the checkout endpoint returns a 400 error.
 
-## Required Environment Variables
-
+<Accordion>
+<AccordionItem title="Required environment variables">
 | Variable | Purpose |
 |----------|---------|
 | `STRIPE_SECRET_KEY` | Server-side API key for creating checkout sessions and managing subscriptions |
 | `STRIPE_WEBHOOK_SECRET` | Webhook signing secret (`whsec_...`) for verifying webhook authenticity |
 
-## Testing Webhooks
-
-To test webhooks locally during development:
-
+Both must be set in your Render environment variables. The `STRIPE_WEBHOOK_SECRET` must match the signing secret shown in your Stripe webhook endpoint configuration.
+</AccordionItem>
+<AccordionItem title="Webhook endpoint configuration">
+Create a webhook endpoint in Stripe pointing to `https://your-domain/api/billing/webhook`. The endpoint must receive at minimum these events: `checkout.session.completed`, `customer.subscription.updated`, and `customer.subscription.deleted`.
+</AccordionItem>
+<AccordionItem title="Testing webhooks locally">
 1. Install the [Stripe CLI](https://stripe.com/docs/stripe-cli).
 2. Run `stripe listen --forward-to localhost:3000/api/billing/webhook`.
 3. The CLI will provide a temporary webhook secret — use it as `STRIPE_WEBHOOK_SECRET`.
 4. Trigger test events with `stripe trigger checkout.session.completed`.
+</AccordionItem>
+</Accordion>
+
+<Screenshot src="admin/stripe-webhook-config.png" alt="Stripe webhook endpoint configuration page" caption="Configure the webhook endpoint URL and select the required events." />
 
 ## Customer Portal
 

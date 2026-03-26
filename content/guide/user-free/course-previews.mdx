@@ -26,10 +26,14 @@ When you open a course detail page, the following information is available to al
 
 The following course features require a paid subscription:
 
-- **Enrolling in the course** — The enrol button is unavailable for free users.
-- **Lesson content** — The actual educational material within each lesson (text, video, interactive elements) is not accessible.
-- **Progress tracking** — Since you cannot enrol, course progress and completion tracking are not active.
-- **Quizzes and assessments** — Interactive knowledge checks within lessons require enrolment.
+<Accordion>
+  <AccordionItem title="Locked features for free users">
+    - **Enrolling in the course** — The enrol button is unavailable for free users.
+    - **Lesson content** — The actual educational material within each lesson (text, video, interactive elements) is not accessible.
+    - **Progress tracking** — Since you cannot enrol, course progress and completion tracking are not active.
+    - **Quizzes and assessments** — Interactive knowledge checks within lessons require enrolment.
+  </AccordionItem>
+</Accordion>
 
 ## Navigating a Course Detail Page
 
@@ -39,12 +43,16 @@ The following course features require a paid subscription:
   </Step>
   <Step number={2}>
     Read the course description at the top to understand the scope and learning objectives.
+
+    <Screenshot src="user-free/course-detail-header.png" alt="Course detail page showing title, description, and pillar tags" caption="The course detail page with description and pillar tags" />
   </Step>
   <Step number={3}>
     Scroll down to the **module outline** to see how the course is structured.
   </Step>
   <Step number={4}>
     Expand or browse individual modules to review lesson titles and get a sense of the content progression.
+
+    <Screenshot src="user-free/course-module-outline.png" alt="Course module outline showing modules and lesson titles" caption="The module outline lets you preview the full course structure" />
   </Step>
 </StepList>
 

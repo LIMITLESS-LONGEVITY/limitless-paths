@@ -13,6 +13,8 @@ PATHS integrates AI throughout the platform — from semantic search and content
 
 ## Accessing AI Config
 
+<Screenshot src="admin/ai-config-global.png" alt="AI Config global settings showing model selection and RAG parameters" caption="The AI Config global — configure model selection, RAG settings, and rate limits." />
+
 Navigate to **Globals** in the sidebar and select **AI Config**. This global controls:
 
 - **OpenAI model selection** — Choose which GPT model powers the AI tutor and quiz generation.
@@ -36,10 +38,14 @@ RAG retrieval respects access control. A free-tier user will only receive result
 
 AI features require two API keys configured as environment variables on the server:
 
-| Variable | Purpose |
-|----------|---------|
-| `OPENAI_API_KEY` | Powers the AI tutor, quiz generation, and content recommendations |
-| `JINA_API_KEY` | Powers vector embeddings and reranking for semantic search |
+<Accordion>
+<AccordionItem title="OPENAI_API_KEY">
+Powers the AI tutor, quiz generation, and content recommendations. Obtain this from [platform.openai.com](https://platform.openai.com) under API Keys. Use a project-scoped key for better security.
+</AccordionItem>
+<AccordionItem title="JINA_API_KEY">
+Powers vector embeddings and reranking for semantic search. Obtain this from [jina.ai](https://jina.ai) after creating an account. The key is used for both the embedding and reranker APIs.
+</AccordionItem>
+</Accordion>
 
 <Callout type="warning" title="No API key = no AI features">
 If these environment variables are not set, AI features will fail silently or return errors. Verify they are configured in your deployment environment (Render environment variables).
@@ -47,10 +53,18 @@ If these environment variables are not set, AI features will fail silently or re
 
 ## Configuring the AI Model
 
+<Screenshot src="admin/ai-config-model-selection.png" alt="Model selection dropdown in AI Config global" caption="Select the OpenAI model that balances quality and cost for your use case." />
+
 In the AI Config global, select your preferred OpenAI model. Consider the trade-offs:
 
-- **GPT-4o** — Best quality responses, higher cost per request.
-- **GPT-4o-mini** — Good quality at lower cost, suitable for most educational use cases.
+<Accordion>
+<AccordionItem title="GPT-4o — Best quality">
+Best quality responses with the most capable model. Higher cost per request. Recommended for production environments where response quality is critical.
+</AccordionItem>
+<AccordionItem title="GPT-4o-mini — Cost-efficient">
+Good quality at lower cost, suitable for most educational use cases. Recommended for development, testing, and cost-conscious deployments.
+</AccordionItem>
+</Accordion>
 
 ## Usage Logging
 

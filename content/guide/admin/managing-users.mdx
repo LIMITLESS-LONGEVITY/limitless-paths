@@ -29,6 +29,8 @@ Each role inherits all capabilities of the roles below it. An admin can do every
 
 ## Creating a New User
 
+<Screenshot src="admin/users-list.png" alt="Users collection list view showing registered users with roles and tiers" caption="The Users list view — filter and search across all registered accounts." />
+
 <StepList>
 <Step number={1}>Navigate to **Users** in the sidebar and click **Create New**.</Step>
 <Step number={2}>Enter the user's email address and set a temporary password.</Step>
@@ -38,11 +40,15 @@ Each role inherits all capabilities of the roles below it. An admin can do every
 <Step number={6}>Click **Save** to create the account.</Step>
 </StepList>
 
+<Screenshot src="admin/create-user-form.png" alt="Create user form with email, role, tier, and tenant fields" caption="The user creation form — assign role, tier, and tenant during account setup." />
+
 <Callout type="warning" title="Self-registration">
 Users can also self-register via the `/register` page. Self-registered users are automatically assigned the **User** role, the **Free** tier, and the default tenant. You can upgrade their role and tier afterward.
 </Callout>
 
 ## Editing User Accounts
+
+<Screenshot src="admin/user-edit-form.png" alt="User edit view showing role dropdown and tier assignment" caption="Edit any user's role, tier, and tenant from their profile page." />
 
 Click any user in the Users list to edit their profile. You can change:
 

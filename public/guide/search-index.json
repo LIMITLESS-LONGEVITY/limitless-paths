@@ -160,8 +160,6 @@
       "How Billing Works",
       "Stripe Dashboard Setup",
       "Linking Prices to Tiers",
-      "Required Environment Variables",
-      "Testing Webhooks",
       "Customer Portal",
       "Next Steps"
     ],
@@ -172,7 +170,7 @@
     "topic": "troubleshooting",
     "title": "troubleshooting",
     "description": "",
-    "body": "Monitoring & Troubleshooting\nThis guide covers the most common issues admins encounter and how to resolve them.\nCommon Issues\n| Problem | Likely Cause | Solution |\n|---------|-------------|----------|\n| Build fails on deploy | TypeScript errors or missing dependencies | Run pnpm build locally first ",
+    "body": "Monitoring & Troubleshooting\nThis guide covers the most common issues admins encounter and how to resolve them.\nCommon Issues\nLikely cause: TypeScript errors or missing dependencies.\nSolution: Run pnpm build locally first to catch errors before pushing. Check build logs on Render for the specific er",
     "headings": [
       "Monitoring & Troubleshooting",
       "Common Issues",
@@ -225,7 +223,6 @@
       "Understanding Editorial Workflow",
       "The Five Stages",
       "Status Transitions",
-      "Typical Timeline",
       "Your Role in the Workflow"
     ],
     "url": "/guide/contributor/editorial-workflow"
@@ -309,7 +306,6 @@
       "Approving Content",
       "Approving an Article",
       "Requesting Changes",
-      "Common Reasons for Requesting Changes",
       "Approval Best Practices"
     ],
     "url": "/guide/editor/approving-content"
@@ -342,8 +338,7 @@
       "Contributors",
       "Editors",
       "Publishers",
-      "Key Rules",
-      "Common Scenarios"
+      "Key Rules"
     ],
     "url": "/guide/editor/editorial-status"
   },
@@ -372,9 +367,7 @@
       "Working with Contributors",
       "Providing Constructive Feedback",
       "Writing Effective Review Notes",
-      "Building Contributor Quality",
-      "Handling Disagreements",
-      "Common Pitfalls to Avoid"
+      "Building Contributor Quality"
     ],
     "url": "/guide/editor/working-with-contributors"
   },
@@ -388,7 +381,6 @@
       "Archiving Content",
       "When to Archive",
       "How to Archive an Article",
-      "What Happens When Content Is Archived",
       "Reviving Archived Content",
       "Best Practices"
     ],
@@ -406,7 +398,6 @@
       "View Counts",
       "Engagement Metrics",
       "Content Performance Dashboard",
-      "How Analytics Will Inform Your Work",
       "Questions or Requests"
     ],
     "url": "/guide/publisher/content-analytics"
@@ -436,7 +427,6 @@
       "Publishing Content",
       "Finding Approved Articles",
       "Publishing an Article",
-      "Pre-Publication Checklist",
       "Handling Issues After Publication"
     ],
     "url": "/guide/publisher/publishing-content"
@@ -451,7 +441,6 @@
       "Managing Your Publication Schedule",
       "Reviewing Your Publication Queue",
       "Coordinating with the Editorial Team",
-      "Keeping Published Content Current",
       "Updating Published Articles"
     ],
     "url": "/guide/publisher/scheduling-content"
@@ -600,7 +589,6 @@
       "Accessing Assigned Content",
       "How Org Access Levels Work",
       "Finding Your Organization's Content",
-      "Access Level Tiers",
       "Enrolling in Org Courses",
       "Next Steps"
     ],
@@ -617,7 +605,6 @@
       "When to Contact Your Admin",
       "How to Find Your Admin",
       "What to Include in Your Request",
-      "Platform Support vs. Organization Admin",
       "Next Steps"
     ],
     "url": "/guide/user-organization/contacting-admin"
@@ -632,7 +619,6 @@
       "How Organization Accounts Work",
       "What Is Multi-Tenancy?",
       "How Access Is Determined",
-      "What Your Admin Handles",
       "Next Steps"
     ],
     "url": "/guide/user-organization/org-overview"
@@ -647,7 +633,6 @@
       "Progress Dashboard",
       "Viewing Your Progress",
       "Understanding Completion Tracking",
-      "What Your Admin Can See",
       "Resuming a Course",
       "Next Steps"
     ],
@@ -663,7 +648,6 @@
       "Navigating Personal and Organization Content",
       "How Access Union Works",
       "What This Means in Practice",
-      "Common Scenarios",
       "If Your Access Changes",
       "Next Steps"
     ],
@@ -680,7 +664,6 @@
       "What Are Learning Paths?",
       "Following a Learning Path",
       "Why Order Matters",
-      "Common Learning Path Structures",
       "Completing a Learning Path",
       "Next Steps"
     ],

@@ -30,6 +30,8 @@ The AI tutor uses **retrieval-augmented generation (RAG)** to provide accurate, 
   <Step number={4}>The tutor will respond with an answer drawn from relevant platform content.</Step>
 </StepList>
 
+<Screenshot src="user-paid/ai-tutor-panel.png" alt="AI Tutor panel showing a conversation with question and response" caption="The AI Tutor panel in the article sidebar, showing a question and a grounded response." />
+
 ## Asking Effective Questions
 
 The AI tutor works best when your questions are specific and related to topics covered on the platform. For example:
@@ -40,6 +42,8 @@ The AI tutor works best when your questions are specific and related to topics c
 
 General or off-topic questions may receive limited responses, since the tutor only draws from PATHS content.
 
+<Screenshot src="user-paid/ai-tutor-question-example.png" alt="Example of a specific question getting a detailed response from the AI Tutor" caption="Specific questions about platform topics yield the most detailed responses." />
+
 ## Conversation Context
 
 The AI tutor maintains context within your current conversation. You can ask follow-up questions that build on previous answers without repeating background information. Starting a new session begins a fresh conversation.
@@ -47,6 +51,15 @@ The AI tutor maintains context within your current conversation. You can ask fol
 <Callout type="tip">
   Use the AI tutor while reading an article to clarify concepts or explore related topics in more depth. It is designed to complement the learning experience, not replace it.
 </Callout>
+
+<Accordion>
+  <AccordionItem title="How does RAG work behind the scenes?">
+    When you ask a question, the system converts it into a semantic embedding and searches the platform's vector database for the most relevant content passages. These passages are then reranked for relevance and used as context for the AI to generate a grounded answer. This approach ensures responses are based on actual platform content rather than general knowledge.
+  </AccordionItem>
+  <AccordionItem title="Can the AI Tutor access content above my tier?">
+    No. The AI Tutor respects your subscription tier. It only retrieves and references content that your effective access level permits. Upgrading your plan gives the tutor a broader knowledge base to work with.
+  </AccordionItem>
+</Accordion>
 
 ## Content Access and the Tutor
 

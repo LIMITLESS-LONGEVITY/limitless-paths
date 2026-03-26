@@ -13,6 +13,8 @@ Courses are the core educational product of PATHS. Each course contains a struct
 
 ## Course Structure
 
+<Screenshot src="admin/courses-list.png" alt="Courses collection list showing courses with titles, pillars, and status" caption="The Courses collection — each course contains modules and lessons in a structured hierarchy." />
+
 Courses follow a three-level hierarchy:
 
 - **Course** — The top-level container with a title, description, access level, and content pillar.
@@ -31,6 +33,8 @@ Courses follow a three-level hierarchy:
 </StepList>
 
 ## Adding Modules
+
+<Screenshot src="admin/module-edit-form.png" alt="Module edit form showing title, parent course relationship, and order fields" caption="Modules link to a parent course and are ordered by the numeric order field." />
 
 <StepList>
 <Step number={1}>Navigate to **Modules** in the sidebar and click **Create New**.</Step>
@@ -52,6 +56,8 @@ Courses follow a three-level hierarchy:
 <Step number={7}>Click **Save**.</Step>
 </StepList>
 
+<Screenshot src="admin/lesson-lexical-editor.png" alt="Lesson editor showing Lexical rich text with video embed and quiz blocks" caption="The Lexical editor supports rich text, video embeds, callouts, and quiz question blocks." />
+
 <Callout type="info" title="No direct video hosting">
 PATHS uses YouTube and Vimeo embeds only. Upload your videos to either platform and paste the embed URL into the Video Embed block.
 </Callout>
@@ -62,12 +68,16 @@ Module and lesson order is controlled by the numeric **order** field. Items with
 
 ## Publishing Courses
 
+<Accordion>
+<AccordionItem title="Editorial workflow stages">
 Courses follow the same editorial workflow as articles:
 
 1. **Draft** — Initial creation, visible only to admins and the creator.
 2. **In Review** — Submitted for editorial review.
 3. **Approved** — Reviewed and approved by an editor.
 4. **Published** — Live and visible to learners with sufficient access level.
+</AccordionItem>
+</Accordion>
 
 <Callout type="warning" title="Access level gating">
 Even after publishing, a course is only visible to users whose membership tier meets or exceeds the course's access level. A premium course (access level 3) is invisible to free-tier users.

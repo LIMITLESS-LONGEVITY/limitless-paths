@@ -25,7 +25,13 @@ PATHS offers two seeding operations, both accessed via authenticated POST reques
 <StepList>
 <Step number={1}>Register the first admin user via the PATHS registration page or Payload's first-register flow.</Step>
 <Step number={2}>Log in and obtain your JWT token (available in the auth cookie or via the login API response).</Step>
-<Step number={3}>Send an authenticated POST request to `/next/seed` with your JWT token in the Authorization header.</Step>
+<Step number={3}>Send an authenticated POST request to `/next/seed` with your JWT token in the Authorization header:
+
+```bash
+curl -X POST https://your-domain/next/seed \
+  -H "Authorization: JWT your-token-here"
+```
+</Step>
 <Step number={4}>Verify that membership tiers, the default tenant, and content pillars have been created in the admin panel.</Step>
 </StepList>
 
@@ -37,9 +43,12 @@ The foundation seed must be run immediately after the first user registration. W
 
 After the foundation seed, you can optionally populate sample content:
 
-1. Send an authenticated POST request to `/next/seed?content=true`.
-2. The seed creates 12 articles, 3 courses, and associated modules and lessons.
-3. Content is assigned to the default tenant and distributed across all 6 content pillars.
+```bash
+curl -X POST "https://your-domain/next/seed?content=true" \
+  -H "Authorization: JWT your-token-here"
+```
+
+The content seed creates 12 articles, 3 courses, and associated modules and lessons. Content is assigned to the default tenant and distributed across all 6 content pillars.
 
 <Callout type="info" title="Idempotency">
 The seed endpoints check for existing data before creating records. Running the seed multiple times will not create duplicate content.
@@ -47,17 +56,33 @@ The seed endpoints check for existing data before creating records. Running the 
 
 ## What Gets Created
 
-The content seed populates a realistic dataset for testing and demonstration:
-
+<Accordion>
+<AccordionItem title="Foundation seed data">
+- **Membership tiers** — Free (level 1), Regular (level 2), Premium (level 3), Enterprise (level 4)
+- **Default tenant** — For individual B2C users
+- **Content pillars** — Nutrition, Exercise, Sleep, Mental Health, Preventive Medicine, Longevity Science
+- **Admin assignment** — First user gets admin role, Enterprise tier, and default tenant
+</AccordionItem>
+<AccordionItem title="Content seed data">
 - **Articles** — 12 articles covering all six longevity pillars, with varied access levels. Four articles include interactive quiz questions.
 - **Courses** — 3 structured courses with modules and lessons, including video embed examples.
 - **Quizzes** — Embedded within articles and lessons as Lexical editor quiz blocks.
+</AccordionItem>
+</Accordion>
 
 ## When to Seed
 
-- **Fresh deployment** — Always run the foundation seed after deploying to a new environment.
-- **Testing** — Run the content seed to have realistic data for QA and user acceptance testing.
-- **Demo environments** — Seed both foundation and content to showcase the platform to potential clients.
+<Accordion>
+<AccordionItem title="Fresh deployment">
+Always run the foundation seed after deploying to a new environment. Without it, there are no tiers, tenants, or pillars.
+</AccordionItem>
+<AccordionItem title="Testing and QA">
+Run the content seed to have realistic data for QA and user acceptance testing.
+</AccordionItem>
+<AccordionItem title="Demo environments">
+Seed both foundation and content to showcase the platform to potential clients.
+</AccordionItem>
+</Accordion>
 
 ## Next Steps
 
