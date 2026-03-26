@@ -1,29 +1,21 @@
 import type { Endpoint } from 'payload'
 import { chat, type ChatMessage } from '../../ai/chat'
-import { checkRateLimit } from '../../ai/rateLimiter'
 import { logUsage } from '../../ai/usageLogger'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
 import { buildDiscoverPrompt, parseDiscoverResponse } from '../../ai/prompts/discover'
+import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
 
 export const discoverEndpoint: Endpoint = {
   path: '/ai/discover',
   method: 'post',
   handler: async (req) => {
-    const startTime = Date.now()
+    const ctx = await validateAIRequest(req, 'content-discover', {
+      rateLimitMessage: 'Daily discovery limit reached. Upgrade your plan for more access.',
+    })
+    if (isErrorResponse(ctx)) return ctx
 
-    // 1. Authenticate
-    if (!req.user) {
-      return Response.json({ error: 'Authentication required' }, { status: 401 })
-    }
-
-    // 2. Check AI enabled
-    const aiConfig = await req.payload.findGlobal({ slug: 'ai-config', req, overrideAccess: true })
-    if (!aiConfig.enabled) {
-      return Response.json({ error: 'AI features are currently disabled' }, { status: 503 })
-    }
-
-    // 3. Parse input
+    // Parse input
     const body = (await req.json?.()) as { query?: string; limit?: number } | undefined
     if (!body?.query || body.query.trim().length < 3) {
       return Response.json({ error: 'Please describe your goal (min 3 characters)' }, { status: 400 })
@@ -31,28 +23,11 @@ export const discoverEndpoint: Endpoint = {
 
     const limit = Math.min(body.limit ?? 5, 10)
 
-    // 4. Rate limit
-    const tier = ((req.user as any)?.tier?.accessLevel as string) ?? 'free'
-    const role = (req.user.role as string) ?? 'user'
-    const rateLimitResult = await checkRateLimit(
-      req.user.id as string,
-      'content-discover',
-      role,
-      tier,
-      aiConfig.rateLimits as any[],
-    )
-    if (!rateLimitResult.allowed) {
-      return Response.json(
-        { error: 'Daily discovery limit reached. Upgrade your plan for more access.', limit: rateLimitResult.limit },
-        { status: 429 },
-      )
-    }
-
     try {
-      // 5. Semantic search for candidates (wider net)
+      // Semantic search for candidates (wider net)
       const chunks = await retrieveRelevantChunks(body.query, req.payload, req, { limit: 20 })
 
-      // 6. Deduplicate by source document
+      // Deduplicate by source document
       const seen = new Set<string>()
       const candidates = chunks
         .filter((c) => {
@@ -73,7 +48,7 @@ export const discoverEndpoint: Endpoint = {
         return Response.json({ path: [], message: 'No relevant content found for your goal.' })
       }
 
-      // 7. AI ranks and structures into learning path
+      // AI ranks and structures into learning path
       const prompt = buildDiscoverPrompt(body.query, candidates)
       const messages: ChatMessage[] = [
         { role: 'system', content: prompt },
@@ -81,20 +56,19 @@ export const discoverEndpoint: Endpoint = {
       ]
 
       const modelConfig = getModelConfig('discover')
-      const maxTokens = (aiConfig.tokenBudgets as any)?.discoverMaxTokens ?? modelConfig.maxOutputTokens
+      const maxTokens = ctx.aiConfig.tokenBudgets?.discoverMaxTokens ?? modelConfig.maxOutputTokens
       const result = await chat(messages, 'discover', { maxTokens, temperature: 0.3 })
 
-      // 8. Parse response
       const path = parseDiscoverResponse(result.content, candidates).slice(0, limit)
 
-      // 9. Log usage
+      // Log usage
       logUsage(req, {
         feature: 'content-discover',
         provider: modelConfig.provider,
         model: modelConfig.model,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
-        durationMs: Date.now() - startTime,
+        durationMs: Date.now() - ctx.startTime,
       })
 
       return Response.json({ path })

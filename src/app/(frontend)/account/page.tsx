@@ -13,47 +13,44 @@ export default async function DashboardPage() {
 
   if (!user) return null
 
-  // Fetch active enrollments with course data
-  const enrollments = await payload.find({
-    collection: 'enrollments',
-    where: {
-      user: { equals: user.id },
-      status: { in: ['active', 'completed'] },
-    },
-    sort: '-enrolledAt',
-    depth: 1,
-    limit: 10,
-    overrideAccess: true,
-  })
-
-  // Fetch recent lesson progress
-  const recentProgress = await payload.find({
-    collection: 'lesson-progress',
-    where: {
-      user: { equals: user.id },
-      status: { equals: 'completed' },
-    },
-    sort: '-completedAt',
-    depth: 2,
-    limit: 5,
-    overrideAccess: true,
-  })
-
-  // Count stats
-  const totalEnrollments = await payload.count({
-    collection: 'enrollments',
-    where: { user: { equals: user.id } },
-    overrideAccess: true,
-  })
-
-  const completedLessons = await payload.count({
-    collection: 'lesson-progress',
-    where: {
-      user: { equals: user.id },
-      status: { equals: 'completed' },
-    },
-    overrideAccess: true,
-  })
+  // Fetch all dashboard data in parallel
+  const [enrollments, recentProgress, totalEnrollments, completedLessons] = await Promise.all([
+    payload.find({
+      collection: 'enrollments',
+      where: {
+        user: { equals: user.id },
+        status: { in: ['active', 'completed'] },
+      },
+      sort: '-enrolledAt',
+      depth: 1,
+      limit: 10,
+      overrideAccess: true,
+    }),
+    payload.find({
+      collection: 'lesson-progress',
+      where: {
+        user: { equals: user.id },
+        status: { equals: 'completed' },
+      },
+      sort: '-completedAt',
+      depth: 2,
+      limit: 5,
+      overrideAccess: true,
+    }),
+    payload.count({
+      collection: 'enrollments',
+      where: { user: { equals: user.id } },
+      overrideAccess: true,
+    }),
+    payload.count({
+      collection: 'lesson-progress',
+      where: {
+        user: { equals: user.id },
+        status: { equals: 'completed' },
+      },
+      overrideAccess: true,
+    }),
+  ])
 
   // Get tier name
   const tierName =

@@ -1,6 +1,7 @@
 import type { Endpoint } from 'payload'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
-import { getEffectiveAccessLevels } from '../../utilities/accessLevels'
+import { getEffectiveAccessLevels, type AccessLevel } from '../../utilities/accessLevels'
+import { getUserAccessLevel, getUserTenantAccessLevel } from '../../utilities/types'
 import { sql } from '@payloadcms/db-postgres/drizzle'
 
 export const recommendationsEndpoint: Endpoint = {
@@ -60,7 +61,7 @@ export const recommendationsEndpoint: Endpoint = {
         return Response.json({ recommendations: [] })
       }
 
-      const queryText = (firstChunk.docs[0] as any).text as string
+      const queryText = (firstChunk.docs[0] as unknown as { text: string }).text
 
       // 5. Get completed lesson IDs to exclude
       let completedDocIds: string[] = [body.contextId]
@@ -97,8 +98,8 @@ export const recommendationsEndpoint: Endpoint = {
       }
 
       const userLevels = getEffectiveAccessLevels(
-        (req.user as any)?.tier?.accessLevel ?? null,
-        (req.user as any)?.tenant?.contentAccessLevel ?? null,
+        getUserAccessLevel(req.user),
+        getUserTenantAccessLevel(req.user),
       )
 
       const recommendations = Array.from(seen.values()).slice(0, limit).map((chunk) => ({
@@ -106,7 +107,7 @@ export const recommendationsEndpoint: Endpoint = {
         collection: chunk.sourceCollection,
         sourceId: chunk.sourceId,
         accessLevel: chunk.accessLevel,
-        locked: !userLevels.includes(chunk.accessLevel as any),
+        locked: !userLevels.includes(chunk.accessLevel as AccessLevel),
         snippet: chunk.text.slice(0, 200),
         relevanceScore: chunk.relevanceScore,
       }))

@@ -85,6 +85,10 @@ export interface Config {
     'content-chunks': ContentChunk;
     subscriptions: Subscription;
     'stripe-events': StripeEvent;
+    'health-profiles': HealthProfile;
+    'action-plans': ActionPlan;
+    'daily-protocols': DailyProtocol;
+    certificates: Certificate;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -115,6 +119,10 @@ export interface Config {
     'content-chunks': ContentChunksSelect<false> | ContentChunksSelect<true>;
     subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
     'stripe-events': StripeEventsSelect<false> | StripeEventsSelect<true>;
+    'health-profiles': HealthProfilesSelect<false> | HealthProfilesSelect<true>;
+    'action-plans': ActionPlansSelect<false> | ActionPlansSelect<true>;
+    'daily-protocols': DailyProtocolsSelect<false> | DailyProtocolsSelect<true>;
+    certificates: CertificatesSelect<false> | CertificatesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -374,9 +382,62 @@ export interface User {
   lastName: string;
   role: 'user' | 'contributor' | 'editor' | 'publisher' | 'admin';
   tier?: (number | null) | MembershipTier;
-  emailVerified?: boolean | null;
   stripeCustomerId?: string | null;
   avatar?: (number | null) | Media;
+  /**
+   * A short professional bio (max 500 characters)
+   */
+  bio?: string | null;
+  /**
+   * Areas of specialization (e.g. "Metabolic Medicine", "Sleep Science")
+   */
+  expertise?:
+    | {
+        area: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Professional credentials and qualifications
+   */
+  credentials?:
+    | {
+        /**
+         * e.g. "PhD Longevity Science", "Board Certified Nutritionist"
+         */
+        title: string;
+        /**
+         * e.g. "Weizmann Institute", "Harvard Medical School"
+         */
+        institution?: string | null;
+        /**
+         * Year awarded
+         */
+        year?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * LinkedIn profile URL
+   */
+  linkedIn?: string | null;
+  /**
+   * Make your expert profile visible to all users
+   */
+  publicProfile?: boolean | null;
+  hasCompletedOnboarding?: boolean | null;
+  /**
+   * Consecutive days of lesson completions
+   */
+  currentStreak?: number | null;
+  /**
+   * Longest streak achieved
+   */
+  longestStreak?: number | null;
+  /**
+   * Last day a lesson was completed
+   */
+  lastActivityDate?: string | null;
   tenants?:
     | {
         tenant: number | Tenant;
@@ -390,6 +451,8 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -436,6 +499,22 @@ export interface Tenant {
   name: string;
   slug: string;
   contentAccessLevel?: ('free' | 'regular' | 'premium' | 'enterprise') | null;
+  /**
+   * Enable staff certification tracking for this organization
+   */
+  certificationEnabled?: boolean | null;
+  /**
+   * Months until certificates expire (for recertification). Leave empty for no expiry.
+   */
+  certificationExpiry?: number | null;
+  /**
+   * Display name on certificates (e.g. "El Fuerte Wellness Institute")
+   */
+  organizationName?: string | null;
+  /**
+   * Organization logo for branded certificates
+   */
+  organizationLogo?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -805,6 +884,10 @@ export interface Article {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
   slug: string;
   excerpt?: string | null;
   content?: {
@@ -825,6 +908,9 @@ export interface Article {
   featuredImage?: (number | null) | Media;
   pillar: number | ContentPillar;
   accessLevel: 'free' | 'regular' | 'premium' | 'enterprise';
+  /**
+   * Transitions are role-enforced: Contributors → In Review, Editors → Approved, Publishers → Published.
+   */
   editorialStatus: 'draft' | 'in_review' | 'approved' | 'published' | 'archived';
   author: number | User;
   reviewer?: (number | null) | User;
@@ -879,6 +965,35 @@ export interface Course {
    */
   estimatedDuration?: number | null;
   publishedAt?: string | null;
+  /**
+   * Set to make this course a hotel longevity stay program
+   */
+  stayType?: ('3-day' | '5-day' | '7-day') | null;
+  /**
+   * e.g. "El Fuerte Marbella"
+   */
+  stayLocation?: string | null;
+  /**
+   * Price in EUR (non-member)
+   */
+  stayPrice?: number | null;
+  /**
+   * Member price in EUR
+   */
+  stayMemberPrice?: number | null;
+  /**
+   * What is included in the stay package
+   */
+  stayIncludes?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Post-stay follow-up duration in months (e.g., 1, 3, or 6)
+   */
+  followUpMonths?: number | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -975,6 +1090,14 @@ export interface Enrollment {
    * Placeholder for Phase 5 billing integration
    */
   paymentStatus: 'free' | 'paid' | 'pending' | 'refunded';
+  /**
+   * Start date of hotel stay. Set by admin when confirming booking.
+   */
+  stayStartDate?: string | null;
+  /**
+   * End date of hotel stay. Set by admin.
+   */
+  stayEndDate?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1074,6 +1197,178 @@ export interface StripeEvent {
   stripeEventId: string;
   eventType: string;
   processed?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * User health data for personalized AI features. Strictly access-controlled.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "health-profiles".
+ */
+export interface HealthProfile {
+  id: number;
+  /**
+   * One health profile per user (1:1 relationship)
+   */
+  user: number | User;
+  /**
+   * Health biomarker measurements from diagnostic assessments
+   */
+  biomarkers?:
+    | {
+        /**
+         * e.g. "Vitamin D", "HbA1c", "ApoB", "hs-CRP"
+         */
+        name: string;
+        value: number;
+        /**
+         * e.g. "ng/mL", "%", "mg/dL"
+         */
+        unit: string;
+        date: string;
+        normalRangeLow?: number | null;
+        normalRangeHigh?: number | null;
+        status: 'low' | 'normal' | 'high' | 'critical';
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * User-selected health improvement goals
+   */
+  healthGoals?:
+    | {
+        goal:
+          | 'improve-sleep'
+          | 'lose-weight'
+          | 'increase-energy'
+          | 'reduce-inflammation'
+          | 'build-muscle'
+          | 'improve-cognition'
+          | 'cardiovascular-health'
+          | 'hormone-balance'
+          | 'longevity-optimization'
+          | 'stress-management';
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * User-reported health conditions (optional)
+   */
+  conditions?:
+    | {
+        condition: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Current medications (optional)
+   */
+  medications?:
+    | {
+        medication: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Ordered list of content pillars the user prioritizes
+   */
+  pillarPriorities?:
+    | {
+        pillar: number | ContentPillar;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "action-plans".
+ */
+export interface ActionPlan {
+  id: number;
+  user: number | User;
+  enrollment: number | Enrollment;
+  course: number | Course;
+  pillar?: (number | null) | ContentPillar;
+  status: 'generating' | 'ready' | 'archived';
+  /**
+   * Structured 30-day action plan JSON
+   */
+  plan:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Frozen copy of health profile at generation time
+   */
+  healthProfileSnapshot?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  generatedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "daily-protocols".
+ */
+export interface DailyProtocol {
+  id: number;
+  user: number | User;
+  date: string;
+  status: 'generating' | 'ready' | 'archived';
+  /**
+   * Structured daily protocol with morning/afternoon/evening blocks
+   */
+  protocol:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  completedCount?: number | null;
+  totalCount?: number | null;
+  generatedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "certificates".
+ */
+export interface Certificate {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  user: number | User;
+  enrollment: number | Enrollment;
+  course: number | Course;
+  courseTitle: string;
+  coursePillar?: string | null;
+  instructorName?: string | null;
+  estimatedDuration?: number | null;
+  certificateNumber: string;
+  issuedAt: string;
+  /**
+   * Optional. For B2B recertification tracking.
+   */
+  expiresAt?: string | null;
+  type: 'completion' | 'certification';
   updatedAt: string;
   createdAt: string;
 }
@@ -1347,6 +1642,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'stripe-events';
         value: number | StripeEvent;
+      } | null)
+    | ({
+        relationTo: 'health-profiles';
+        value: number | HealthProfile;
+      } | null)
+    | ({
+        relationTo: 'action-plans';
+        value: number | ActionPlan;
+      } | null)
+    | ({
+        relationTo: 'daily-protocols';
+        value: number | DailyProtocol;
+      } | null)
+    | ({
+        relationTo: 'certificates';
+        value: number | Certificate;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1654,9 +1965,29 @@ export interface UsersSelect<T extends boolean = true> {
   lastName?: T;
   role?: T;
   tier?: T;
-  emailVerified?: T;
   stripeCustomerId?: T;
   avatar?: T;
+  bio?: T;
+  expertise?:
+    | T
+    | {
+        area?: T;
+        id?: T;
+      };
+  credentials?:
+    | T
+    | {
+        title?: T;
+        institution?: T;
+        year?: T;
+        id?: T;
+      };
+  linkedIn?: T;
+  publicProfile?: T;
+  hasCompletedOnboarding?: T;
+  currentStreak?: T;
+  longestStreak?: T;
+  lastActivityDate?: T;
   tenants?:
     | T
     | {
@@ -1670,6 +2001,8 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
@@ -1727,6 +2060,10 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   contentAccessLevel?: T;
+  certificationEnabled?: T;
+  certificationExpiry?: T;
+  organizationName?: T;
+  organizationLogo?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1737,6 +2074,7 @@ export interface TenantsSelect<T extends boolean = true> {
 export interface ArticlesSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
+  generateSlug?: T;
   slug?: T;
   excerpt?: T;
   content?: T;
@@ -1778,6 +2116,17 @@ export interface CoursesSelect<T extends boolean = true> {
   relatedArticles?: T;
   estimatedDuration?: T;
   publishedAt?: T;
+  stayType?: T;
+  stayLocation?: T;
+  stayPrice?: T;
+  stayMemberPrice?: T;
+  stayIncludes?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  followUpMonths?: T;
   meta?:
     | T
     | {
@@ -1846,6 +2195,8 @@ export interface EnrollmentsSelect<T extends boolean = true> {
   completedAt?: T;
   completionPercentage?: T;
   paymentStatus?: T;
+  stayStartDate?: T;
+  stayEndDate?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1925,6 +2276,102 @@ export interface StripeEventsSelect<T extends boolean = true> {
   stripeEventId?: T;
   eventType?: T;
   processed?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "health-profiles_select".
+ */
+export interface HealthProfilesSelect<T extends boolean = true> {
+  user?: T;
+  biomarkers?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        unit?: T;
+        date?: T;
+        normalRangeLow?: T;
+        normalRangeHigh?: T;
+        status?: T;
+        id?: T;
+      };
+  healthGoals?:
+    | T
+    | {
+        goal?: T;
+        id?: T;
+      };
+  conditions?:
+    | T
+    | {
+        condition?: T;
+        id?: T;
+      };
+  medications?:
+    | T
+    | {
+        medication?: T;
+        id?: T;
+      };
+  pillarPriorities?:
+    | T
+    | {
+        pillar?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "action-plans_select".
+ */
+export interface ActionPlansSelect<T extends boolean = true> {
+  user?: T;
+  enrollment?: T;
+  course?: T;
+  pillar?: T;
+  status?: T;
+  plan?: T;
+  healthProfileSnapshot?: T;
+  generatedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "daily-protocols_select".
+ */
+export interface DailyProtocolsSelect<T extends boolean = true> {
+  user?: T;
+  date?: T;
+  status?: T;
+  protocol?: T;
+  completedCount?: T;
+  totalCount?: T;
+  generatedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "certificates_select".
+ */
+export interface CertificatesSelect<T extends boolean = true> {
+  tenant?: T;
+  user?: T;
+  enrollment?: T;
+  course?: T;
+  courseTitle?: T;
+  coursePillar?: T;
+  instructorName?: T;
+  estimatedDuration?: T;
+  certificateNumber?: T;
+  issuedAt?: T;
+  expiresAt?: T;
+  type?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2312,6 +2759,18 @@ export interface AiConfig {
      * Max output tokens per quiz generation
      */
     quizMaxTokens?: number | null;
+    /**
+     * Max output tokens per action plan generation
+     */
+    actionPlanMaxTokens?: number | null;
+    /**
+     * Max output tokens per daily protocol generation
+     */
+    dailyProtocolMaxTokens?: number | null;
+    /**
+     * Max output tokens per content discovery
+     */
+    discoverMaxTokens?: number | null;
   };
   /**
    * Default provider name (matches AI_PROVIDER_{NAME}_* env vars). Change to switch providers without a deploy.
@@ -2415,6 +2874,9 @@ export interface AiConfigSelect<T extends boolean = true> {
     | {
         tutorMaxTokens?: T;
         quizMaxTokens?: T;
+        actionPlanMaxTokens?: T;
+        dailyProtocolMaxTokens?: T;
+        discoverMaxTokens?: T;
       };
   defaultProvider?: T;
   modelOverrides?:

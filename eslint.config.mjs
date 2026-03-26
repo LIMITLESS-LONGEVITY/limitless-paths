@@ -15,7 +15,6 @@ const eslintConfig = [
     rules: {
       '@typescript-eslint/ban-ts-comment': 'error',
       '@typescript-eslint/no-empty-object-type': 'error',
-      // TODO: Upgrade to 'error' after replacing 70+ as-any casts with typed helpers (H2)
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'error',

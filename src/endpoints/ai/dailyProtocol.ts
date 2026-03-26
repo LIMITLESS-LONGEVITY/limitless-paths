@@ -1,32 +1,26 @@
 import type { Endpoint } from 'payload'
 import { chat, type ChatMessage } from '../../ai/chat'
-import { checkRateLimit } from '../../ai/rateLimiter'
 import { logUsage } from '../../ai/usageLogger'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
 import { getHealthProfile } from '../../utilities/getHealthProfile'
 import { getStayPhase, getStayDayNumber } from '../../utilities/getStayPhase'
 import { buildDailyProtocolPrompt, parseDailyProtocolResponse } from '../../ai/prompts/dailyProtocol'
+import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
 
 export const dailyProtocolEndpoint: Endpoint = {
   path: '/ai/daily-protocol',
   method: 'post',
   handler: async (req) => {
-    const startTime = Date.now()
-
+    // Auth check first (before parsing body, since we need user for existing-protocol check)
     if (!req.user) {
       return Response.json({ error: 'Authentication required' }, { status: 401 })
-    }
-
-    const aiConfig = await req.payload.findGlobal({ slug: 'ai-config', req, overrideAccess: true })
-    if (!aiConfig.enabled) {
-      return Response.json({ error: 'AI features are currently disabled' }, { status: 503 })
     }
 
     const body = (await req.json?.()) as { date?: string; regenerate?: boolean } | undefined
     const targetDate = body?.date || new Date().toISOString().split('T')[0]
 
-    // Check for existing protocol (unless regenerate)
+    // Check for existing protocol (unless regenerate) — before rate limiting
     if (!body?.regenerate) {
       const existing = await req.payload.find({
         collection: 'daily-protocols',
@@ -46,22 +40,11 @@ export const dailyProtocolEndpoint: Endpoint = {
       }
     }
 
-    // Rate limit
-    const tier = ((req.user as any)?.tier?.accessLevel as string) ?? 'free'
-    const role = (req.user.role as string) ?? 'user'
-    const rateLimitResult = await checkRateLimit(
-      req.user.id as string,
-      'daily-protocol',
-      role,
-      tier,
-      aiConfig.rateLimits as any[],
-    )
-    if (!rateLimitResult.allowed) {
-      return Response.json(
-        { error: 'Daily protocol generation limit reached.', limit: rateLimitResult.limit },
-        { status: 429 },
-      )
-    }
+    // Now validate AI config + rate limit
+    const ctx = await validateAIRequest(req, 'daily-protocol', {
+      rateLimitMessage: 'Daily protocol generation limit reached.',
+    })
+    if (isErrorResponse(ctx)) return ctx
 
     try {
       // Gather context: enrolled courses
@@ -141,7 +124,7 @@ export const dailyProtocolEndpoint: Endpoint = {
       const messages: ChatMessage[] = [{ role: 'system', content: prompt }]
 
       const modelConfig = getModelConfig('dailyProtocol')
-      const maxTokens = (aiConfig.tokenBudgets as any)?.dailyProtocolMaxTokens ?? modelConfig.maxOutputTokens
+      const maxTokens = ctx.aiConfig.tokenBudgets?.dailyProtocolMaxTokens ?? modelConfig.maxOutputTokens
       const result = await chat(messages, 'dailyProtocol', { maxTokens, temperature: 0.6 })
 
       const parsed = parseDailyProtocolResponse(result.content)
@@ -194,7 +177,7 @@ export const dailyProtocolEndpoint: Endpoint = {
         model: modelConfig.model,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
-        durationMs: Date.now() - startTime,
+        durationMs: Date.now() - ctx.startTime,
       })
 
       return Response.json({ protocol })

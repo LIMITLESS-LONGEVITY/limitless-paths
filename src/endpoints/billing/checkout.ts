@@ -2,6 +2,7 @@ import type { Endpoint } from 'payload'
 import { getOrCreateCustomer } from '../../stripe/customers'
 import { createCheckoutSession } from '../../stripe/checkout'
 import { getServerSideURL } from '../../utilities/getURL'
+import type { User } from '../../payload-types'
 
 export const billingCheckoutEndpoint: Endpoint = {
   path: '/billing/checkout',
@@ -77,12 +78,13 @@ export const billingCheckoutEndpoint: Endpoint = {
     // 6. Get or create Stripe customer
     let customer
     try {
+      const user = req.user as User
       customer = await getOrCreateCustomer({
-        id: req.user.id as string,
-        email: req.user.email as string,
-        firstName: (req.user as any).firstName,
-        lastName: (req.user as any).lastName,
-        stripeCustomerId: (req.user as any).stripeCustomerId,
+        id: String(user.id),
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        stripeCustomerId: user.stripeCustomerId ?? undefined,
       })
     } catch (err: any) {
       req.payload.logger.error({ err, message: 'Failed to get or create Stripe customer' })
@@ -93,7 +95,7 @@ export const billingCheckoutEndpoint: Endpoint = {
     }
 
     // Save stripeCustomerId if new
-    if (!(req.user as any).stripeCustomerId) {
+    if (!(req.user as User).stripeCustomerId) {
       await req.payload.update({
         collection: 'users',
         id: req.user.id,

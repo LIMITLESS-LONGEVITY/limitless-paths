@@ -1,47 +1,25 @@
 import type { Endpoint } from 'payload'
 import { chat, type ChatMessage } from '../../ai/chat'
-import { checkRateLimit } from '../../ai/rateLimiter'
 import { logUsage } from '../../ai/usageLogger'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
 import { getHealthProfile } from '../../utilities/getHealthProfile'
 import { buildActionPlanPrompt, parseActionPlanResponse } from '../../ai/prompts/actionPlan'
+import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
+import { unwrapRelation } from '../../utilities/types'
 
 export const actionPlanEndpoint: Endpoint = {
   path: '/ai/action-plan',
   method: 'post',
   handler: async (req) => {
-    const startTime = Date.now()
-
-    if (!req.user) {
-      return Response.json({ error: 'Authentication required' }, { status: 401 })
-    }
-
-    const aiConfig = await req.payload.findGlobal({ slug: 'ai-config', req, overrideAccess: true })
-    if (!aiConfig.enabled) {
-      return Response.json({ error: 'AI features are currently disabled' }, { status: 503 })
-    }
+    const ctx = await validateAIRequest(req, 'action-plan', {
+      rateLimitMessage: 'Action plan generation limit reached. Upgrade for more access.',
+    })
+    if (isErrorResponse(ctx)) return ctx
 
     const body = (await req.json?.()) as { enrollmentId?: string } | undefined
     if (!body?.enrollmentId) {
       return Response.json({ error: 'Missing enrollmentId' }, { status: 400 })
-    }
-
-    // Check rate limit
-    const tier = ((req.user as any)?.tier?.accessLevel as string) ?? 'free'
-    const role = (req.user.role as string) ?? 'user'
-    const rateLimitResult = await checkRateLimit(
-      req.user.id as string,
-      'action-plan',
-      role,
-      tier,
-      aiConfig.rateLimits as any[],
-    )
-    if (!rateLimitResult.allowed) {
-      return Response.json(
-        { error: 'Action plan generation limit reached. Upgrade for more access.', limit: rateLimitResult.limit },
-        { status: 429 },
-      )
     }
 
     try {
@@ -58,12 +36,13 @@ export const actionPlanEndpoint: Endpoint = {
         return Response.json({ error: 'Enrollment not found' }, { status: 404 })
       }
 
-      const course = typeof enrollment.course === 'object' ? enrollment.course : null
+      const course = unwrapRelation(enrollment.course)
       if (!course) {
         return Response.json({ error: 'Course data not available' }, { status: 400 })
       }
 
-      const pillarName = typeof course.pillar === 'object' ? (course.pillar as any)?.name : 'General'
+      const pillar = unwrapRelation(course.pillar)
+      const pillarName = pillar?.name ?? 'General'
 
       // Retrieve course content via RAG
       const chunks = await retrieveRelevantChunks(
@@ -76,7 +55,7 @@ export const actionPlanEndpoint: Endpoint = {
       // Fetch health profile (graceful degradation)
       let healthProfile: any = null
       try {
-        healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+        healthProfile = await getHealthProfile(req.user!.id as string, req.payload, req)
       } catch {
         // Health profile unavailable — continue without personalization
       }
@@ -86,7 +65,7 @@ export const actionPlanEndpoint: Endpoint = {
       const messages: ChatMessage[] = [{ role: 'system', content: prompt }]
 
       const modelConfig = getModelConfig('actionPlan')
-      const maxTokens = (aiConfig.tokenBudgets as any)?.actionPlanMaxTokens ?? modelConfig.maxOutputTokens
+      const maxTokens = ctx.aiConfig.tokenBudgets?.actionPlanMaxTokens ?? modelConfig.maxOutputTokens
       const result = await chat(messages, 'actionPlan', { maxTokens, temperature: 0.5 })
 
       const plan = parseActionPlanResponse(result.content)
@@ -98,10 +77,10 @@ export const actionPlanEndpoint: Endpoint = {
       const actionPlan = await req.payload.create({
         collection: 'action-plans',
         data: {
-          user: req.user.id,
+          user: req.user!.id,
           enrollment: body.enrollmentId,
           course: course.id,
-          pillar: typeof course.pillar === 'object' ? (course.pillar as any)?.id : undefined,
+          pillar: pillar?.id,
           status: 'ready',
           plan,
           healthProfileSnapshot: healthProfile
@@ -120,7 +99,7 @@ export const actionPlanEndpoint: Endpoint = {
         model: modelConfig.model,
         inputTokens: result.inputTokens,
         outputTokens: result.outputTokens,
-        durationMs: Date.now() - startTime,
+        durationMs: Date.now() - ctx.startTime,
       })
 
       return Response.json({ actionPlan })

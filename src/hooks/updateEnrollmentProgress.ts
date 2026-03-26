@@ -26,7 +26,7 @@ export const updateEnrollmentProgress: CollectionAfterChangeHook = async ({
     const courseId =
       typeof enrollment.course === 'string'
         ? enrollment.course
-        : (enrollment.course as any)?.id
+        : (enrollment.course as { id?: string })?.id
     if (!courseId) return doc
 
     const course = await req.payload.findByID({
@@ -49,8 +49,8 @@ export const updateEnrollmentProgress: CollectionAfterChangeHook = async ({
               req,
               depth: 0,
             })
-      const lessons = Array.isArray((moduleDoc as any)?.lessons)
-        ? (moduleDoc as any).lessons
+      const lessons = Array.isArray(moduleDoc?.lessons)
+        ? moduleDoc.lessons
         : []
       totalLessons += lessons.length
     }
