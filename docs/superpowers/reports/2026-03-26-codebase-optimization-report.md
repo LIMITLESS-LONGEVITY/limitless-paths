@@ -18,10 +18,8 @@ The PATHS codebase has strong architectural foundations: clean separation of con
 
 ## CRITICAL — Fix Immediately
 
-### C1. Secrets Committed to Git
-The `.env` file was committed before `.gitignore` was added. Contains real Resend and Jina API keys.
-- **Action**: Rotate both keys immediately via their dashboards
-- **Prevention**: Add `git rm --cached .env` and verify `.gitignore` is working
+### ~~C1. Secrets Committed to Git~~ — FALSE POSITIVE
+Verified: `.env` is properly gitignored and NOT tracked. Only `.env.example` (no secrets) and `test.env` (Node config only) are in git. No key rotation needed.
 
 ### C2. No Environment Variable Validation
 43 env vars with no startup validation. Missing vars cause silent runtime failures (the AI tutor crash was one symptom).
@@ -153,7 +151,7 @@ The `renderMarkdown()` function in TutorPanel recreates on every render. Wrap in
 | Health endpoint (H5) | Low | ~30 | 30m | High — production observability |
 | Component splits (M3) | Low | ~300 | 4h | Medium — better maintainability |
 
-**Recommended order**: C1 → C2 → C3 → H5 → H4 → H1 → H2 → H3
+**Recommended order**: C2 → C3 → H5 → H4 → H1 → H2 → H3
 
 ---
 
@@ -165,10 +163,10 @@ The `renderMarkdown()` function in TutorPanel recreates on every render. Wrap in
 | Linting | 6/10 | Warn not error |
 | Dependencies | 8/10 | 1 unused package |
 | Build/Deploy | 9/10 | Excellent Docker |
-| Env Management | 4/10 | No validation, key leak |
+| Env Management | 5/10 | No validation (secrets properly gitignored) |
 | Testing | 5/10 | Good E2E, no unit tests |
 | Code Organization | 8/10 | Clear structure |
-| Security | 6/10 | Key exposure |
+| Security | 7/10 | Secrets properly managed |
 | Accessibility | 7/10 | Good base, missing labels |
 | Performance | 6/10 | N+1 queries |
-| **Overall** | **6.6/10** | |
+| **Overall** | **6.8/10** | |
