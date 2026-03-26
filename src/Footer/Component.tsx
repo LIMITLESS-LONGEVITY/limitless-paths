@@ -24,7 +24,7 @@ export async function Footer() {
             <Logo className="text-brand-light" />
           </Link>
           <p className="text-brand-silver text-xs font-sans">
-            &copy; {new Date().getFullYear()} Limitless Longevity Consultancy. All rights reserved.
+            &copy; {new Date().getFullYear()} Limitless Longevity. All rights reserved.
           </p>
         </div>
 
