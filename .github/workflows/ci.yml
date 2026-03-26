@@ -43,7 +43,7 @@ jobs:
 
       - name: Lint
         run: pnpm lint
-        continue-on-error: true  # ESLint has a pre-existing config issue — don't block CI until fixed
+        continue-on-error: true  # ESLint FlatCompat throws "circular structure to JSON" — fix config then remove this
 
       - name: TypeScript check
         run: npx tsc --noEmit --skipLibCheck
