@@ -3,6 +3,9 @@ import { Screenshot } from './Screenshot'
 import { Callout } from './Callout'
 import { StepList, Step } from './StepList'
 import { RoleTag } from './RoleTag'
+import { CodeBlock } from './CodeBlock'
+import { Tabs, TabList, Tab, TabPanel } from './Tabs'
+import { Accordion, AccordionItem } from './Accordion'
 
 export const guideComponents = {
   Screenshot,
@@ -10,6 +13,12 @@ export const guideComponents = {
   StepList,
   Step,
   RoleTag,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanel,
+  Accordion,
+  AccordionItem,
   // Override default HTML elements for consistent styling
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1 className="text-3xl font-display font-bold text-foreground mb-4 mt-8 first:mt-0" {...props} />
@@ -38,9 +47,7 @@ export const guideComponents = {
   code: (props: React.HTMLAttributes<HTMLElement>) => (
     <code className="px-1.5 py-0.5 rounded bg-muted text-sm font-mono" {...props} />
   ),
-  pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-    <pre className="my-4 p-4 rounded-lg bg-muted overflow-x-auto text-sm" {...props} />
-  ),
+  pre: CodeBlock,
   blockquote: (props: React.BlockquoteHTMLAttributes<HTMLQuoteElement>) => (
     <blockquote className="border-l-2 border-brand-gold/50 pl-4 my-4 italic text-muted-foreground" {...props} />
   ),

@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { getRoleBySlug, getTopicBySlug } from '../../../../../../content/guide/manifest'
 import { getGuideContent } from '@/utilities/mdx'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { TopicContent } from './TopicContent'
 
 export const dynamic = 'force-dynamic'
 
@@ -45,7 +46,7 @@ export default async function TopicPage({ params }: Args) {
 
   return (
     <div className="pb-16 px-6 lg:px-12 pt-8">
-      <div className="max-w-3xl">
+      <div>
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-6">
           <Link href="/guide" className="hover:text-foreground transition-colors">
@@ -61,9 +62,11 @@ export default async function TopicPage({ params }: Args) {
 
         {/* Content */}
         {guideContent ? (
-          <article className="min-w-0">
-            {guideContent.content}
-          </article>
+          <TopicContent>
+            <article className="min-w-0">
+              {guideContent.content}
+            </article>
+          </TopicContent>
         ) : (
           <div className="text-center py-16">
             <p className="text-lg text-muted-foreground mb-2">This guide page is coming soon.</p>
