@@ -52,6 +52,9 @@ jobs:
           AI_PROVIDER_DEFAULT_BASE_URL: https://api.together.xyz/v1
           AI_PROVIDER_DEFAULT_API_KEY: ci-test-key-not-real
 
+      - name: Verify guide screenshots
+        run: pnpm guide:verify-screenshots
+
       - name: Build
         run: pnpm build
         env:
