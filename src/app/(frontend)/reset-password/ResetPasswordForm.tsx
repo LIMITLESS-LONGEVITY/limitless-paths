@@ -151,7 +151,7 @@ export default function ResetPasswordForm() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-brand-dark flex items-center justify-center">
-          <p className="text-brand-silver text-sm">Loading...</p>
+          <div className="w-8 h-8 border-2 border-brand-gold/30 border-t-brand-gold rounded-full animate-spin" />
         </div>
       }
     >

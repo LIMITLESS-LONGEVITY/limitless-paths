@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { cn } from '@/utilities/ui'
+import { SkeletonProfileForm } from '@/components/Skeleton'
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null)
@@ -91,7 +92,7 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return <div className="text-brand-silver">Loading...</div>
+    return <SkeletonProfileForm />
   }
 
   return (

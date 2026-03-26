@@ -11,6 +11,7 @@ import { Clock, BookOpen, CheckCircle2, Circle, Award } from 'lucide-react'
 import { ExpertCard } from '@/components/ExpertCard'
 import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
 import { ActionPlanCTA } from '@/components/ActionPlanCTA'
+import { Breadcrumb } from '@/components/Breadcrumb'
 
 type CourseDetailClientProps = {
   course: any
@@ -49,6 +50,10 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
           </div>
         )}
 
+        <Breadcrumb items={[
+          { label: 'Courses', href: '/courses' },
+          { label: course.title },
+        ]} />
         <div className="flex items-center gap-2 mb-2">
           {pillarName && <span className="text-xs font-semibold uppercase text-brand-gold">{pillarName}</span>}
           <TierBadge tier={course.accessLevel} />

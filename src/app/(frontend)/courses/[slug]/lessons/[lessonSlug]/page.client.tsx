@@ -5,6 +5,7 @@ import { LessonNav } from '@/components/LessonNav'
 import { TutorPanel } from '@/components/TutorPanel'
 import RichText from '@/components/RichText'
 import { MessageCircle } from 'lucide-react'
+import { Breadcrumb } from '@/components/Breadcrumb'
 
 type LessonViewerProps = {
   course: any
@@ -38,6 +39,11 @@ const LessonViewerClient: React.FC<LessonViewerProps> = ({
         />
 
         <main className="flex-1 pt-24 pb-24 px-8 max-w-[48rem] mx-auto">
+          <Breadcrumb items={[
+            { label: 'Courses', href: '/courses' },
+            { label: course.title, href: `/courses/${course.slug}` },
+            { label: lesson.title },
+          ]} />
           <div className="mb-1 text-xs text-brand-silver uppercase">
             Module {lesson._moduleIndex} &bull; Lesson {lesson._lessonIndex}
           </div>

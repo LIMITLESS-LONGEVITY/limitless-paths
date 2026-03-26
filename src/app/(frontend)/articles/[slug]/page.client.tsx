@@ -10,6 +10,7 @@ import { TutorPanel } from '@/components/TutorPanel'
 import { Media } from '@/components/Media'
 import { ExpertCard } from '@/components/ExpertCard'
 import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
+import { Breadcrumb } from '@/components/Breadcrumb'
 
 type ArticleClientProps = {
   article: any
@@ -49,6 +50,11 @@ const ArticleClient: React.FC<ArticleClientProps> = ({
             {/* Main Content */}
             <article className="flex-1 min-w-0 max-w-[48rem]">
               <div className="mb-6">
+                <Breadcrumb items={[
+                  { label: 'Articles', href: '/articles' },
+                  ...(pillarName ? [{ label: pillarName, href: `/articles?pillar=${typeof article.pillar === 'object' ? article.pillar?.slug : ''}` }] : []),
+                  { label: article.title },
+                ]} />
                 <div className="flex items-center gap-2 mb-2">
                   {pillarName && (
                     <span className="text-xs font-semibold uppercase text-brand-gold">
