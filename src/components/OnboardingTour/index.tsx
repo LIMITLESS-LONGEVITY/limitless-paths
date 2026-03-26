@@ -102,19 +102,23 @@ export const OnboardingTour: React.FC<{ userId: string }> = ({ userId }) => {
 
   return (
     <div className="fixed inset-0 z-50" aria-modal="true" role="dialog">
-      {/* Overlay */}
-      <div className="fixed inset-0 bg-black/60" onClick={complete} />
+      {/* Click catcher — dismiss on click outside */}
+      <div className="fixed inset-0 z-50" onClick={complete} />
 
-      {/* Spotlight cutout */}
+      {/* Center steps: subtle dim overlay */}
+      {isCenter && <div className="fixed inset-0 z-50 bg-black/30 pointer-events-none" />}
+
+      {/* Spotlight steps: single box-shadow layer creates overlay + cutout in one */}
       {targetRect && !isCenter && (
         <div
-          className="fixed rounded-lg z-[51] pointer-events-none"
+          className="fixed rounded-lg z-[51] pointer-events-none transition-all duration-300 ease-in-out"
           style={{
             top: targetRect.top - padding,
             left: targetRect.left - padding,
             width: targetRect.width + padding * 2,
             height: targetRect.height + padding * 2,
-            boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)',
+            boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
+            border: '2px solid rgba(201, 168, 76, 0.4)',
           }}
         />
       )}
@@ -124,7 +128,7 @@ export const OnboardingTour: React.FC<{ userId: string }> = ({ userId }) => {
         className={cn(
           'fixed z-[52] w-[320px] max-w-[90vw]',
           'rounded-2xl border border-brand-glass-border bg-brand-dark-alt backdrop-blur-md p-5',
-          isCenter && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+          isCenter && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_40px_rgba(201,168,76,0.15)]',
         )}
         style={
           !isCenter && targetRect
