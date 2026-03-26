@@ -32,6 +32,7 @@ describe('Modules and Lessons', () => {
           lastName: 'ModTest',
           role: 'admin',
           tenant: tenantId,
+          _verified: true,
         },
       })
     } catch {
@@ -92,6 +93,7 @@ describe('Modules and Lessons', () => {
         order: 1,
         lessonType: 'text',
         estimatedDuration: 15,
+        tenant: tenantId,
       },
     })
     expect(lesson.title).toBe('Lesson 1: Getting Started')
@@ -115,6 +117,7 @@ describe('Modules and Lessons', () => {
         module: mod.id,
         order: 1,
         lessonType: 'video',
+        tenant: tenantId,
         videoEmbed: {
           platform: 'youtube',
           url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
