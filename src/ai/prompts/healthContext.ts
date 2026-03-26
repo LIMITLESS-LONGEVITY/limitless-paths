@@ -5,18 +5,44 @@
 export function buildHealthContextSection(profile: any): string {
   const sections: string[] = []
 
-  // Biomarkers
+  // Biomarkers (with trend info for multi-entry markers)
   if (profile.biomarkers?.length > 0) {
-    const markers = profile.biomarkers
-      .map((b: any) => {
-        const range =
-          b.normalRangeLow != null && b.normalRangeHigh != null
-            ? `, normal: ${b.normalRangeLow}-${b.normalRangeHigh}`
-            : ''
-        return `${b.name}: ${b.value} ${b.unit} (${b.status.toUpperCase()}${range})`
-      })
-      .join('; ')
-    sections.push(`Biomarkers: ${markers}`)
+    // Group by name to detect trends
+    const grouped: Record<string, Array<{ value: number; date: string; unit: string; status: string; normalRangeLow?: number; normalRangeHigh?: number }>> = {}
+    for (const b of profile.biomarkers) {
+      if (!b.name || b.value == null) continue
+      if (!grouped[b.name]) grouped[b.name] = []
+      grouped[b.name].push(b)
+    }
+
+    const markerDescriptions: string[] = []
+    for (const [name, entries] of Object.entries(grouped)) {
+      // Sort by date ascending
+      entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      const latest = entries[entries.length - 1]
+      const range =
+        latest.normalRangeLow != null && latest.normalRangeHigh != null
+          ? `, normal: ${latest.normalRangeLow}-${latest.normalRangeHigh}`
+          : ''
+
+      let trendInfo = ''
+      if (entries.length >= 2) {
+        const first = entries[0]
+        const change = latest.value - first.value
+        const direction = Math.abs(change) < (first.value * 0.03) ? 'stable' : change > 0 ? '↑' : '↓'
+        const days = Math.round((new Date(latest.date).getTime() - new Date(first.date).getTime()) / (1000 * 60 * 60 * 24))
+        const period = days < 60 ? `${days} days` : `${Math.round(days / 30)} months`
+        trendInfo = direction === 'stable'
+          ? `, trend: stable over ${period}`
+          : `, trend: ${direction} from ${first.value} over ${period}`
+      }
+
+      markerDescriptions.push(
+        `${name}: ${latest.value} ${latest.unit} (${latest.status.toUpperCase()}${range}${trendInfo})`,
+      )
+    }
+
+    sections.push(`Biomarkers: ${markerDescriptions.join('; ')}`)
   }
 
   // Health goals

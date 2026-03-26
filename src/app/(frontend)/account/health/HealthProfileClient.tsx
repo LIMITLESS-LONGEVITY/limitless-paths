@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
 import { Plus, X, ChevronUp, ChevronDown } from 'lucide-react'
+import { BiomarkerTrendsSection } from './BiomarkerTrendsSection'
 
 const BIOMARKER_PRESETS = [
   { name: 'Vitamin D', unit: 'ng/mL', low: 30, high: 100 },
@@ -311,6 +312,9 @@ export default function HealthProfileClient({ existingProfile, pillars, userId }
           </button>
         </div>
       </div>
+
+      {/* Biomarker Trends */}
+      <BiomarkerTrendsSection biomarkers={biomarkers} />
 
       <hr className="border-brand-glass-border" />
 
