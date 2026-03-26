@@ -112,7 +112,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run database migrations
-        run: npx tsx -e "const c = await import('./src/payload.config.ts'); const { getPayload } = await import('payload'); await getPayload({ config: c.default }); console.log('Migrations applied'); process.exit(0);"
+        run: npx tsx scripts/ci-migrate.ts
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test_db
           PAYLOAD_SECRET: ci-test-secret-minimum-32-characters-long
@@ -181,7 +181,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run database migrations
-        run: npx tsx -e "const c = await import('./src/payload.config.ts'); const { getPayload } = await import('payload'); await getPayload({ config: c.default }); console.log('Migrations applied'); process.exit(0);"
+        run: npx tsx scripts/ci-migrate.ts
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test_db
           PAYLOAD_SECRET: ci-test-secret-minimum-32-characters-long
