@@ -3,7 +3,7 @@ import React from 'react'
 
 const TIER_STYLES: Record<string, string> = {
   free: 'text-emerald-500 bg-emerald-500/10',
-  regular: 'text-muted-foreground bg-muted',
+  regular: 'text-brand-silver bg-brand-glass-bg',
   premium: 'text-purple-400 bg-purple-500/10',
   enterprise: 'text-purple-400 bg-purple-500/15',
 }

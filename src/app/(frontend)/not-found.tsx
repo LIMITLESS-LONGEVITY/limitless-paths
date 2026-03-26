@@ -15,12 +15,12 @@ export default function NotFound() {
         style={{ WebkitBackdropFilter: 'blur(12px)' }}
       >
         {/* 404 display */}
-        <p className="font-serif text-8xl font-bold tracking-wide text-brand-gold sm:text-9xl">
+        <p className="font-display text-8xl font-bold tracking-wide text-brand-gold sm:text-9xl">
           404
         </p>
 
         {/* Heading */}
-        <h1 className="mt-4 font-serif text-3xl font-semibold tracking-wide text-brand-light sm:text-4xl">
+        <h1 className="mt-4 font-display text-3xl font-semibold tracking-wide text-brand-light sm:text-4xl">
           Page Not Found
         </h1>
 

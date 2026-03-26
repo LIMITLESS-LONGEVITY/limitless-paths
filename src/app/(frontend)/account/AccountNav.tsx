@@ -25,8 +25,8 @@ export const AccountNav: React.FC = () => {
             className={cn(
               'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors',
               pathname === item.href
-                ? 'bg-amber-500/10 text-amber-500 font-medium'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-brand-gold/10 text-brand-gold font-medium'
+                : 'text-brand-silver hover:text-foreground hover:bg-brand-glass-bg-hover',
             )}
           >
             <item.icon className="w-4 h-4" />
@@ -44,8 +44,8 @@ export const AccountNav: React.FC = () => {
             className={cn(
               'flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors',
               pathname === item.href
-                ? 'bg-amber-500/10 text-amber-500 font-medium'
-                : 'text-muted-foreground hover:text-foreground',
+                ? 'bg-brand-gold/10 text-brand-gold font-medium'
+                : 'text-brand-silver hover:text-foreground',
             )}
           >
             <item.icon className="w-3.5 h-3.5" />

@@ -71,26 +71,26 @@ export const BillingClient: React.FC<{
         </div>
       )}
       {cancelled && (
-        <div className="p-4 bg-muted rounded-lg text-sm text-muted-foreground">
+        <div className="p-4 bg-brand-glass-bg rounded-lg text-sm text-brand-silver">
           Checkout was cancelled. No changes were made.
         </div>
       )}
 
       {/* Current subscription */}
-      <div className="p-5 border border-border rounded-xl">
-        <p className="text-sm text-muted-foreground mb-1">Current plan</p>
+      <div className="p-5 border border-brand-glass-border rounded-xl">
+        <p className="text-sm text-brand-silver mb-1">Current plan</p>
         <p className="text-xl font-bold">{subscription ? subscription.tierName : currentTier.name}</p>
 
         {subscription && (
           <div className="mt-3 space-y-2 text-sm">
-            <p className="text-muted-foreground">
+            <p className="text-brand-silver">
               {subscription.billingInterval === 'yearly' ? 'Yearly' : 'Monthly'} billing
               {subscription.currentPeriodEnd && (
                 <> &middot; Renews {new Date(subscription.currentPeriodEnd).toLocaleDateString()}</>
               )}
             </p>
             {subscription.cancelAtPeriodEnd && (
-              <div className="flex items-center gap-2 text-amber-500">
+              <div className="flex items-center gap-2 text-brand-gold">
                 <AlertTriangle className="w-4 h-4" />
                 Your subscription will end on {new Date(subscription.currentPeriodEnd).toLocaleDateString()}
               </div>
@@ -109,7 +109,7 @@ export const BillingClient: React.FC<{
             onClick={handleManageSubscription}
             disabled={loading === 'portal'}
             className={cn(
-              'mt-4 flex items-center gap-2 px-4 py-2 bg-muted rounded-lg text-sm hover:bg-muted/80 transition-colors',
+              'mt-4 flex items-center gap-2 px-4 py-2 bg-brand-glass-bg rounded-lg text-sm hover:bg-brand-glass-bg-hover transition-colors',
               loading === 'portal' && 'opacity-50 cursor-not-allowed',
             )}
           >
@@ -127,18 +127,18 @@ export const BillingClient: React.FC<{
             {tiers
               .filter((t) => t.accessLevel !== 'free')
               .map((tier) => (
-                <div key={tier.id} className="p-5 border border-border rounded-xl">
+                <div key={tier.id} className="p-5 border border-brand-glass-border rounded-xl">
                   <h4 className="font-semibold mb-1">{tier.name}</h4>
-                  <div className="text-sm text-muted-foreground mb-3">
+                  <div className="text-sm text-brand-silver mb-3">
                     {tier.monthlyPrice != null && <span>${tier.monthlyPrice}/mo</span>}
                     {tier.monthlyPrice != null && tier.yearlyPrice != null && <span> &middot; </span>}
                     {tier.yearlyPrice != null && <span>${tier.yearlyPrice}/yr</span>}
                   </div>
                   {tier.features.length > 0 && (
-                    <ul className="text-xs text-muted-foreground space-y-1 mb-4">
+                    <ul className="text-xs text-brand-silver space-y-1 mb-4">
                       {tier.features.map((f, i) => (
                         <li key={i} className="flex items-start gap-1.5">
-                          <Check className="w-3 h-3 text-amber-500 mt-0.5 flex-shrink-0" />
+                          <Check className="w-3 h-3 text-brand-gold mt-0.5 flex-shrink-0" />
                           {f}
                         </li>
                       ))}
@@ -150,7 +150,7 @@ export const BillingClient: React.FC<{
                         onClick={() => handleSubscribe(tier.id, 'monthly')}
                         disabled={loading !== null}
                         className={cn(
-                          'flex-1 px-3 py-2 bg-amber-500/20 text-amber-500 rounded-lg text-xs font-medium hover:bg-amber-500/30 transition-colors',
+                          'flex-1 px-3 py-2 bg-brand-gold/20 text-brand-gold rounded-lg text-xs font-medium hover:bg-brand-gold/30 transition-colors',
                           loading !== null && 'opacity-50 cursor-not-allowed',
                         )}
                       >
@@ -162,7 +162,7 @@ export const BillingClient: React.FC<{
                         onClick={() => handleSubscribe(tier.id, 'yearly')}
                         disabled={loading !== null}
                         className={cn(
-                          'flex-1 px-3 py-2 bg-amber-500/20 text-amber-500 rounded-lg text-xs font-medium hover:bg-amber-500/30 transition-colors',
+                          'flex-1 px-3 py-2 bg-brand-gold/20 text-brand-gold rounded-lg text-xs font-medium hover:bg-brand-gold/30 transition-colors',
                           loading !== null && 'opacity-50 cursor-not-allowed',
                         )}
                       >

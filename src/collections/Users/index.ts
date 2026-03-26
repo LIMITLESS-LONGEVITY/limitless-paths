@@ -78,6 +78,79 @@ export const Users: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
     },
+    // --- Professional Profile ---
+    {
+      name: 'bio',
+      type: 'textarea',
+      maxLength: 500,
+      admin: {
+        description: 'A short professional bio (max 500 characters)',
+        condition: (data) =>
+          ['contributor', 'editor', 'publisher', 'admin'].includes(data?.role),
+      },
+    },
+    {
+      name: 'expertise',
+      type: 'array',
+      admin: {
+        description: 'Areas of specialization (e.g. "Metabolic Medicine", "Sleep Science")',
+        condition: (data) =>
+          ['contributor', 'editor', 'publisher', 'admin'].includes(data?.role),
+      },
+      fields: [
+        {
+          name: 'area',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'credentials',
+      type: 'array',
+      admin: {
+        description: 'Professional credentials and qualifications',
+        condition: (data) =>
+          ['contributor', 'editor', 'publisher', 'admin'].includes(data?.role),
+      },
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+          required: true,
+          admin: { description: 'e.g. "PhD Longevity Science", "Board Certified Nutritionist"' },
+        },
+        {
+          name: 'institution',
+          type: 'text',
+          admin: { description: 'e.g. "Weizmann Institute", "Harvard Medical School"' },
+        },
+        {
+          name: 'year',
+          type: 'number',
+          admin: { description: 'Year awarded' },
+        },
+      ],
+    },
+    {
+      name: 'linkedIn',
+      type: 'text',
+      admin: {
+        description: 'LinkedIn profile URL',
+        condition: (data) =>
+          ['contributor', 'editor', 'publisher', 'admin'].includes(data?.role),
+      },
+    },
+    {
+      name: 'publicProfile',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'Make your expert profile visible to all users',
+        condition: (data) =>
+          ['contributor', 'editor', 'publisher', 'admin'].includes(data?.role),
+      },
+    },
   ],
   access: {
     create: isAdmin,

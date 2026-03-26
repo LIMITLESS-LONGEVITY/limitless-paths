@@ -9,6 +9,7 @@ import * as migration_20260325_113832 from './20260325_113832';
 import * as migration_20260325_170000_email_verification from './20260325_170000_email_verification';
 import * as migration_20260325_185500_fix_verification_columns from './20260325_185500_fix_verification_columns';
 import * as migration_20260325_190500_verify_existing_users from './20260325_190500_verify_existing_users';
+import * as migration_20260326_120000_expert_profile_fields from './20260326_120000_expert_profile_fields';
 
 export const migrations = [
   {
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20260325_190500_verify_existing_users.up,
     down: migration_20260325_190500_verify_existing_users.down,
     name: '20260325_190500_verify_existing_users',
+  },
+  {
+    up: migration_20260326_120000_expert_profile_fields.up,
+    down: migration_20260326_120000_expert_profile_fields.down,
+    name: '20260326_120000_expert_profile_fields',
   },
 ];

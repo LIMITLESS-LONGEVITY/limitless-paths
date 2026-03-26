@@ -8,6 +8,7 @@ import { LockedContentBanner } from '@/components/LockedContentBanner'
 import RichText from '@/components/RichText'
 import Link from 'next/link'
 import { Clock, BookOpen, CheckCircle2, Circle } from 'lucide-react'
+import { ExpertCard } from '@/components/ExpertCard'
 
 type CourseDetailClientProps = {
   course: any
@@ -28,9 +29,7 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
   useEffect(() => { setHeaderTheme(null) }, [setHeaderTheme])
 
   const pillarName = typeof course.pillar === 'object' ? course.pillar?.name : ''
-  const instructorName = typeof course.instructor === 'object'
-    ? [course.instructor?.firstName, course.instructor?.lastName].filter(Boolean).join(' ')
-    : ''
+  const instructor = typeof course.instructor === 'object' ? course.instructor : null
 
   const modules = Array.isArray(course.modules)
     ? course.modules.filter((m: any) => typeof m === 'object')
@@ -47,12 +46,20 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
         )}
 
         <div className="flex items-center gap-2 mb-2">
-          {pillarName && <span className="text-xs font-semibold uppercase text-amber-500">{pillarName}</span>}
+          {pillarName && <span className="text-xs font-semibold uppercase text-brand-gold">{pillarName}</span>}
           <TierBadge tier={course.accessLevel} />
         </div>
-        <h1 className="text-3xl font-bold mb-2">{course.title}</h1>
-        <div className="flex items-center gap-3 text-sm text-muted-foreground mb-6">
-          {instructorName && <span>By {instructorName}</span>}
+        <h1 className="text-3xl font-display font-light tracking-wide mb-3">{course.title}</h1>
+        <div className="flex flex-wrap items-center gap-4 text-sm text-brand-silver mb-6">
+          {instructor && (
+            <ExpertCard
+              firstName={instructor.firstName}
+              lastName={instructor.lastName}
+              avatar={instructor.avatar}
+              credentials={instructor.credentials}
+              linkedIn={instructor.linkedIn}
+            />
+          )}
           {course.estimatedDuration && (
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
@@ -96,7 +103,7 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
                 ? mod.lessons.filter((l: any) => typeof l === 'object')
                 : []
               return (
-                <div key={mod.id} className="border border-border rounded-lg p-4">
+                <div key={mod.id} className="border border-brand-glass-border rounded-lg p-4">
                   <h3 className="text-sm font-semibold mb-3">
                     Module {i + 1}: {mod.title}
                   </h3>
@@ -109,20 +116,20 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
                           {status === 'completed' ? (
                             <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
                           ) : (
-                            <Circle className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                            <Circle className="w-4 h-4 text-brand-silver flex-shrink-0" />
                           )}
                           {isEnrolled ? (
                             <Link
                               href={`/courses/${course.slug}/lessons/${lesson.slug}`}
-                              className="hover:text-amber-500 transition-colors"
+                              className="hover:text-brand-gold transition-colors"
                             >
                               {lesson.title}
                             </Link>
                           ) : (
-                            <span className="text-muted-foreground">{lesson.title}</span>
+                            <span className="text-brand-silver">{lesson.title}</span>
                           )}
                           {lesson.estimatedDuration && (
-                            <span className="text-xs text-muted-foreground ml-auto">
+                            <span className="text-xs text-brand-silver ml-auto">
                               {lesson.estimatedDuration}m
                             </span>
                           )}

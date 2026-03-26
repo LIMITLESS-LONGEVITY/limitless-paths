@@ -116,11 +116,11 @@ const PageClient: React.FC = () => {
 
       <div className="container">
         {loading && (
-          <p className="text-center text-muted-foreground">Searching...</p>
+          <p className="text-center text-brand-silver">Searching...</p>
         )}
 
         {!loading && searched && results.length === 0 && (
-          <p className="text-center text-muted-foreground">No results found.</p>
+          <p className="text-center text-brand-silver">No results found.</p>
         )}
 
         {results.length > 0 && (

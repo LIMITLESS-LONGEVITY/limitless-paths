@@ -77,7 +77,7 @@ export default async function ArticlesPage({ searchParams }: Args) {
       <div className="container mb-8">
         <div className="prose dark:prose-invert max-w-none">
           <h1>Articles</h1>
-          <p className="text-muted-foreground">
+          <p className="text-brand-silver">
             Expert insights on longevity, nutrition, and performance
           </p>
         </div>

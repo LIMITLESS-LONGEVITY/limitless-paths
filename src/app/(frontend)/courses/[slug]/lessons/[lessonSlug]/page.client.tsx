@@ -38,18 +38,18 @@ const LessonViewerClient: React.FC<LessonViewerProps> = ({
         />
 
         <main className="flex-1 pt-24 pb-24 px-8 max-w-[48rem] mx-auto">
-          <div className="mb-1 text-xs text-muted-foreground uppercase">
+          <div className="mb-1 text-xs text-brand-silver uppercase">
             Module {lesson._moduleIndex} &bull; Lesson {lesson._lessonIndex}
           </div>
-          <h1 className="text-2xl font-bold mb-2">{lesson.title}</h1>
-          <p className="text-sm text-muted-foreground mb-6">
+          <h1 className="text-2xl font-display font-normal tracking-wide mb-2">{lesson.title}</h1>
+          <p className="text-sm text-brand-silver mb-6">
             {lesson.estimatedDuration && `${lesson.estimatedDuration} min`}
             {lesson.lessonType && ` \u00b7 ${lesson.lessonType} lesson`}
           </p>
 
           {/* Video embed */}
           {lesson.videoEmbed?.url && (
-            <div className="aspect-video mb-8 rounded-lg overflow-hidden bg-muted">
+            <div className="aspect-video mb-8 rounded-lg overflow-hidden bg-brand-dark-alt">
               <iframe
                 src={lesson.videoEmbed.platform === 'youtube'
                   ? `https://www.youtube.com/embed/${lesson.videoEmbed.videoId}`
@@ -68,7 +68,7 @@ const LessonViewerClient: React.FC<LessonViewerProps> = ({
           {/* AI Tutor button */}
           <button
             onClick={() => setTutorOpen(true)}
-            className="mt-6 flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-500 rounded-lg text-sm hover:bg-amber-500/20 transition-colors"
+            className="mt-6 flex items-center gap-2 px-4 py-2 bg-brand-gold/10 text-brand-gold rounded-lg text-sm hover:bg-brand-gold/20 transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
             Ask AI Tutor about this lesson

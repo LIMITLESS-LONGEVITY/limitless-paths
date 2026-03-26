@@ -78,7 +78,7 @@ export default async function CoursesPage({ searchParams }: Args) {
       <div className="container mb-8">
         <div className="prose dark:prose-invert max-w-none">
           <h1>Courses</h1>
-          <p className="text-muted-foreground">Structured learning paths for longevity mastery</p>
+          <p className="text-brand-silver">Structured learning paths for longevity mastery</p>
         </div>
       </div>
 

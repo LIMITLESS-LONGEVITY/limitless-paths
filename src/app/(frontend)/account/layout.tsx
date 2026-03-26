@@ -33,7 +33,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
             </p>
           </div>
         )}
-        <h1 className="text-2xl font-bold mb-8">Account</h1>
+        <h1 className="text-2xl font-display font-normal tracking-wide mb-8">Account</h1>
         <div className="flex flex-col lg:flex-row gap-8">
           <AccountNav />
           <div className="flex-1 min-w-0">
