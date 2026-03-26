@@ -13,6 +13,7 @@ describe('Courses collection', () => {
     try {
       adminUser = await payload.create({
         collection: 'users',
+        overrideAccess: true,
         data: {
           email: 'courses-test-admin@test.com',
           password: 'TestPassword123!',
@@ -24,6 +25,7 @@ describe('Courses collection', () => {
     } catch {
       const found = await payload.find({
         collection: 'users',
+        overrideAccess: true,
         where: { email: { equals: 'courses-test-admin@test.com' } },
       })
       adminUser = found.docs[0]
@@ -33,6 +35,7 @@ describe('Courses collection', () => {
   it('creates a course with defaults', async () => {
     const course = await payload.create({
       collection: 'courses',
+      overrideAccess: true,
       data: {
         title: 'Test Course',
         slug: 'test-course-crud',
@@ -47,6 +50,7 @@ describe('Courses collection', () => {
   it('supports versioning', async () => {
     const course = await payload.create({
       collection: 'courses',
+      overrideAccess: true,
       data: {
         title: 'Versioned Course',
         slug: 'test-course-versioned',
@@ -56,11 +60,13 @@ describe('Courses collection', () => {
     await payload.update({
       collection: 'courses',
       id: course.id,
+      overrideAccess: true,
       data: { title: 'Versioned Course v2' },
     })
 
     const versions = await payload.findVersions({
       collection: 'courses',
+      overrideAccess: true,
       where: { parent: { equals: course.id } },
     })
     expect(versions.totalDocs).toBeGreaterThanOrEqual(1)

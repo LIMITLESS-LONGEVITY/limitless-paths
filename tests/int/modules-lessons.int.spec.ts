@@ -14,6 +14,7 @@ describe('Modules and Lessons', () => {
     try {
       adminUser = await payload.create({
         collection: 'users',
+        overrideAccess: true,
         data: {
           email: 'modules-test-admin@test.com',
           password: 'TestPassword123!',
@@ -25,6 +26,7 @@ describe('Modules and Lessons', () => {
     } catch {
       const found = await payload.find({
         collection: 'users',
+        overrideAccess: true,
         where: { email: { equals: 'modules-test-admin@test.com' } },
       })
       adminUser = found.docs[0]
@@ -33,12 +35,14 @@ describe('Modules and Lessons', () => {
     try {
       const course = await payload.create({
         collection: 'courses',
+        overrideAccess: true,
         data: { title: 'Module Test Course', slug: 'module-test-course' },
       })
       courseId = course.id as string
     } catch {
       const found = await payload.find({
         collection: 'courses',
+        overrideAccess: true,
         where: { slug: { equals: 'module-test-course' } },
       })
       courseId = found.docs[0]?.id as string
@@ -48,6 +52,7 @@ describe('Modules and Lessons', () => {
   it('creates a module linked to a course', async () => {
     const mod = await payload.create({
       collection: 'modules',
+      overrideAccess: true,
       data: {
         title: 'Module 1: Introduction',
         course: courseId,
@@ -61,11 +66,13 @@ describe('Modules and Lessons', () => {
   it('creates a text lesson linked to a module', async () => {
     const mod = await payload.create({
       collection: 'modules',
+      overrideAccess: true,
       data: { title: 'Lesson Test Module', course: courseId, order: 2 },
     })
 
     const lesson = await payload.create({
       collection: 'lessons',
+      overrideAccess: true,
       data: {
         title: 'Lesson 1: Getting Started',
         slug: 'lesson-1-getting-started',
@@ -83,11 +90,13 @@ describe('Modules and Lessons', () => {
   it('creates a video lesson with YouTube embed', async () => {
     const mod = await payload.create({
       collection: 'modules',
+      overrideAccess: true,
       data: { title: 'Video Lesson Module', course: courseId, order: 3 },
     })
 
     const lesson = await payload.create({
       collection: 'lessons',
+      overrideAccess: true,
       data: {
         title: 'Video Lesson',
         slug: 'video-lesson-test',

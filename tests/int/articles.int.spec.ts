@@ -15,6 +15,7 @@ describe('Articles collection', () => {
     try {
       adminUser = await payload.create({
         collection: 'users',
+        overrideAccess: true,
         data: {
           email: 'articles-test-admin@test.com',
           password: 'TestPassword123!',
@@ -26,6 +27,7 @@ describe('Articles collection', () => {
     } catch {
       const found = await payload.find({
         collection: 'users',
+        overrideAccess: true,
         where: { email: { equals: 'articles-test-admin@test.com' } },
       })
       adminUser = found.docs[0]
@@ -35,12 +37,14 @@ describe('Articles collection', () => {
     try {
       const pillar = await payload.create({
         collection: 'content-pillars',
+        overrideAccess: true,
         data: { name: 'Test Pillar', slug: 'test-pillar-articles', isActive: true },
       })
       pillarId = pillar.id as string
     } catch {
       const found = await payload.find({
         collection: 'content-pillars',
+        overrideAccess: true,
         where: { slug: { equals: 'test-pillar-articles' } },
       })
       pillarId = found.docs[0]?.id as string
@@ -50,6 +54,7 @@ describe('Articles collection', () => {
   it('creates an article with required fields', async () => {
     const article = await payload.create({
       collection: 'articles',
+      overrideAccess: true,
       data: {
         title: 'Test Article',
         slug: 'test-article-crud',
@@ -67,6 +72,7 @@ describe('Articles collection', () => {
   it('defaults editorialStatus to draft', async () => {
     const article = await payload.create({
       collection: 'articles',
+      overrideAccess: true,
       data: {
         title: 'Default Status',
         slug: 'test-article-default-status',
@@ -80,6 +86,7 @@ describe('Articles collection', () => {
   it('supports versioning', async () => {
     const article = await payload.create({
       collection: 'articles',
+      overrideAccess: true,
       data: {
         title: 'Versioned Article',
         slug: 'test-article-versioned',
@@ -92,11 +99,13 @@ describe('Articles collection', () => {
     await payload.update({
       collection: 'articles',
       id: article.id,
+      overrideAccess: true,
       data: { title: 'Versioned Article v2' },
     })
 
     const versions = await payload.findVersions({
       collection: 'articles',
+      overrideAccess: true,
       where: { parent: { equals: article.id } },
     })
     expect(versions.totalDocs).toBeGreaterThanOrEqual(1)
