@@ -154,16 +154,42 @@ export default function DiagnosticsClient({ isAuthenticated }: { isAuthenticated
               </div>
             </div>
 
-            <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-3xl font-display font-light text-brand-gold">
-                {isAuthenticated ? '€800' : '€1,200'}
-              </span>
+            <div className="mb-6">
               {isAuthenticated ? (
-                <span className="text-xs text-brand-teal font-medium">Member price</span>
+                <>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-3xl font-display font-light text-brand-gold">€800</span>
+                    <span className="text-xs text-brand-teal font-medium tracking-wide uppercase">Member Benefit</span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="text-xs text-brand-silver/50 line-through">€1,200</span>
+                    <span className="text-[10px] text-brand-teal/80">You save €400</span>
+                  </div>
+                </>
               ) : (
-                <span className="text-xs text-brand-silver">
-                  <span className="text-brand-gold">€800</span> for members
-                </span>
+                <>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-3xl font-display font-light text-brand-gold">€800</span>
+                    <span className="text-sm text-brand-silver/60 line-through">€1,200</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 mt-2.5">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-brand-teal/10 text-brand-teal border border-brand-teal/20">
+                      Save €400
+                    </span>
+                    <span className="text-[11px] text-brand-silver/70">with membership</span>
+                  </div>
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center gap-1.5 mt-3 text-xs text-brand-gold hover:text-brand-gold/80 transition-colors group"
+                  >
+                    <span className="border-b border-brand-gold/30 group-hover:border-brand-gold/60 transition-colors">
+                      Become a member for preferred pricing
+                    </span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                      <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                </>
               )}
             </div>
 
@@ -200,16 +226,42 @@ export default function DiagnosticsClient({ isAuthenticated }: { isAuthenticated
               </div>
             </div>
 
-            <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-3xl font-display font-light text-brand-gold">
-                {isAuthenticated ? '€2,500' : '€3,500'}
-              </span>
+            <div className="mb-6">
               {isAuthenticated ? (
-                <span className="text-xs text-brand-teal font-medium">Member price</span>
+                <>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-3xl font-display font-light text-brand-gold">€2,500</span>
+                    <span className="text-xs text-brand-teal font-medium tracking-wide uppercase">Member Benefit</span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="text-xs text-brand-silver/50 line-through">€3,500</span>
+                    <span className="text-[10px] text-brand-teal/80">You save €1,000</span>
+                  </div>
+                </>
               ) : (
-                <span className="text-xs text-brand-silver">
-                  <span className="text-brand-gold">€2,500</span> for members
-                </span>
+                <>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-3xl font-display font-light text-brand-gold">€2,500</span>
+                    <span className="text-sm text-brand-silver/60 line-through">€3,500</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 mt-2.5">
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-brand-teal/10 text-brand-teal border border-brand-teal/20">
+                      Save €1,000
+                    </span>
+                    <span className="text-[11px] text-brand-silver/70">with membership</span>
+                  </div>
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center gap-1.5 mt-3 text-xs text-brand-gold hover:text-brand-gold/80 transition-colors group"
+                  >
+                    <span className="border-b border-brand-gold/30 group-hover:border-brand-gold/60 transition-colors">
+                      Become a member for preferred pricing
+                    </span>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                      <path d="M4.5 2.5L8 6L4.5 9.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </Link>
+                </>
               )}
             </div>
 
@@ -254,8 +306,8 @@ export default function DiagnosticsClient({ isAuthenticated }: { isAuthenticated
                   className={selectClasses}
                 >
                   <option value="" disabled>Select a package</option>
-                  <option value="Comprehensive">Comprehensive — {isAuthenticated ? '€800' : '€1,200'}</option>
-                  <option value="Executive">Executive — {isAuthenticated ? '€2,500' : '€3,500'}</option>
+                  <option value="Comprehensive">Comprehensive — {isAuthenticated ? '€800 (member)' : '€1,200 (€800 for members)'}</option>
+                  <option value="Executive">Executive — {isAuthenticated ? '€2,500 (member)' : '€3,500 (€2,500 for members)'}</option>
                 </select>
               </div>
 
@@ -365,9 +417,9 @@ export default function DiagnosticsClient({ isAuthenticated }: { isAuthenticated
                 {!isAuthenticated && (
                   <>
                     <Link href="/register" className="text-brand-gold hover:underline">
-                      Create an account
+                      Create a free account
                     </Link>{' '}
-                    for member pricing.
+                    to unlock member pricing and save up to €1,000.
                   </>
                 )}
               </p>
