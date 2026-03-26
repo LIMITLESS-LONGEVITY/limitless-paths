@@ -1,16 +1,14 @@
 import type { Endpoint } from 'payload'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
-import { checkRateLimit } from '../../ai/rateLimiter'
 import { logUsage } from '../../ai/usageLogger'
 import { getEffectiveAccessLevels } from '../../utilities/accessLevels'
+import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
 
 export const semanticSearchEndpoint: Endpoint = {
   path: '/ai/search',
   method: 'post',
   handler: async (req) => {
-    const startTime = Date.now()
-
-    // 1. Parse request
+    // Parse request first (before middleware, since search allows unauthenticated)
     const body = (await req.json?.()) as {
       query?: string
       pillar?: string
@@ -21,37 +19,22 @@ export const semanticSearchEndpoint: Endpoint = {
       return Response.json({ error: 'Missing required field: query' }, { status: 400 })
     }
 
-    // 2. Check AI enabled
-    const aiConfig = await req.payload.findGlobal({ slug: 'ai-config', req, overrideAccess: true })
-    if (!aiConfig.enabled) {
-      return Response.json({ error: 'AI features are currently disabled' }, { status: 503 })
-    }
-
-    // 3. Rate limit (authenticated users only)
-    if (req.user) {
-      const role = (req.user.role as string) ?? 'user'
-      const tier = (req.user as any)?.tier?.accessLevel as string ?? 'free'
-      const rateLimitResult = await checkRateLimit(
-        req.user.id as string, 'semantic-search', role, tier,
-        aiConfig.rateLimits as any[],
-      )
-      if (!rateLimitResult.allowed) {
-        return Response.json({
-          error: 'Daily search limit reached. Upgrade your plan for more searches.',
-        }, { status: 429 })
-      }
-    }
+    const ctx = await validateAIRequest(req, 'semantic-search', {
+      allowUnauthenticated: true,
+      rateLimitMessage: 'Daily search limit reached. Upgrade your plan for more searches.',
+    })
+    if (isErrorResponse(ctx)) return ctx
 
     const limit = Math.min(Math.max(body.limit ?? 10, 1), 20)
 
-    // 4. Retrieve chunks
+    // Retrieve chunks
     try {
       const chunks = await retrieveRelevantChunks(
         body.query, req.payload, req,
-        { limit: limit * 2, pillarFilter: body.pillar }, // fetch extra for dedup
+        { limit: limit * 2, pillarFilter: body.pillar },
       )
 
-      // 5. Deduplicate by source document (take highest-scoring chunk per doc)
+      // Deduplicate by source document (take highest-scoring chunk per doc)
       const seen = new Map<string, typeof chunks[0]>()
       for (const chunk of chunks) {
         const key = `${chunk.sourceCollection}:${chunk.sourceId}`
@@ -62,7 +45,7 @@ export const semanticSearchEndpoint: Endpoint = {
 
       const deduped = Array.from(seen.values()).slice(0, limit)
 
-      // 6. Compute locked status for each result
+      // Compute locked status for each result
       const userLevels = req.user
         ? getEffectiveAccessLevels(
             (req.user as any)?.tier?.accessLevel ?? null,
@@ -72,7 +55,7 @@ export const semanticSearchEndpoint: Endpoint = {
 
       const results = deduped.map((chunk) => ({
         title: chunk.sourceTitle,
-        slug: '', // Will need to fetch from source doc
+        slug: '',
         collection: chunk.sourceCollection,
         accessLevel: chunk.accessLevel,
         locked: !userLevels.includes(chunk.accessLevel as any),
@@ -80,14 +63,14 @@ export const semanticSearchEndpoint: Endpoint = {
         relevanceScore: chunk.relevanceScore,
       }))
 
-      // 7. Log usage
+      // Log usage
       logUsage(req, {
         feature: 'semantic-search',
         provider: 'jina',
         model: 'jina-embeddings-v3',
         inputTokens: Math.ceil(body.query.length / 4),
         outputTokens: 0,
-        durationMs: Date.now() - startTime,
+        durationMs: Date.now() - ctx.startTime,
       })
 
       return Response.json({ results })
