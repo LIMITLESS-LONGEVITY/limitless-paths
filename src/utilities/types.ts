@@ -39,11 +39,24 @@ export function getUserAccessLevel(user: User | UserWithRelations | null | undef
 /**
  * Get the tenant's content access level from a user with populated tenants.
  * Returns the first tenant's contentAccessLevel, or null if not available.
+ *
+ * Checks both the flat `tenant` property (added by multi-tenant plugin at runtime)
+ * and the `tenants[0].tenant` array form (from the User schema).
  */
 export function getUserTenantAccessLevel(
   user: User | UserWithRelations | null | undefined,
 ): string | null {
-  if (!user?.tenants?.[0]) return null
+  if (!user) return null
+
+  // Multi-tenant plugin adds a flat `tenant` property to req.user at runtime
+  const flatTenant = (user as Record<string, unknown>).tenant
+  if (flatTenant != null && typeof flatTenant === 'object') {
+    const level = (flatTenant as Record<string, unknown>).contentAccessLevel
+    if (typeof level === 'string') return level
+  }
+
+  // Fall back to tenants array form
+  if (!user.tenants?.[0]) return null
   const tenant = user.tenants[0].tenant
   if (tenant != null && typeof tenant === 'object') return tenant.contentAccessLevel ?? null
   return null
