@@ -12,6 +12,7 @@ import { SearchIcon } from 'lucide-react'
 const CONTENT_NAV = [
   { href: '/courses', label: 'Courses' },
   { href: '/articles', label: 'Articles' },
+  { href: '/guide', label: 'Guide' },
 ]
 
 export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ data, mobile }) => {
