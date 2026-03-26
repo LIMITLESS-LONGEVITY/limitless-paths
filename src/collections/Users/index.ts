@@ -158,6 +158,24 @@ export const Users: CollectionConfig = {
       defaultValue: false,
       admin: { position: 'sidebar' },
     },
+    // --- Streaks ---
+    {
+      name: 'currentStreak',
+      type: 'number',
+      defaultValue: 0,
+      admin: { readOnly: true, position: 'sidebar', description: 'Consecutive days of lesson completions' },
+    },
+    {
+      name: 'longestStreak',
+      type: 'number',
+      defaultValue: 0,
+      admin: { readOnly: true, position: 'sidebar', description: 'Longest streak achieved' },
+    },
+    {
+      name: 'lastActivityDate',
+      type: 'date',
+      admin: { readOnly: true, position: 'sidebar', description: 'Last day a lesson was completed' },
+    },
   ],
   access: {
     create: isAdmin,

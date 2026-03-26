@@ -16,6 +16,8 @@ import * as migration_20260327_110000_action_plans from './20260327_110000_actio
 import * as migration_20260327_120000_daily_protocols from './20260327_120000_daily_protocols';
 import * as migration_20260327_130000_certificates from './20260327_130000_certificates';
 import * as migration_20260327_140000_tenant_certification from './20260327_140000_tenant_certification';
+import * as migration_20260327_150000_streak_fields from './20260327_150000_streak_fields';
+import * as migration_20260327_160000_certificates_tenant from './20260327_160000_certificates_tenant';
 
 export const migrations = [
   {
@@ -107,5 +109,15 @@ export const migrations = [
     up: migration_20260327_140000_tenant_certification.up,
     down: migration_20260327_140000_tenant_certification.down,
     name: '20260327_140000_tenant_certification',
+  },
+  {
+    up: migration_20260327_150000_streak_fields.up,
+    down: migration_20260327_150000_streak_fields.down,
+    name: '20260327_150000_streak_fields',
+  },
+  {
+    up: migration_20260327_160000_certificates_tenant.up,
+    down: migration_20260327_160000_certificates_tenant.down,
+    name: '20260327_160000_certificates_tenant',
   },
 ];

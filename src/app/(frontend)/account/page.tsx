@@ -118,6 +118,8 @@ export default async function DashboardPage() {
       showOnboarding={!user.hasCompletedOnboarding}
       userId={user.id}
       hasEnrollments={enrollments.docs.length > 0}
+      currentStreak={(user.currentStreak as number) || 0}
+      longestStreak={(user.longestStreak as number) || 0}
     />
   )
 }

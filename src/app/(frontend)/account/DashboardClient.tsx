@@ -1,11 +1,12 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import { cn } from '@/utilities/ui'
 import { GlassCard } from '@/components/homepage/GlassCard'
 import { CTAButton } from '@/components/homepage/CTAButton'
 import { TierBadge } from '@/components/TierBadge'
 import { Media } from '@/components/Media'
-import { BookOpen, FileText, Sparkles, GraduationCap, CheckCircle2, Trophy } from 'lucide-react'
+import { BookOpen, FileText, Sparkles, GraduationCap, CheckCircle2, Trophy, Flame } from 'lucide-react'
 import { OnboardingTour } from '@/components/OnboardingTour'
 import { DailyProtocolWidget } from '@/components/DailyProtocolWidget'
 
@@ -48,6 +49,8 @@ type DashboardProps = {
   showOnboarding?: boolean
   userId?: string
   hasEnrollments?: boolean
+  currentStreak?: number
+  longestStreak?: number
 }
 
 function timeAgo(dateStr: string): string {
@@ -72,6 +75,8 @@ export default function DashboardClient({
   showOnboarding,
   userId,
   hasEnrollments,
+  currentStreak = 0,
+  longestStreak = 0,
 }: DashboardProps) {
   return (
     <div className="space-y-8">
@@ -88,7 +93,7 @@ export default function DashboardClient({
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <GlassCard hover={false} className="p-4 md:p-5 text-center">
           <GraduationCap className="w-5 h-5 text-brand-teal mx-auto mb-2" />
           <p className="text-2xl font-display font-light text-brand-light">{stats.coursesEnrolled}</p>
@@ -103,6 +108,14 @@ export default function DashboardClient({
           <Trophy className="w-5 h-5 text-brand-gold mx-auto mb-2" />
           <p className="text-2xl font-display font-light text-brand-light">{stats.coursesCompleted}</p>
           <p className="text-[11px] text-brand-silver mt-0.5">Courses Completed</p>
+        </GlassCard>
+        <GlassCard hover={false} className="p-4 md:p-5 text-center">
+          <Flame className={cn('w-5 h-5 mx-auto mb-2', currentStreak > 0 ? 'text-brand-gold' : 'text-brand-silver/40')} />
+          <p className="text-2xl font-display font-light text-brand-light">{currentStreak}</p>
+          <p className="text-[11px] text-brand-silver mt-0.5">Day Streak</p>
+          {longestStreak > 0 && (
+            <p className="text-[9px] text-brand-silver/50 mt-0.5">Best: {longestStreak}</p>
+          )}
         </GlassCard>
       </div>
 

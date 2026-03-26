@@ -126,13 +126,32 @@ export const BillingClient: React.FC<{
           <div className="grid gap-4 sm:grid-cols-2">
             {tiers
               .filter((t) => t.accessLevel !== 'free')
-              .map((tier) => (
-                <div key={tier.id} className="p-5 border border-brand-glass-border rounded-xl">
+              .map((tier) => {
+                const isPremium = tier.accessLevel === 'premium'
+                const yearlySavings = tier.monthlyPrice && tier.yearlyPrice
+                  ? Math.round((1 - tier.yearlyPrice / (tier.monthlyPrice * 12)) * 100)
+                  : 0
+
+                return (
+                <div key={tier.id} className={cn(
+                  'p-5 rounded-xl relative',
+                  isPremium
+                    ? 'border-2 border-brand-gold/30 bg-brand-gold-dim'
+                    : 'border border-brand-glass-border',
+                )}>
+                  {isPremium && (
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-gold text-brand-dark">
+                      Recommended
+                    </span>
+                  )}
                   <h4 className="font-semibold mb-1">{tier.name}</h4>
                   <div className="text-sm text-brand-silver mb-3">
                     {tier.monthlyPrice != null && <span>${tier.monthlyPrice}/mo</span>}
                     {tier.monthlyPrice != null && tier.yearlyPrice != null && <span> &middot; </span>}
                     {tier.yearlyPrice != null && <span>${tier.yearlyPrice}/yr</span>}
+                    {yearlySavings > 0 && (
+                      <span className="ml-2 text-[10px] text-brand-teal font-medium">Save {yearlySavings}%</span>
+                    )}
                   </div>
                   {tier.features.length > 0 && (
                     <ul className="text-xs text-brand-silver space-y-1 mb-4">
@@ -171,7 +190,8 @@ export const BillingClient: React.FC<{
                     )}
                   </div>
                 </div>
-              ))}
+                )
+              })}
           </div>
         </div>
       )}
