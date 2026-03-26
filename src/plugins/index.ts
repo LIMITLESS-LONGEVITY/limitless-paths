@@ -32,7 +32,6 @@ export const plugins: Plugin[] = [
       courses: {},
       modules: {},
       lessons: {},
-      certificates: {},
     },
     tenantsSlug: 'tenants',
     cleanupAfterTenantDelete: true,
