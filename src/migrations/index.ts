@@ -10,6 +10,7 @@ import * as migration_20260325_170000_email_verification from './20260325_170000
 import * as migration_20260325_185500_fix_verification_columns from './20260325_185500_fix_verification_columns';
 import * as migration_20260325_190500_verify_existing_users from './20260325_190500_verify_existing_users';
 import * as migration_20260326_120000_expert_profile_fields from './20260326_120000_expert_profile_fields';
+import * as migration_20260326_140000_add_onboarding_field from './20260326_140000_add_onboarding_field';
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20260326_120000_expert_profile_fields.up,
     down: migration_20260326_120000_expert_profile_fields.down,
     name: '20260326_120000_expert_profile_fields',
+  },
+  {
+    up: migration_20260326_140000_add_onboarding_field.up,
+    down: migration_20260326_140000_add_onboarding_field.down,
+    name: '20260326_140000_add_onboarding_field',
   },
 ];

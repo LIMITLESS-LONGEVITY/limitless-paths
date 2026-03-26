@@ -9,6 +9,7 @@ import { TierBadge } from '@/components/TierBadge'
 import { TutorPanel } from '@/components/TutorPanel'
 import { Media } from '@/components/Media'
 import { ExpertCard } from '@/components/ExpertCard'
+import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
 
 type ArticleClientProps = {
   article: any
@@ -91,9 +92,14 @@ const ArticleClient: React.FC<ArticleClientProps> = ({
                   <LockedContentBanner tierRequired={article.accessLevel} />
                 </>
               ) : (
-                <div ref={contentRef}>
-                  <RichText data={article.content} enableGutter={false} />
-                </div>
+                <>
+                  <div ref={contentRef}>
+                    <RichText data={article.content} enableGutter={false} />
+                  </div>
+                  <div className="mt-12">
+                    <DiagnosticUpsell context="article" pillarName={pillarName} />
+                  </div>
+                </>
               )}
             </article>
           </div>

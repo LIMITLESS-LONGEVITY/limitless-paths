@@ -9,6 +9,7 @@ import RichText from '@/components/RichText'
 import Link from 'next/link'
 import { Clock, BookOpen, CheckCircle2, Circle } from 'lucide-react'
 import { ExpertCard } from '@/components/ExpertCard'
+import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
 
 type CourseDetailClientProps = {
   course: any
@@ -140,6 +141,13 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
                 </div>
               )
             })}
+          </div>
+        )}
+
+        {/* Diagnostic upsell for completed courses */}
+        {enrollState === 'completed' && (
+          <div className="mt-12">
+            <DiagnosticUpsell context="course-completion" pillarName={pillarName} />
           </div>
         )}
       </div>

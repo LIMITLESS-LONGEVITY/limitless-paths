@@ -6,6 +6,7 @@ import { CTAButton } from '@/components/homepage/CTAButton'
 import { TierBadge } from '@/components/TierBadge'
 import { Media } from '@/components/Media'
 import { BookOpen, FileText, Sparkles, GraduationCap, CheckCircle2, Trophy } from 'lucide-react'
+import { OnboardingTour } from '@/components/OnboardingTour'
 
 type ActiveEnrollment = {
   id: string
@@ -43,6 +44,8 @@ type DashboardProps = {
     lessonsCompleted: number
     coursesCompleted: number
   }
+  showOnboarding?: boolean
+  userId?: string
 }
 
 function timeAgo(dateStr: string): string {
@@ -64,9 +67,12 @@ export default function DashboardClient({
   completedEnrollments,
   recentActivity,
   stats,
+  showOnboarding,
+  userId,
 }: DashboardProps) {
   return (
     <div className="space-y-8">
+      {showOnboarding && userId && <OnboardingTour userId={userId} />}
       {/* Welcome Header */}
       <div className="flex items-center justify-between">
         <div>

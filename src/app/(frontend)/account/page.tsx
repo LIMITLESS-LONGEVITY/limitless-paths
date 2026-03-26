@@ -115,6 +115,8 @@ export default async function DashboardPage() {
         lessonsCompleted: completedLessons.totalDocs,
         coursesCompleted: completedEnrollments.length,
       }}
+      showOnboarding={!user.hasCompletedOnboarding}
+      userId={user.id}
     />
   )
 }

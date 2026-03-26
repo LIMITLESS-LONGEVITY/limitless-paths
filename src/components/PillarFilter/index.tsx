@@ -12,7 +12,9 @@ type Pillar = {
 export const PillarFilter: React.FC<{
   pillars: Pillar[]
   basePath: string
-}> = ({ pillars, basePath }) => {
+  counts?: Record<string, number>
+  totalCount?: number
+}> = ({ pillars, basePath, counts, totalCount }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const activePillar = searchParams.get('pillar')
@@ -36,7 +38,7 @@ export const PillarFilter: React.FC<{
             : 'bg-brand-glass-bg text-brand-silver hover:bg-brand-glass-bg-hover',
         )}
       >
-        All
+        All{totalCount != null && <span className="ml-1 opacity-60">({totalCount})</span>}
       </button>
       {pillars.map((pillar) => (
         <button
@@ -49,7 +51,7 @@ export const PillarFilter: React.FC<{
               : 'bg-brand-glass-bg text-brand-silver hover:bg-brand-glass-bg-hover',
           )}
         >
-          {pillar.name}
+          {pillar.name}{counts?.[pillar.id] != null && <span className="ml-1 opacity-60">({counts[pillar.id]})</span>}
         </button>
       ))}
     </div>

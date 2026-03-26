@@ -151,6 +151,13 @@ export const Users: CollectionConfig = {
           ['contributor', 'editor', 'publisher', 'admin'].includes(data?.role),
       },
     },
+    // --- Onboarding ---
+    {
+      name: 'hasCompletedOnboarding',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { position: 'sidebar' },
+    },
   ],
   access: {
     create: isAdmin,
