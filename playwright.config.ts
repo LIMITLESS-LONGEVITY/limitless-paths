@@ -21,7 +21,11 @@ export default defineConfig({
     },
     {
       name: 'mobile',
-      use: { ...devices['iPhone 13'] },
+      use: {
+        ...devices['iPhone 13'],
+        // Use Chromium instead of WebKit — CI only installs Chromium
+        browserName: 'chromium',
+      },
       testMatch: '**/mobile.e2e.spec.ts',
     },
   ],
