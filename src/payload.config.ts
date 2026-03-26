@@ -47,6 +47,7 @@ import { registerEndpoint } from './endpoints/auth/register'
 import { contactSalesEndpoint } from './endpoints/contact-sales'
 import { diagnosticBookingEndpoint } from './endpoints/diagnostic-booking'
 import { stayBookingEndpoint } from './endpoints/stay-booking'
+import { telemedicineBookingEndpoint } from './endpoints/telemedicine-booking'
 import { discoverEndpoint } from './endpoints/ai/discover'
 import { actionPlanEndpoint } from './endpoints/ai/actionPlan'
 import { dailyProtocolEndpoint } from './endpoints/ai/dailyProtocol'
@@ -111,7 +112,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents, HealthProfiles, ActionPlans, DailyProtocols, Certificates],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint, diagnosticBookingEndpoint, stayBookingEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint],
+  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint, diagnosticBookingEndpoint, stayBookingEndpoint, telemedicineBookingEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
