@@ -45,6 +45,10 @@ jobs:
         run: pnpm lint
         continue-on-error: true  # ESLint has a pre-existing config issue — don't block CI until fixed
 
+      - name: TypeScript check
+        run: npx tsc --noEmit --skipLibCheck
+        continue-on-error: true  # Payload db adapter has type drift — track but don't block
+
       - name: Run unit tests (no DB required)
         run: pnpm vitest run tests/int/editorial-workflow.int.spec.ts tests/int/access-control.int.spec.ts tests/int/ai-provider.int.spec.ts tests/int/ai-rate-limiter.int.spec.ts tests/int/ai-guardrails.int.spec.ts tests/int/ai-prompts.int.spec.ts tests/int/enrollments.int.spec.ts tests/int/lesson-progress.int.spec.ts tests/int/course-reference-bypass.int.spec.ts tests/int/stripe-service.int.spec.ts tests/int/billing-logic.int.spec.ts tests/int/chunker.int.spec.ts
         env:

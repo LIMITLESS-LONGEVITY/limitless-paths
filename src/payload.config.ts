@@ -55,6 +55,10 @@ import { dailyProtocolStatusEndpoint } from './endpoints/ai/dailyProtocolStatus'
 import { resendVerificationEndpoint } from './endpoints/auth/resend-verification'
 import { migrations } from './migrations'
 import { getServerSideURL } from './utilities/getURL'
+import { validateEnv } from './utilities/validateEnv'
+
+// Validate environment variables at startup
+validateEnv()
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -91,15 +95,13 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  ...(process.env.CI !== 'true'
-    ? {
-        email: resendAdapter({
-          defaultFromAddress: process.env.RESEND_FROM_ADDRESS || 'info@limitless-longevity.health',
-          defaultFromName: 'PATHS by LIMITLESS',
-          apiKey: process.env.RESEND_API_KEY || '',
-        }),
-      }
-    : {}),
+  email: process.env.CI !== 'true'
+    ? resendAdapter({
+        defaultFromAddress: process.env.RESEND_FROM_ADDRESS || 'info@limitless-longevity.health',
+        defaultFromName: 'PATHS by LIMITLESS',
+        apiKey: process.env.RESEND_API_KEY || '',
+      })
+    : undefined as any,
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,
