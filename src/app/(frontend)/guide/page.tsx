@@ -41,7 +41,7 @@ const roleAccentColors: Record<string, string> = {
 
 export default function GuidePage() {
   return (
-    <div className="pt-24 pb-16 px-6 lg:px-12">
+    <div className="pb-16 px-6 lg:px-12 pt-8">
       <div className="max-w-4xl">
         {/* Header */}
         <h1 className="text-4xl font-display font-bold text-foreground mb-3">

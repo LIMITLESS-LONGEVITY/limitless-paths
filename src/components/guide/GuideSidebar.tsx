@@ -122,8 +122,8 @@ export const GuideSidebar: React.FC = () => {
 
   return (
     <>
-      <aside className="w-[260px] flex-shrink-0 hidden lg:block bg-card/50 border-r border-border">
-        <div className="sticky top-0 h-screen overflow-y-auto p-4 pt-24">
+      <aside className="w-[260px] flex-shrink-0 hidden lg:block border-r border-border">
+        <div className="sticky top-24 max-h-[calc(100vh-6rem)] overflow-y-auto p-4">
           {sidebarContent}
         </div>
       </aside>

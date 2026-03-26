@@ -12,11 +12,13 @@ export const metadata: Metadata = {
 
 export default function GuideLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen">
-      <GuideSidebar />
-      <main className="flex-1 min-w-0">
-        {children}
-      </main>
+    <div className="min-h-screen pt-24">
+      <div className="container mx-auto flex">
+        <GuideSidebar />
+        <main className="flex-1 min-w-0">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

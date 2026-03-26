@@ -44,7 +44,7 @@ export default async function TopicPage({ params }: Args) {
   const nextTopic = topicIndex < role.topics.length - 1 ? role.topics[topicIndex + 1] : null
 
   return (
-    <div className="pt-24 pb-16 px-6 lg:px-12">
+    <div className="pb-16 px-6 lg:px-12 pt-8">
       <div className="max-w-3xl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-6">
