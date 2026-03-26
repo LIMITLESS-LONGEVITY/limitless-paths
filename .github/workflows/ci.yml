@@ -117,6 +117,7 @@ jobs:
           DATABASE_URL: postgresql://test:test@localhost:5432/test_db
           PAYLOAD_SECRET: ci-test-secret-minimum-32-characters-long
           NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+          RESEND_API_KEY: re_fake_not_real
 
       - name: Run integration tests (DB required)
         run: pnpm vitest run tests/int/articles.int.spec.ts tests/int/courses.int.spec.ts tests/int/modules-lessons.int.spec.ts tests/int/access-matrix.int.spec.ts tests/int/multi-tenant.int.spec.ts tests/int/enrollment-flow.int.spec.ts tests/int/api.int.spec.ts
@@ -185,6 +186,7 @@ jobs:
           DATABASE_URL: postgresql://test:test@localhost:5432/test_db
           PAYLOAD_SECRET: ci-test-secret-minimum-32-characters-long
           NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+          RESEND_API_KEY: re_fake_not_real
           REDIS_URL: redis://localhost:6379
 
       - name: Install Playwright chromium
