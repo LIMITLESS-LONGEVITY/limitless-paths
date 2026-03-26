@@ -2,18 +2,16 @@ import { cn } from '@/utilities/ui'
 import React from 'react'
 
 const TIER_STYLES: Record<string, string> = {
-  free: 'text-muted-foreground',
+  free: 'text-emerald-500 bg-emerald-500/10',
   regular: 'text-muted-foreground bg-muted',
-  premium: 'text-amber-500 bg-amber-500/10',
-  enterprise: 'text-amber-500 bg-amber-500/15',
+  premium: 'text-purple-400 bg-purple-500/10',
+  enterprise: 'text-purple-400 bg-purple-500/15',
 }
 
 export const TierBadge: React.FC<{
   tier: string
   className?: string
 }> = ({ tier, className }) => {
-  if (tier === 'free') return null
-
   return (
     <span
       className={cn(
