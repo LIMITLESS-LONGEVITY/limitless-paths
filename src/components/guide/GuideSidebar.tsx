@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import { MobileSidebar } from '@/components/MobileSidebar'
+import { GuideSearch } from './GuideSearch'
 import { guideRoles } from '../../../content/guide/manifest'
 import {
   ChevronDown,
@@ -57,11 +58,13 @@ export const GuideSidebar: React.FC = () => {
     <div>
       <Link
         href="/guide"
-        className="flex items-center gap-2 text-sm font-bold hover:text-brand-gold transition-colors mb-6"
+        className="flex items-center gap-2 text-sm font-bold hover:text-brand-gold transition-colors mb-4"
       >
         <BookOpen className="w-4 h-4" />
         Platform Guide
       </Link>
+
+      <GuideSearch className="mb-4" />
 
       <div className="space-y-1">
         {guideRoles.map((role) => {
