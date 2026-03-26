@@ -47,7 +47,7 @@ export async function Footer() {
               Evidence-based longevity education for executives and high-performers.
             </p>
             <p className="text-brand-silver/50 text-[10px]">
-              &copy; {new Date().getFullYear()} Limitless Longevity Consultancy.
+              &copy; {new Date().getFullYear()} Limitless Longevity.
               <br />All rights reserved.
             </p>
           </div>
