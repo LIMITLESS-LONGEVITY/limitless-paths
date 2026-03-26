@@ -43,6 +43,7 @@ import { registerEndpoint } from './endpoints/auth/register'
 import { contactSalesEndpoint } from './endpoints/contact-sales'
 import { diagnosticBookingEndpoint } from './endpoints/diagnostic-booking'
 import { resendVerificationEndpoint } from './endpoints/auth/resend-verification'
+import { migrations } from './migrations'
 import { getServerSideURL } from './utilities/getURL'
 
 const filename = fileURLToPath(import.meta.url)
@@ -90,6 +91,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL,
     },
     push: false,
+    prodMigrations: migrations,
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents],
   cors: [getServerSideURL()].filter(Boolean),
