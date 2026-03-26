@@ -117,6 +117,7 @@ export default async function DashboardPage() {
       }}
       showOnboarding={!user.hasCompletedOnboarding}
       userId={user.id}
+      hasEnrollments={enrollments.docs.length > 0}
     />
   )
 }

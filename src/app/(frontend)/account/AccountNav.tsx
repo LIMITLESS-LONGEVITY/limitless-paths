@@ -3,11 +3,13 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/ui'
-import { LayoutDashboard, User, CreditCard, BookOpen } from 'lucide-react'
+import { LayoutDashboard, User, Heart, ClipboardList, CreditCard, BookOpen } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/account', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/account/profile', label: 'Profile', icon: User },
+  { href: '/account/health', label: 'Health Profile', icon: Heart },
+  { href: '/account/plans', label: 'Action Plans', icon: ClipboardList },
   { href: '/account/billing', label: 'Billing', icon: CreditCard },
   { href: '/account/courses', label: 'My Courses', icon: BookOpen },
 ]
@@ -37,7 +39,7 @@ export const AccountNav: React.FC = () => {
       </div>
 
       {/* Mobile: horizontal tabs */}
-      <div className="flex lg:hidden gap-1 border-b border-border pb-4 mb-4">
+      <div className="flex lg:hidden gap-1 border-b border-border pb-4 mb-4 overflow-x-auto flex-nowrap">
         {NAV_ITEMS.map((item) => (
           <Link
             key={item.href}

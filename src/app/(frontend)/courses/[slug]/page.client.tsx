@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Clock, BookOpen, CheckCircle2, Circle } from 'lucide-react'
 import { ExpertCard } from '@/components/ExpertCard'
 import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
+import { ActionPlanCTA } from '@/components/ActionPlanCTA'
 
 type CourseDetailClientProps = {
   course: any
@@ -17,6 +18,7 @@ type CourseDetailClientProps = {
   completionPercentage?: number
   nextLessonHref?: string
   lessonProgress?: Record<string, string> // lessonId -> status
+  enrollmentId?: string
 }
 
 const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
@@ -25,6 +27,7 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
   completionPercentage,
   nextLessonHref,
   lessonProgress,
+  enrollmentId,
 }) => {
   const { setHeaderTheme } = useHeaderTheme()
   useEffect(() => { setHeaderTheme(null) }, [setHeaderTheme])
@@ -144,9 +147,14 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
           </div>
         )}
 
-        {/* Diagnostic upsell for completed courses */}
-        {enrollState === 'completed' && (
+        {/* Action plan + diagnostic upsell for completed courses */}
+        {enrollState === 'completed' && enrollmentId && (
           <div className="mt-12">
+            <ActionPlanCTA enrollmentId={enrollmentId} courseTitle={course.title} pillarName={pillarName} />
+          </div>
+        )}
+        {enrollState === 'completed' && (
+          <div className="mt-8">
             <DiagnosticUpsell context="course-completion" pillarName={pillarName} />
           </div>
         )}

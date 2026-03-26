@@ -7,6 +7,7 @@ import { TierBadge } from '@/components/TierBadge'
 import { Media } from '@/components/Media'
 import { BookOpen, FileText, Sparkles, GraduationCap, CheckCircle2, Trophy } from 'lucide-react'
 import { OnboardingTour } from '@/components/OnboardingTour'
+import { DailyProtocolWidget } from '@/components/DailyProtocolWidget'
 
 type ActiveEnrollment = {
   id: string
@@ -46,6 +47,7 @@ type DashboardProps = {
   }
   showOnboarding?: boolean
   userId?: string
+  hasEnrollments?: boolean
 }
 
 function timeAgo(dateStr: string): string {
@@ -69,6 +71,7 @@ export default function DashboardClient({
   stats,
   showOnboarding,
   userId,
+  hasEnrollments,
 }: DashboardProps) {
   return (
     <div className="space-y-8">
@@ -102,6 +105,9 @@ export default function DashboardClient({
           <p className="text-[11px] text-brand-silver mt-0.5">Courses Completed</p>
         </GlassCard>
       </div>
+
+      {/* Daily Protocol */}
+      {hasEnrollments && <DailyProtocolWidget tierAccess={tierAccess} />}
 
       {/* Active Courses */}
       {activeEnrollments.length > 0 && (
