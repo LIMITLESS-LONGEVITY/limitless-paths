@@ -1,6 +1,6 @@
 import React from 'react'
 import { cn } from '@/utilities/ui'
-import { Info, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react'
+import { Info, AlertTriangle, CheckCircle2, Lightbulb, AlertCircle } from 'lucide-react'
 
 const calloutStyles = {
   info: {
@@ -22,6 +22,11 @@ const calloutStyles = {
     container: 'border-brand-gold/30 bg-brand-gold/5',
     icon: <Lightbulb className="w-5 h-5 text-brand-gold flex-shrink-0" />,
     title: 'text-brand-gold',
+  },
+  important: {
+    container: 'border-red-500/30 bg-red-500/5',
+    icon: <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />,
+    title: 'text-red-500',
   },
 }
 

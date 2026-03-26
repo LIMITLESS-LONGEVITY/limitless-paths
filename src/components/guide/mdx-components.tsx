@@ -6,6 +6,8 @@ import { RoleTag } from './RoleTag'
 import { CodeBlock } from './CodeBlock'
 import { Tabs, TabList, Tab, TabPanel } from './Tabs'
 import { Accordion, AccordionItem } from './Accordion'
+import { KeyboardShortcut } from './KeyboardShortcut'
+import { VideoEmbed } from './VideoEmbed'
 
 export const guideComponents = {
   Screenshot,
@@ -19,6 +21,8 @@ export const guideComponents = {
   TabPanel,
   Accordion,
   AccordionItem,
+  KeyboardShortcut,
+  VideoEmbed,
   // Override default HTML elements for consistent styling
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1 className="text-3xl font-display font-bold text-foreground mb-4 mt-8 first:mt-0" {...props} />

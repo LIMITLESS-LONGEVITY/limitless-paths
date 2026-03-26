@@ -6,6 +6,7 @@ import { getRoleBySlug, getTopicBySlug } from '../../../../../../content/guide/m
 import { getGuideContent } from '@/utilities/mdx'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { TopicContent } from './TopicContent'
+import { GuideFeedback } from '@/components/guide/GuideFeedback'
 
 export const dynamic = 'force-dynamic'
 
@@ -75,6 +76,9 @@ export default async function TopicPage({ params }: Args) {
             </p>
           </div>
         )}
+
+        {/* Feedback */}
+        {guideContent && <GuideFeedback />}
 
         {/* Prev/Next navigation */}
         <div className="mt-12 pt-6 border-t border-border flex items-center justify-between gap-4">
