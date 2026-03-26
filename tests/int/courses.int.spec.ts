@@ -4,11 +4,21 @@ import { describe, it, beforeAll, expect } from 'vitest'
 
 let payload: Payload
 let adminUser: any
+let tenantId: number | string
 
 describe('Courses collection', () => {
   beforeAll(async () => {
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
+
+    // Ensure a tenant exists (required by multi-tenant plugin)
+    const tenants = await payload.find({ collection: 'tenants', overrideAccess: true, limit: 1 })
+    if (tenants.totalDocs === 0) {
+      const t = await payload.create({ collection: 'tenants', overrideAccess: true, data: { name: 'Test Tenant', slug: 'test-tenant' } })
+      tenantId = t.id
+    } else {
+      tenantId = tenants.docs[0].id
+    }
 
     try {
       adminUser = await payload.create({
@@ -20,6 +30,7 @@ describe('Courses collection', () => {
           firstName: 'Admin',
           lastName: 'CourseTest',
           role: 'admin',
+          tenant: tenantId,
         },
       })
     } catch {
@@ -40,6 +51,7 @@ describe('Courses collection', () => {
         title: 'Test Course',
         slug: 'test-course-crud',
         instructor: adminUser.id,
+        tenant: tenantId,
       },
     })
     expect(course.title).toBe('Test Course')
@@ -54,6 +66,7 @@ describe('Courses collection', () => {
       data: {
         title: 'Versioned Course',
         slug: 'test-course-versioned',
+        tenant: tenantId,
       },
     })
 

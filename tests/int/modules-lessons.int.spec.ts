@@ -5,11 +5,21 @@ import { describe, it, beforeAll, expect } from 'vitest'
 let payload: Payload
 let adminUser: any
 let courseId: string
+let tenantId: number | string
 
 describe('Modules and Lessons', () => {
   beforeAll(async () => {
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
+
+    // Ensure a tenant exists (required by multi-tenant plugin)
+    const tenants = await payload.find({ collection: 'tenants', overrideAccess: true, limit: 1 })
+    if (tenants.totalDocs === 0) {
+      const t = await payload.create({ collection: 'tenants', overrideAccess: true, data: { name: 'Test Tenant', slug: 'test-tenant' } })
+      tenantId = t.id
+    } else {
+      tenantId = tenants.docs[0].id
+    }
 
     try {
       adminUser = await payload.create({
@@ -21,6 +31,7 @@ describe('Modules and Lessons', () => {
           firstName: 'Admin',
           lastName: 'ModTest',
           role: 'admin',
+          tenant: tenantId,
         },
       })
     } catch {
@@ -36,7 +47,7 @@ describe('Modules and Lessons', () => {
       const course = await payload.create({
         collection: 'courses',
         overrideAccess: true,
-        data: { title: 'Module Test Course', slug: 'module-test-course' },
+        data: { title: 'Module Test Course', slug: 'module-test-course', tenant: tenantId },
       })
       courseId = course.id as string
     } catch {
@@ -57,6 +68,7 @@ describe('Modules and Lessons', () => {
         title: 'Module 1: Introduction',
         course: courseId,
         order: 1,
+        tenant: tenantId,
       },
     })
     expect(mod.title).toBe('Module 1: Introduction')
@@ -67,7 +79,7 @@ describe('Modules and Lessons', () => {
     const mod = await payload.create({
       collection: 'modules',
       overrideAccess: true,
-      data: { title: 'Lesson Test Module', course: courseId, order: 2 },
+      data: { title: 'Lesson Test Module', course: courseId, order: 2, tenant: tenantId },
     })
 
     const lesson = await payload.create({
@@ -91,7 +103,7 @@ describe('Modules and Lessons', () => {
     const mod = await payload.create({
       collection: 'modules',
       overrideAccess: true,
-      data: { title: 'Video Lesson Module', course: courseId, order: 3 },
+      data: { title: 'Video Lesson Module', course: courseId, order: 3, tenant: tenantId },
     })
 
     const lesson = await payload.create({

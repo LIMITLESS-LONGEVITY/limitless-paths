@@ -5,11 +5,21 @@ import { describe, it, beforeAll, expect } from 'vitest'
 let payload: Payload
 let adminUser: any
 let pillarId: string
+let tenantId: number | string
 
 describe('Articles collection', () => {
   beforeAll(async () => {
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
+
+    // Ensure a tenant exists (required by multi-tenant plugin)
+    const tenants = await payload.find({ collection: 'tenants', overrideAccess: true, limit: 1 })
+    if (tenants.totalDocs === 0) {
+      const t = await payload.create({ collection: 'tenants', overrideAccess: true, data: { name: 'Test Tenant', slug: 'test-tenant' } })
+      tenantId = t.id
+    } else {
+      tenantId = tenants.docs[0].id
+    }
 
     // Create admin user for tests
     try {
@@ -22,6 +32,7 @@ describe('Articles collection', () => {
           firstName: 'Admin',
           lastName: 'Test',
           role: 'admin',
+          tenant: tenantId,
         },
       })
     } catch {
