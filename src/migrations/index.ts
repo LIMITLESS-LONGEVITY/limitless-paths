@@ -15,6 +15,7 @@ import * as migration_20260327_100000_health_profiles from './20260327_100000_he
 import * as migration_20260327_110000_action_plans from './20260327_110000_action_plans';
 import * as migration_20260327_120000_daily_protocols from './20260327_120000_daily_protocols';
 import * as migration_20260327_130000_certificates from './20260327_130000_certificates';
+import * as migration_20260327_140000_tenant_certification from './20260327_140000_tenant_certification';
 
 export const migrations = [
   {
@@ -101,5 +102,10 @@ export const migrations = [
     up: migration_20260327_130000_certificates.up,
     down: migration_20260327_130000_certificates.down,
     name: '20260327_130000_certificates',
+  },
+  {
+    up: migration_20260327_140000_tenant_certification.up,
+    down: migration_20260327_140000_tenant_certification.down,
+    name: '20260327_140000_tenant_certification',
   },
 ];
