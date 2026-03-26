@@ -16,6 +16,9 @@ export const DEFAULT_RATE_LIMITS: Record<string, Record<string, number>> = {
   'quiz-generate': { free: 0, regular: 5, premium: 20, enterprise: -1 },
   'quiz-save': { free: 0, regular: 0, premium: 0, enterprise: 0 },
   'semantic-search': { free: 10, regular: 50, premium: 200, enterprise: -1 },
+  'content-discover': { free: 5, regular: 20, premium: 100, enterprise: -1 },
+  'action-plan': { free: 0, regular: 2, premium: 10, enterprise: -1 },
+  'daily-protocol': { free: 0, regular: 1, premium: 3, enterprise: -1 },
 }
 
 export function getDefaultLimit(feature: string, tier: string): number {

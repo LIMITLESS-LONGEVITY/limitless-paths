@@ -7,6 +7,7 @@ import { buildTutorSystemPrompt } from '../../ai/prompts/tutor'
 import { extractTextFromLexical } from '../../ai/utils'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
+import { getHealthProfile } from '../../utilities/getHealthProfile'
 
 export const tutorEndpoint: Endpoint = {
   path: '/ai/tutor',
@@ -123,10 +124,14 @@ export const tutorEndpoint: Endpoint = {
       } catch {}
     }
 
-    // 8. Build messages with RAG context
+    // 7b. Fetch health profile for personalization (graceful degradation)
+    const healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+
+    // 8. Build messages with RAG context + optional health context
     const systemPrompt = buildTutorSystemPrompt(
       chunks.find((c) => c.sourceId === body.contextId)?.sourceTitle ?? 'this content',
       chunks,
+      healthProfile,
     )
 
     const messages: ChatMessage[] = [

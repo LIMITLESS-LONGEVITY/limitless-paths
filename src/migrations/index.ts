@@ -11,6 +11,9 @@ import * as migration_20260325_185500_fix_verification_columns from './20260325_
 import * as migration_20260325_190500_verify_existing_users from './20260325_190500_verify_existing_users';
 import * as migration_20260326_120000_expert_profile_fields from './20260326_120000_expert_profile_fields';
 import * as migration_20260326_140000_add_onboarding_field from './20260326_140000_add_onboarding_field';
+import * as migration_20260327_100000_health_profiles from './20260327_100000_health_profiles';
+import * as migration_20260327_110000_action_plans from './20260327_110000_action_plans';
+import * as migration_20260327_120000_daily_protocols from './20260327_120000_daily_protocols';
 
 export const migrations = [
   {
@@ -77,5 +80,20 @@ export const migrations = [
     up: migration_20260326_140000_add_onboarding_field.up,
     down: migration_20260326_140000_add_onboarding_field.down,
     name: '20260326_140000_add_onboarding_field',
+  },
+  {
+    up: migration_20260327_100000_health_profiles.up,
+    down: migration_20260327_100000_health_profiles.down,
+    name: '20260327_100000_health_profiles',
+  },
+  {
+    up: migration_20260327_110000_action_plans.up,
+    down: migration_20260327_110000_action_plans.down,
+    name: '20260327_110000_action_plans',
+  },
+  {
+    up: migration_20260327_120000_daily_protocols.up,
+    down: migration_20260327_120000_daily_protocols.down,
+    name: '20260327_120000_daily_protocols',
   },
 ];
