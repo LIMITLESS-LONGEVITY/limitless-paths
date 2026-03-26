@@ -73,8 +73,13 @@ export const actionPlanEndpoint: Endpoint = {
         { limit: 8 },
       )
 
-      // Fetch health profile
-      const healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+      // Fetch health profile (graceful degradation)
+      let healthProfile: any = null
+      try {
+        healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+      } catch {
+        // Health profile unavailable — continue without personalization
+      }
 
       // Build prompt and generate
       const prompt = buildActionPlanPrompt(course.title as string, pillarName, chunks, healthProfile)

@@ -87,10 +87,15 @@ export const tutorEndpoint: Endpoint = {
       )
     }
 
-    // 6. Retrieve relevant chunks via RAG
-    let chunks = await retrieveRelevantChunks(body.message, req.payload, req, {
-      limit: 5,
-    })
+    // 6. Retrieve relevant chunks via RAG (graceful degradation)
+    let chunks: any[] = []
+    try {
+      chunks = await retrieveRelevantChunks(body.message, req.payload, req, {
+        limit: 5,
+      })
+    } catch (ragErr) {
+      req.payload.logger.warn('RAG retrieval failed, continuing without context:', ragErr)
+    }
 
     // 7. Ensure current document is represented
     // If no chunks from current doc in results, fetch its most relevant chunk
@@ -125,7 +130,12 @@ export const tutorEndpoint: Endpoint = {
     }
 
     // 7b. Fetch health profile for personalization (graceful degradation)
-    const healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+    let healthProfile: any = null
+    try {
+      healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+    } catch {
+      // Health profile unavailable — continue without personalization
+    }
 
     // 8. Build messages with RAG context + optional health context
     const systemPrompt = buildTutorSystemPrompt(
