@@ -89,11 +89,15 @@ export default buildConfig({
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
-  email: resendAdapter({
-    defaultFromAddress: process.env.RESEND_FROM_ADDRESS || 'info@limitless-longevity.health',
-    defaultFromName: 'PATHS by LIMITLESS',
-    apiKey: process.env.RESEND_API_KEY || '',
-  }),
+  ...(process.env.CI !== 'true'
+    ? {
+        email: resendAdapter({
+          defaultFromAddress: process.env.RESEND_FROM_ADDRESS || 'info@limitless-longevity.health',
+          defaultFromName: 'PATHS by LIMITLESS',
+          apiKey: process.env.RESEND_API_KEY || '',
+        }),
+      }
+    : {}),
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL,
