@@ -58,7 +58,7 @@ export const ArticleSidebar: React.FC<{
       {/* Table of Contents */}
       {toc.length > 0 && (
         <div>
-          <p className="text-xs font-semibold uppercase text-muted-foreground mb-3">
+          <p className="text-xs font-semibold uppercase text-brand-silver mb-3">
             On this page
           </p>
           <nav className="space-y-1">
@@ -70,8 +70,8 @@ export const ArticleSidebar: React.FC<{
                   'block text-xs leading-relaxed transition-colors',
                   item.level === 3 && 'pl-3',
                   activeId === item.id
-                    ? 'text-amber-500 font-medium'
-                    : 'text-muted-foreground hover:text-foreground',
+                    ? 'text-brand-gold font-medium'
+                    : 'text-brand-silver hover:text-foreground',
                 )}
               >
                 {item.text}
@@ -82,14 +82,14 @@ export const ArticleSidebar: React.FC<{
       )}
 
       {/* AI Tutor */}
-      <div className="p-3 bg-amber-500/5 border border-amber-500/20 rounded-lg">
+      <div className="p-3 bg-brand-gold-dim border border-brand-gold/20 rounded-lg">
         <p className="text-xs font-semibold mb-1">AI Tutor</p>
-        <p className="text-[11px] text-muted-foreground mb-2">
+        <p className="text-[11px] text-brand-silver mb-2">
           Ask questions about this article
         </p>
         <button
           onClick={onOpenTutor}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 text-amber-500 rounded text-xs font-medium hover:bg-amber-500/30 transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-gold/20 text-brand-gold rounded text-xs font-medium hover:bg-brand-gold/30 transition-colors"
         >
           <MessageCircle className="w-3 h-3" />
           Open Tutor
@@ -105,7 +105,7 @@ export const ArticleSidebar: React.FC<{
               <a
                 key={course.id}
                 href={`/courses/${course.slug}`}
-                className="block text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="block text-xs text-brand-silver hover:text-foreground transition-colors"
               >
                 {course.title}
               </a>
@@ -123,7 +123,7 @@ export const ArticleSidebar: React.FC<{
               <a
                 key={article.id}
                 href={`/articles/${article.slug}`}
-                className="block text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="block text-xs text-brand-silver hover:text-foreground transition-colors"
               >
                 {article.title}
               </a>

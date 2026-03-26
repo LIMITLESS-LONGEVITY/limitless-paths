@@ -50,7 +50,7 @@ export default function LoginForm() {
         style={{ WebkitBackdropFilter: 'blur(12px)' }}
       >
         <div className="text-center mb-8">
-          <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide">
+          <h1 className="font-display text-3xl font-semibold text-brand-light tracking-wide">
             Sign In
           </h1>
           <p className="mt-2 text-sm text-brand-silver">

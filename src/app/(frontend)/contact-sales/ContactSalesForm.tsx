@@ -76,7 +76,7 @@ export default function ContactSalesForm() {
               strokeLinejoin="round"
             />
           </svg>
-          <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide mb-3">
+          <h1 className="font-display text-3xl font-semibold text-brand-light tracking-wide mb-3">
             Thank You
           </h1>
           <p className="text-brand-silver text-sm leading-relaxed mb-6">
@@ -100,7 +100,7 @@ export default function ContactSalesForm() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           {/* Left column — messaging */}
           <div className="lg:pt-8">
-            <h1 className="font-serif text-4xl md:text-5xl font-semibold text-brand-light tracking-wide leading-tight mb-4">
+            <h1 className="font-display text-4xl md:text-5xl font-semibold text-brand-light tracking-wide leading-tight mb-4">
               Enterprise Longevity Education
             </h1>
             <p className="text-brand-silver text-base leading-relaxed mb-8">

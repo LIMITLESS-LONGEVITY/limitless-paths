@@ -49,7 +49,7 @@ export default function ForgotPasswordForm() {
         style={{ WebkitBackdropFilter: 'blur(12px)' }}
       >
         <div className="text-center mb-8">
-          <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide">
+          <h1 className="font-display text-3xl font-semibold text-brand-light tracking-wide">
             Forgot Password
           </h1>
           <p className="mt-2 text-sm text-brand-silver">

@@ -21,6 +21,27 @@ export const MODEL_REGISTRY: Record<string, ModelConfig> = {
     costPerInputToken: 0.0000005,
     costPerOutputToken: 0.0000008,
   },
+  discover: {
+    provider: 'default',
+    model: 'Qwen/Qwen3-8B',
+    maxOutputTokens: 1024,
+    costPerInputToken: 0.0000003,
+    costPerOutputToken: 0.0000005,
+  },
+  actionPlan: {
+    provider: 'default',
+    model: 'Qwen/Qwen3-14B',
+    maxOutputTokens: 4096,
+    costPerInputToken: 0.0000005,
+    costPerOutputToken: 0.0000008,
+  },
+  dailyProtocol: {
+    provider: 'default',
+    model: 'Qwen/Qwen3-14B',
+    maxOutputTokens: 2048,
+    costPerInputToken: 0.0000005,
+    costPerOutputToken: 0.0000008,
+  },
 }
 
 export function getModelConfig(useCase: string): ModelConfig {

@@ -26,7 +26,7 @@ import React from 'react'
 
 const calloutStyles: Record<string, { border: string; bg: string; icon: string }> = {
   info: { border: 'border-blue-400', bg: 'bg-blue-50 dark:bg-blue-950/30', icon: 'ℹ️' },
-  warning: { border: 'border-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/30', icon: '⚠️' },
+  warning: { border: 'border-brand-gold', bg: 'bg-brand-gold-dim', icon: '⚠️' },
   tip: { border: 'border-green-400', bg: 'bg-green-50 dark:bg-green-950/30', icon: '💡' },
   quote: { border: 'border-gray-400', bg: 'bg-gray-50 dark:bg-gray-950/30', icon: '💬' },
 }

@@ -36,7 +36,7 @@ export const EnrollButton: React.FC<{
 
   if (state === 'not-logged-in') {
     return (
-      <Link href="/login" className="inline-block px-6 py-3 bg-amber-500/20 text-amber-500 rounded-lg font-medium hover:bg-amber-500/30 transition-colors">
+      <Link href="/login" className="inline-block px-6 py-3 bg-brand-gold/20 text-brand-gold rounded-lg font-medium hover:bg-brand-gold/30 transition-colors">
         Sign in to enroll
       </Link>
     )
@@ -44,7 +44,7 @@ export const EnrollButton: React.FC<{
 
   if (state === 'no-access') {
     return (
-      <Link href="/account/billing" className="inline-block px-6 py-3 bg-amber-500/20 text-amber-500 rounded-lg font-medium hover:bg-amber-500/30 transition-colors">
+      <Link href="/account/billing" className="inline-block px-6 py-3 bg-brand-gold/20 text-brand-gold rounded-lg font-medium hover:bg-brand-gold/30 transition-colors">
         Upgrade to {tierRequired.charAt(0).toUpperCase() + tierRequired.slice(1)} to access
       </Link>
     )
@@ -57,7 +57,7 @@ export const EnrollButton: React.FC<{
           Completed
         </span>
         {nextLessonHref && (
-          <Link href={nextLessonHref} className="px-4 py-2 bg-muted rounded-lg text-sm hover:bg-muted/80 transition-colors">
+          <Link href={nextLessonHref} className="px-4 py-2 bg-brand-glass-bg rounded-lg text-sm hover:bg-brand-glass-bg/80 transition-colors">
             Revisit
           </Link>
         )}
@@ -69,14 +69,14 @@ export const EnrollButton: React.FC<{
     return (
       <div className="space-y-2">
         {completionPercentage != null && completionPercentage > 0 && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <div className="flex-1 h-1.5 bg-muted rounded-full">
-              <div className="h-full bg-amber-500 rounded-full" style={{ width: `${completionPercentage}%` }} />
+          <div className="flex items-center gap-2 text-sm text-brand-silver">
+            <div className="flex-1 h-1.5 bg-brand-glass-bg rounded-full">
+              <div className="h-full bg-brand-gold rounded-full" style={{ width: `${completionPercentage}%` }} />
             </div>
             <span>{completionPercentage}%</span>
           </div>
         )}
-        <Link href={nextLessonHref || '#'} className="inline-block px-6 py-3 bg-amber-500/20 text-amber-500 rounded-lg font-medium hover:bg-amber-500/30 transition-colors">
+        <Link href={nextLessonHref || '#'} className="inline-block px-6 py-3 bg-brand-gold/20 text-brand-gold rounded-lg font-medium hover:bg-brand-gold/30 transition-colors">
           Continue Learning
         </Link>
       </div>
@@ -88,7 +88,7 @@ export const EnrollButton: React.FC<{
       onClick={handleEnroll}
       disabled={loading}
       className={cn(
-        'px-6 py-3 bg-amber-500/20 text-amber-500 rounded-lg font-medium hover:bg-amber-500/30 transition-colors',
+        'px-6 py-3 bg-brand-gold/20 text-brand-gold rounded-lg font-medium hover:bg-brand-gold/30 transition-colors',
         loading && 'opacity-50 cursor-not-allowed',
       )}
     >

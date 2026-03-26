@@ -64,7 +64,7 @@ function ResetPasswordFormInner() {
         style={{ WebkitBackdropFilter: 'blur(12px)' }}
       >
         <div className="text-center mb-8">
-          <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide">
+          <h1 className="font-display text-3xl font-semibold text-brand-light tracking-wide">
             Reset Password
           </h1>
           <p className="mt-2 text-sm text-brand-silver">
@@ -151,7 +151,7 @@ export default function ResetPasswordForm() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-brand-dark flex items-center justify-center">
-          <p className="text-brand-silver text-sm">Loading...</p>
+          <div className="w-8 h-8 border-2 border-brand-gold/30 border-t-brand-gold rounded-full animate-spin" />
         </div>
       }
     >

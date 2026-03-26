@@ -85,7 +85,7 @@ function VerifyEmailFormInner() {
             <rect x="4" y="10" width="40" height="28" rx="4" stroke="currentColor" strokeWidth="2" />
             <path d="M4 14l20 14 20-14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide mb-3">
+          <h1 className="font-display text-3xl font-semibold text-brand-light tracking-wide mb-3">
             Check Your Email
           </h1>
           <p className="text-brand-silver text-sm leading-relaxed mb-6">
@@ -129,7 +129,7 @@ function VerifyEmailFormInner() {
         className="w-full max-w-md rounded-2xl border border-brand-glass-border bg-brand-glass-bg backdrop-blur-md p-8 md:p-10 text-center"
         style={{ WebkitBackdropFilter: 'blur(12px)' }}
       >
-        <h1 className="font-serif text-3xl font-semibold text-brand-light tracking-wide mb-3">
+        <h1 className="font-display text-3xl font-semibold text-brand-light tracking-wide mb-3">
           {verifying ? 'Verifying...' : message?.type === 'success' ? 'Email Verified' : 'Verify Email'}
         </h1>
 
@@ -172,7 +172,7 @@ export default function VerifyEmailForm() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-brand-dark flex items-center justify-center">
-          <p className="text-brand-silver text-sm">Loading...</p>
+          <div className="w-8 h-8 border-2 border-brand-gold/30 border-t-brand-gold rounded-full animate-spin" />
         </div>
       }
     >

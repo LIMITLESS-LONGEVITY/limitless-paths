@@ -3,7 +3,9 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
 import { ContentList } from '@/components/ContentList'
+import { ContentGrid } from '@/components/ContentGrid'
 import { PillarFilter } from '@/components/PillarFilter'
+import { ViewToggle } from '@/components/ViewToggle'
 import { Pagination } from '@/components/Pagination'
 import { PageRange } from '@/components/PageRange'
 import PageClient from './page.client'
@@ -11,11 +13,11 @@ import PageClient from './page.client'
 export const dynamic = 'force-dynamic'
 
 type Args = {
-  searchParams: Promise<{ pillar?: string; page?: string }>
+  searchParams: Promise<{ pillar?: string; page?: string; view?: string }>
 }
 
 export default async function ArticlesPage({ searchParams }: Args) {
-  const { pillar, page: pageParam } = await searchParams
+  const { pillar, page: pageParam, view } = await searchParams
   const currentPage = Number(pageParam) || 1
   const payload = await getPayload({ config: configPromise })
 
@@ -71,20 +73,38 @@ export default async function ArticlesPage({ searchParams }: Args) {
     slug: p.slug,
   }))
 
+  // Fetch counts per pillar in parallel
+  const countResults = await Promise.all(
+    pillarsResult.docs.map(async (p: any) => ({
+      id: p.id,
+      count: (await payload.count({
+        collection: 'articles',
+        where: { pillar: { equals: p.id }, editorialStatus: { equals: 'published' } },
+      })).totalDocs,
+    })),
+  )
+  const pillarCounts: Record<string, number> = {}
+  countResults.forEach((r) => { pillarCounts[r.id] = r.count })
+  const totalArticles = (await payload.count({
+    collection: 'articles',
+    where: { editorialStatus: { equals: 'published' } },
+  })).totalDocs
+
   return (
     <div className="pt-24 pb-24">
       <PageClient />
       <div className="container mb-8">
         <div className="prose dark:prose-invert max-w-none">
           <h1>Articles</h1>
-          <p className="text-muted-foreground">
+          <p className="text-brand-silver">
             Expert insights on longevity, nutrition, and performance
           </p>
         </div>
       </div>
 
-      <div className="container mb-6">
-        <PillarFilter pillars={pillars} basePath="/articles" />
+      <div className="container mb-6 flex items-center justify-between gap-4 flex-wrap">
+        <PillarFilter pillars={pillars} basePath="/articles" counts={pillarCounts} totalCount={totalArticles} />
+        <ViewToggle basePath="/articles" />
       </div>
 
       <div className="container mb-8">
@@ -97,7 +117,7 @@ export default async function ArticlesPage({ searchParams }: Args) {
       </div>
 
       <div className="container mb-8">
-        <ContentList items={items} />
+        {view === 'grid' ? <ContentGrid items={items} /> : <ContentList items={items} />}
       </div>
 
       <div className="container">

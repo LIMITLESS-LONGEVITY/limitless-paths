@@ -12,7 +12,9 @@ type Pillar = {
 export const PillarFilter: React.FC<{
   pillars: Pillar[]
   basePath: string
-}> = ({ pillars, basePath }) => {
+  counts?: Record<string, number>
+  totalCount?: number
+}> = ({ pillars, basePath, counts, totalCount }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const activePillar = searchParams.get('pillar')
@@ -32,11 +34,11 @@ export const PillarFilter: React.FC<{
         className={cn(
           'px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors',
           !activePillar
-            ? 'bg-amber-500/20 text-amber-500'
-            : 'bg-muted text-muted-foreground hover:bg-muted/80',
+            ? 'bg-brand-gold/20 text-brand-gold'
+            : 'bg-brand-glass-bg text-brand-silver hover:bg-brand-glass-bg-hover',
         )}
       >
-        All
+        All{totalCount != null && <span className="ml-1 opacity-60">({totalCount})</span>}
       </button>
       {pillars.map((pillar) => (
         <button
@@ -45,11 +47,11 @@ export const PillarFilter: React.FC<{
           className={cn(
             'px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors',
             activePillar === pillar.slug
-              ? 'bg-amber-500/20 text-amber-500'
-              : 'bg-muted text-muted-foreground hover:bg-muted/80',
+              ? 'bg-brand-gold/20 text-brand-gold'
+              : 'bg-brand-glass-bg text-brand-silver hover:bg-brand-glass-bg-hover',
           )}
         >
-          {pillar.name}
+          {pillar.name}{counts?.[pillar.id] != null && <span className="ml-1 opacity-60">({counts[pillar.id]})</span>}
         </button>
       ))}
     </div>

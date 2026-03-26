@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { cn } from '@/utilities/ui'
+import { SkeletonProfileForm } from '@/components/Skeleton'
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null)
@@ -91,7 +92,7 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return <div className="text-muted-foreground">Loading...</div>
+    return <SkeletonProfileForm />
   }
 
   return (
@@ -101,7 +102,7 @@ export default function ProfilePage() {
         <form onSubmit={handleSaveProfile} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
-            <p className="text-sm text-muted-foreground">{user?.email}</p>
+            <p className="text-sm text-brand-silver">{user?.email}</p>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1" htmlFor="firstName">
@@ -111,7 +112,7 @@ export default function ProfilePage() {
               id="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-3 py-2 bg-muted rounded-lg text-sm outline-none focus:ring-1 focus:ring-amber-500/50"
+              className="w-full px-3 py-2 bg-brand-glass-bg rounded-lg text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
             />
           </div>
           <div>
@@ -122,12 +123,12 @@ export default function ProfilePage() {
               id="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-3 py-2 bg-muted rounded-lg text-sm outline-none focus:ring-1 focus:ring-amber-500/50"
+              className="w-full px-3 py-2 bg-brand-glass-bg rounded-lg text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
             />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Avatar</label>
-            <p className="text-xs text-muted-foreground mb-2">
+            <p className="text-xs text-brand-silver mb-2">
               Upload a profile photo. Accepted formats: JPG, PNG.
             </p>
             <input
@@ -176,7 +177,7 @@ export default function ProfilePage() {
             type="submit"
             disabled={saving}
             className={cn(
-              'px-5 py-2 bg-amber-500/20 text-amber-500 rounded-lg text-sm font-medium hover:bg-amber-500/30 transition-colors',
+              'px-5 py-2 bg-brand-gold/20 text-brand-gold rounded-lg text-sm font-medium hover:bg-brand-gold/30 transition-colors',
               saving && 'opacity-50 cursor-not-allowed',
             )}
           >
@@ -185,7 +186,7 @@ export default function ProfilePage() {
         </form>
       </div>
 
-      <hr className="border-border" />
+      <hr className="border-brand-glass-border" />
 
       <div>
         <h2 className="text-lg font-semibold mb-4">Change Password</h2>
@@ -199,7 +200,7 @@ export default function ProfilePage() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-muted rounded-lg text-sm outline-none focus:ring-1 focus:ring-amber-500/50"
+              className="w-full px-3 py-2 bg-brand-glass-bg rounded-lg text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
             />
           </div>
           <div>
@@ -211,7 +212,7 @@ export default function ProfilePage() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-muted rounded-lg text-sm outline-none focus:ring-1 focus:ring-amber-500/50"
+              className="w-full px-3 py-2 bg-brand-glass-bg rounded-lg text-sm outline-none focus:ring-1 focus:ring-brand-gold/50"
             />
           </div>
           {passwordMessage && (

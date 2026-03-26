@@ -4,6 +4,7 @@ import { canAccessOwnOrStaff } from '../../access/canAccessOwnOrStaff'
 import { authenticated } from '../../access/authenticated'
 import { preventDuplicateEnrollment } from './hooks/preventDuplicateEnrollment'
 import { restrictUserUpdates } from './hooks/restrictUserUpdates'
+import { generateCertificate } from '../../hooks/generateCertificate'
 
 export const Enrollments: CollectionConfig = {
   slug: 'enrollments',
@@ -48,9 +49,21 @@ export const Enrollments: CollectionConfig = {
       ],
       admin: { description: 'Placeholder for Phase 5 billing integration' },
     },
+    // --- Longevity Stay Fields ---
+    {
+      name: 'stayStartDate',
+      type: 'date',
+      admin: { description: 'Start date of hotel stay. Set by admin when confirming booking.' },
+    },
+    {
+      name: 'stayEndDate',
+      type: 'date',
+      admin: { description: 'End date of hotel stay. Set by admin.' },
+    },
   ],
   hooks: {
     beforeChange: [preventDuplicateEnrollment, restrictUserUpdates],
+    afterChange: [generateCertificate],
   },
   access: {
     create: authenticated,

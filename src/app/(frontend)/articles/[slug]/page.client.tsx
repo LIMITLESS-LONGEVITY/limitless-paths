@@ -8,6 +8,9 @@ import { LockedContentBanner } from '@/components/LockedContentBanner'
 import { TierBadge } from '@/components/TierBadge'
 import { TutorPanel } from '@/components/TutorPanel'
 import { Media } from '@/components/Media'
+import { ExpertCard } from '@/components/ExpertCard'
+import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
+import { Breadcrumb } from '@/components/Breadcrumb'
 
 type ArticleClientProps = {
   article: any
@@ -29,9 +32,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({
   }, [setHeaderTheme])
 
   const pillarName = typeof article.pillar === 'object' ? article.pillar?.name : ''
-  const authorName = typeof article.author === 'object'
-    ? [article.author?.firstName, article.author?.lastName].filter(Boolean).join(' ')
-    : ''
+  const author = typeof article.author === 'object' ? article.author : null
 
   return (
     <>
@@ -49,19 +50,36 @@ const ArticleClient: React.FC<ArticleClientProps> = ({
             {/* Main Content */}
             <article className="flex-1 min-w-0 max-w-[48rem]">
               <div className="mb-6">
+                <Breadcrumb items={[
+                  { label: 'Articles', href: '/articles' },
+                  ...(pillarName ? [{ label: pillarName, href: `/articles?pillar=${typeof article.pillar === 'object' ? article.pillar?.slug : ''}` }] : []),
+                  { label: article.title },
+                ]} />
                 <div className="flex items-center gap-2 mb-2">
                   {pillarName && (
-                    <span className="text-xs font-semibold uppercase text-amber-500">
+                    <span className="text-xs font-semibold uppercase text-brand-gold">
                       {pillarName}
                     </span>
                   )}
                   <TierBadge tier={article.accessLevel} />
                 </div>
-                <h1 className="text-3xl font-bold mb-2">{article.title}</h1>
-                <p className="text-sm text-muted-foreground">
-                  {authorName && `By ${authorName}`}
-                  {article.publishedAt && ` · ${new Date(article.publishedAt).toLocaleDateString()}`}
-                </p>
+                <h1 className="text-3xl font-display font-light tracking-wide mb-3">{article.title}</h1>
+                <div className="flex items-center gap-4">
+                  {author && (
+                    <ExpertCard
+                      firstName={author.firstName}
+                      lastName={author.lastName}
+                      avatar={author.avatar}
+                      credentials={author.credentials}
+                      linkedIn={author.linkedIn}
+                    />
+                  )}
+                  {article.publishedAt && (
+                    <span className="text-xs text-brand-silver">
+                      {new Date(article.publishedAt).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {article.featuredImage && typeof article.featuredImage !== 'string' && (
@@ -80,9 +98,14 @@ const ArticleClient: React.FC<ArticleClientProps> = ({
                   <LockedContentBanner tierRequired={article.accessLevel} />
                 </>
               ) : (
-                <div ref={contentRef}>
-                  <RichText data={article.content} enableGutter={false} />
-                </div>
+                <>
+                  <div ref={contentRef}>
+                    <RichText data={article.content} enableGutter={false} />
+                  </div>
+                  <div className="mt-12">
+                    <DiagnosticUpsell context="article" pillarName={pillarName} />
+                  </div>
+                </>
               )}
             </article>
           </div>

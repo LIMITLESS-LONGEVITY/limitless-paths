@@ -1,12 +1,15 @@
 import type { RetrievedChunk } from '../retrieval'
+import { buildHealthContextSection } from './healthContext'
 
 /**
  * Build the RAG-aware system prompt for the AI tutor.
  * Uses retrieved context passages instead of full document text.
+ * Optionally includes user health profile for personalized guidance.
  */
 export function buildTutorSystemPrompt(
   currentTitle: string,
   chunks: RetrievedChunk[],
+  healthProfile?: any | null,
 ): string {
   const contextPassages = chunks
     .map(
@@ -14,6 +17,8 @@ export function buildTutorSystemPrompt(
         `[Passage ${i + 1} from "${chunk.sourceTitle}" — ${chunk.sourceCollection.toUpperCase()}]\n${chunk.text}`,
     )
     .join('\n\n---\n\n')
+
+  const healthContext = healthProfile ? buildHealthContextSection(healthProfile) : ''
 
   return `You are a knowledgeable tutor for PATHS by LIMITLESS, a longevity education platform.
 
@@ -24,7 +29,7 @@ Answer based on the following context passages from the platform's content:
 ---
 ${contextPassages}
 ---
-
+${healthContext ? `\n${healthContext}\n` : ''}
 Rules:
 - Answer based on the provided context passages.
 - Prioritize information from the current document ("${currentTitle}") when relevant.

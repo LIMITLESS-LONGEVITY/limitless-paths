@@ -41,6 +41,7 @@ export default async function CourseDetailPage({ params: paramsPromise }: Args) 
   let completionPercentage: number | undefined
   let nextLessonHref: string | undefined
   let lessonProgress: Record<string, string> = {}
+  let enrollmentId: string | undefined
 
   try {
     if (user) {
@@ -61,6 +62,7 @@ export default async function CourseDetailPage({ params: paramsPromise }: Args) 
         const enrollment = enrollments.docs[0] as any
         enrollState = enrollment.status === 'completed' ? 'completed' : 'enrolled'
         completionPercentage = enrollment.completionPercentage
+        enrollmentId = enrollment.id
 
         // Fetch lesson progress
         const progress = await payload.find({
@@ -105,6 +107,7 @@ export default async function CourseDetailPage({ params: paramsPromise }: Args) 
       completionPercentage={completionPercentage}
       nextLessonHref={nextLessonHref}
       lessonProgress={lessonProgress}
+      enrollmentId={enrollmentId}
     />
   )
 }

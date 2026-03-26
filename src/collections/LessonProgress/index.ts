@@ -4,6 +4,7 @@ import { canAccessOwnOrStaff } from '../../access/canAccessOwnOrStaff'
 import { authenticated } from '../../access/authenticated'
 import { setCompletedAt } from './hooks/setCompletedAt'
 import { updateEnrollmentProgress } from '../../hooks/updateEnrollmentProgress'
+import { updateStreak } from '../../hooks/updateStreak'
 
 export const LessonProgress: CollectionConfig = {
   slug: 'lesson-progress',
@@ -33,7 +34,7 @@ export const LessonProgress: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [setCompletedAt],
-    afterChange: [updateEnrollmentProgress],
+    afterChange: [updateEnrollmentProgress, updateStreak],
   },
   access: {
     create: authenticated,

@@ -52,7 +52,7 @@ export const LessonNav: React.FC<{
   return (
     <div className="flex justify-between items-center pt-6 mt-8 border-t border-border">
       {prevHref ? (
-        <Link href={prevHref} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <Link href={prevHref} className="px-4 py-2 text-sm text-brand-silver hover:text-foreground transition-colors">
           &larr; Previous
         </Link>
       ) : (
@@ -63,14 +63,14 @@ export const LessonNav: React.FC<{
           onClick={handleMarkComplete}
           disabled={loading}
           className={cn(
-            'px-5 py-2.5 bg-amber-500/20 text-amber-500 rounded-lg text-sm font-medium hover:bg-amber-500/30 transition-colors',
+            'px-5 py-2.5 bg-brand-gold/20 text-brand-gold rounded-lg text-sm font-medium hover:bg-brand-gold/30 transition-colors',
             loading && 'opacity-50 cursor-not-allowed',
           )}
         >
           {loading ? 'Saving...' : `Mark Complete${nextHref ? ' & Next \u2192' : ''}`}
         </button>
       ) : nextHref ? (
-        <Link href={nextHref} className="px-5 py-2.5 bg-amber-500/20 text-amber-500 rounded-lg text-sm font-medium hover:bg-amber-500/30 transition-colors">
+        <Link href={nextHref} className="px-5 py-2.5 bg-brand-gold/20 text-brand-gold rounded-lg text-sm font-medium hover:bg-brand-gold/30 transition-colors">
           Next &rarr;
         </Link>
       ) : (
