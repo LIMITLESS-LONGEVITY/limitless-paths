@@ -23,9 +23,22 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const topic = getTopicBySlug(roleSlug, topicSlug)
   const role = getRoleBySlug(roleSlug)
   if (!topic || !role) return {}
+
+  const title = `${topic.title} — ${role.label}`
+  const url = `https://paths.limitless-longevity.health/guide/${roleSlug}/${topicSlug}`
+
   return {
-    title: `${topic.title} — ${role.label}`,
+    title,
     description: topic.description,
+    openGraph: {
+      title: `${title} | PATHS Guide`,
+      description: topic.description,
+      url,
+      type: 'article',
+    },
+    alternates: {
+      canonical: url,
+    },
   }
 }
 
@@ -45,8 +58,33 @@ export default async function TopicPage({ params }: Args) {
   const prevTopic = topicIndex > 0 ? role.topics[topicIndex - 1] : null
   const nextTopic = topicIndex < role.topics.length - 1 ? role.topics[topicIndex + 1] : null
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: topic.title,
+    description: topic.description,
+    url: `https://paths.limitless-longevity.health/guide/${role.slug}/${topic.slug}`,
+    publisher: {
+      '@type': 'Organization',
+      name: 'LIMITLESS Longevity Consultancy',
+      url: 'https://limitless-longevity.health',
+    },
+  }
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Guide', item: 'https://paths.limitless-longevity.health/guide' },
+      { '@type': 'ListItem', position: 2, name: role.label, item: `https://paths.limitless-longevity.health/guide/${role.slug}` },
+      { '@type': 'ListItem', position: 3, name: topic.title },
+    ],
+  }
+
   return (
     <div className="pb-16 px-6 lg:px-12 pt-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <div>
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-6">

@@ -2,6 +2,8 @@ export type GuideTopic = {
   slug: string
   title: string
   description: string
+  lastUpdated?: string // ISO date string
+  prerequisites?: string[] // slugs of prerequisite topics
 }
 
 export type GuideRole = {
