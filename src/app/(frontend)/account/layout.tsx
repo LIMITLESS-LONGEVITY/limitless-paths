@@ -4,6 +4,7 @@ import { headers as getHeaders } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import { AccountNav } from './AccountNav'
+import { isTenantManager } from '@/utilities/isTenantManager'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,7 +35,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
           </div>
         )}
         <div className="flex flex-col lg:flex-row gap-8">
-          <AccountNav />
+          <AccountNav isManager={isTenantManager(user)} />
           <div className="flex-1 min-w-0">
             {children}
           </div>

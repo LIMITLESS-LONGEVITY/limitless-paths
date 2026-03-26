@@ -3,19 +3,29 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/ui'
-import { LayoutDashboard, User, Heart, ClipboardList, Award, CreditCard, BookOpen } from 'lucide-react'
+import { LayoutDashboard, User, Heart, ClipboardList, Award, Users, CreditCard, BookOpen } from 'lucide-react'
 
-const NAV_ITEMS = [
+const BASE_NAV_ITEMS = [
   { href: '/account', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/account/profile', label: 'Profile', icon: User },
   { href: '/account/health', label: 'Health Profile', icon: Heart },
   { href: '/account/plans', label: 'Action Plans', icon: ClipboardList },
   { href: '/account/certificates', label: 'Certificates', icon: Award },
+]
+
+const MANAGER_NAV_ITEM = { href: '/account/team', label: 'Team', icon: Users }
+
+const BOTTOM_NAV_ITEMS = [
   { href: '/account/billing', label: 'Billing', icon: CreditCard },
   { href: '/account/courses', label: 'My Courses', icon: BookOpen },
 ]
 
-export const AccountNav: React.FC = () => {
+export const AccountNav: React.FC<{ isManager?: boolean }> = ({ isManager }) => {
+  const NAV_ITEMS = [
+    ...BASE_NAV_ITEMS,
+    ...(isManager ? [MANAGER_NAV_ITEM] : []),
+    ...BOTTOM_NAV_ITEMS,
+  ]
   const pathname = usePathname()
 
   return (
