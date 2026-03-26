@@ -4,6 +4,7 @@ import { canAccessOwnOrStaff } from '../../access/canAccessOwnOrStaff'
 import { authenticated } from '../../access/authenticated'
 import { preventDuplicateEnrollment } from './hooks/preventDuplicateEnrollment'
 import { restrictUserUpdates } from './hooks/restrictUserUpdates'
+import { generateCertificate } from '../../hooks/generateCertificate'
 
 export const Enrollments: CollectionConfig = {
   slug: 'enrollments',
@@ -51,6 +52,7 @@ export const Enrollments: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [preventDuplicateEnrollment, restrictUserUpdates],
+    afterChange: [generateCertificate],
   },
   access: {
     create: authenticated,

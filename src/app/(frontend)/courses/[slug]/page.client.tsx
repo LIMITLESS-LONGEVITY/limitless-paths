@@ -7,7 +7,7 @@ import { EnrollButton } from '@/components/EnrollButton'
 import { LockedContentBanner } from '@/components/LockedContentBanner'
 import RichText from '@/components/RichText'
 import Link from 'next/link'
-import { Clock, BookOpen, CheckCircle2, Circle } from 'lucide-react'
+import { Clock, BookOpen, CheckCircle2, Circle, Award } from 'lucide-react'
 import { ExpertCard } from '@/components/ExpertCard'
 import { DiagnosticUpsell } from '@/components/DiagnosticUpsell'
 import { ActionPlanCTA } from '@/components/ActionPlanCTA'
@@ -147,7 +147,22 @@ const CourseDetailClient: React.FC<CourseDetailClientProps> = ({
           </div>
         )}
 
-        {/* Action plan + diagnostic upsell for completed courses */}
+        {/* Certificate + action plan + diagnostic upsell for completed courses */}
+        {enrollState === 'completed' && (
+          <div className="mt-8 flex items-center gap-3 px-4 py-3 rounded-xl border border-brand-gold/20 bg-brand-gold-dim">
+            <Award className="w-5 h-5 text-brand-gold flex-shrink-0" />
+            <p className="text-sm flex-1">
+              <span className="font-semibold text-brand-light">Congratulations!</span>{' '}
+              <span className="text-brand-silver">Your certificate has been issued.</span>
+            </p>
+            <Link
+              href="/account/certificates"
+              className="text-xs text-brand-gold hover:text-brand-gold/80 transition-colors whitespace-nowrap"
+            >
+              View Certificates
+            </Link>
+          </div>
+        )}
         {enrollState === 'completed' && enrollmentId && (
           <div className="mt-12">
             <ActionPlanCTA enrollmentId={enrollmentId} courseTitle={course.title} pillarName={pillarName} />

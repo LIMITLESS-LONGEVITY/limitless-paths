@@ -3,13 +3,14 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/ui'
-import { LayoutDashboard, User, Heart, ClipboardList, CreditCard, BookOpen } from 'lucide-react'
+import { LayoutDashboard, User, Heart, ClipboardList, Award, CreditCard, BookOpen } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/account', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/account/profile', label: 'Profile', icon: User },
   { href: '/account/health', label: 'Health Profile', icon: Heart },
   { href: '/account/plans', label: 'Action Plans', icon: ClipboardList },
+  { href: '/account/certificates', label: 'Certificates', icon: Award },
   { href: '/account/billing', label: 'Billing', icon: CreditCard },
   { href: '/account/courses', label: 'My Courses', icon: BookOpen },
 ]

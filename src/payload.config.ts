@@ -26,6 +26,7 @@ import { Users } from './collections/Users'
 import { HealthProfiles } from './collections/HealthProfiles'
 import { ActionPlans } from './collections/ActionPlans'
 import { DailyProtocols } from './collections/DailyProtocols'
+import { Certificates } from './collections/Certificates'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { AIConfig } from './globals/AIConfig/config'
@@ -100,7 +101,7 @@ export default buildConfig({
     push: process.env.CI === 'true',
     prodMigrations: migrations,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents, HealthProfiles, ActionPlans, DailyProtocols],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents, HealthProfiles, ActionPlans, DailyProtocols, Certificates],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint, diagnosticBookingEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
