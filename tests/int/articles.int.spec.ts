@@ -21,7 +21,7 @@ describe('Articles collection', () => {
       tenantId = tenants.docs[0].id
     }
 
-    // Create admin user for tests
+    // Create admin user for tests (_verified skips email sending)
     try {
       adminUser = await payload.create({
         collection: 'users',
@@ -33,6 +33,7 @@ describe('Articles collection', () => {
           lastName: 'Test',
           role: 'admin',
           tenant: tenantId,
+          _verified: true,
         },
       })
     } catch {
@@ -73,6 +74,7 @@ describe('Articles collection', () => {
         author: adminUser.id,
         editorialStatus: 'draft',
         accessLevel: 'free',
+        tenant: tenantId,
       },
     })
     expect(article.title).toBe('Test Article')
@@ -89,6 +91,7 @@ describe('Articles collection', () => {
         slug: 'test-article-default-status',
         pillar: pillarId,
         author: adminUser.id,
+        tenant: tenantId,
       },
     })
     expect(article.editorialStatus).toBe('draft')
@@ -103,6 +106,7 @@ describe('Articles collection', () => {
         slug: 'test-article-versioned',
         pillar: pillarId,
         author: adminUser.id,
+        tenant: tenantId,
       },
     })
 

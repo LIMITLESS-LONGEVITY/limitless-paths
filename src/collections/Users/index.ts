@@ -15,7 +15,7 @@ export const Users: CollectionConfig = {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Lax',
     },
-    verify: {
+    verify: process.env.CI === 'true' ? false : {
       generateEmailSubject: () => 'Verify your PATHS account',
       generateEmailHTML: ({ token }: { token: string }) => {
         const url = `${process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'}/verify-email?token=${token}`

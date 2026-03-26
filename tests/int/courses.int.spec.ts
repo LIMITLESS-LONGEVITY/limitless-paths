@@ -31,6 +31,7 @@ describe('Courses collection', () => {
           lastName: 'CourseTest',
           role: 'admin',
           tenant: tenantId,
+          _verified: true,
         },
       })
     } catch {
