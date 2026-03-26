@@ -54,6 +54,10 @@ import { dailyProtocolStatusEndpoint } from './endpoints/ai/dailyProtocolStatus'
 import { resendVerificationEndpoint } from './endpoints/auth/resend-verification'
 import { migrations } from './migrations'
 import { getServerSideURL } from './utilities/getURL'
+import { validateEnv } from './utilities/validateEnv'
+
+// Validate environment variables at startup
+validateEnv()
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
