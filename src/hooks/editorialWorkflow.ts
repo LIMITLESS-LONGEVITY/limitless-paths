@@ -95,7 +95,7 @@ export const validateEditorialTransition: CollectionBeforeChangeHook = ({
 
   // Check if the user has the required role
   const requiredRole = getRequiredRole(oldStatus, newStatus)
-  const userRole = (req.user as any)?.role as string | undefined
+  const userRole = req.user?.role as string | undefined
 
   if (!requiredRole || !userRole || !hasRole(userRole, requiredRole)) {
     throw new Error(

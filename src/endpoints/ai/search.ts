@@ -3,6 +3,8 @@ import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { logUsage } from '../../ai/usageLogger'
 import { getEffectiveAccessLevels } from '../../utilities/accessLevels'
 import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
+import { getUserAccessLevel, getUserTenantAccessLevel } from '../../utilities/types'
+import type { AccessLevel } from '../../utilities/accessLevels'
 
 export const semanticSearchEndpoint: Endpoint = {
   path: '/ai/search',
@@ -48,8 +50,8 @@ export const semanticSearchEndpoint: Endpoint = {
       // Compute locked status for each result
       const userLevels = req.user
         ? getEffectiveAccessLevels(
-            (req.user as any)?.tier?.accessLevel ?? null,
-            (req.user as any)?.tenant?.contentAccessLevel ?? null,
+            getUserAccessLevel(req.user),
+            getUserTenantAccessLevel(req.user),
           )
         : ['free']
 
@@ -58,7 +60,7 @@ export const semanticSearchEndpoint: Endpoint = {
         slug: '',
         collection: chunk.sourceCollection,
         accessLevel: chunk.accessLevel,
-        locked: !userLevels.includes(chunk.accessLevel as any),
+        locked: !userLevels.includes(chunk.accessLevel as AccessLevel),
         snippet: chunk.text.slice(0, 300),
         relevanceScore: chunk.relevanceScore,
       }))

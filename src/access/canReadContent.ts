@@ -1,5 +1,6 @@
 import type { Access } from 'payload'
 import { getEffectiveAccessLevels } from '../utilities/accessLevels'
+import { getUserAccessLevel, getUserTenantAccessLevel } from '../utilities/types'
 
 /**
  * Read access for content collections (Articles, Courses).
@@ -15,9 +16,7 @@ export const canReadContent: Access = ({ req: { user } }) => {
   }
 
   // Determine effective access levels
-  const tierLevel = (user as any)?.tier?.accessLevel as string | undefined
-  const orgLevel = (user as any)?.tenant?.contentAccessLevel as string | undefined
-  const levels = getEffectiveAccessLevels(tierLevel ?? null, orgLevel ?? null)
+  const levels = getEffectiveAccessLevels(getUserAccessLevel(user), getUserTenantAccessLevel(user))
 
   // Contributors can also see their own content (any status)
   if (user?.role === 'contributor') {

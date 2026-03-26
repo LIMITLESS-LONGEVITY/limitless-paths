@@ -124,7 +124,7 @@ export const dailyProtocolEndpoint: Endpoint = {
       const messages: ChatMessage[] = [{ role: 'system', content: prompt }]
 
       const modelConfig = getModelConfig('dailyProtocol')
-      const maxTokens = (ctx.aiConfig.tokenBudgets as any)?.dailyProtocolMaxTokens ?? modelConfig.maxOutputTokens
+      const maxTokens = ctx.aiConfig.tokenBudgets?.dailyProtocolMaxTokens ?? modelConfig.maxOutputTokens
       const result = await chat(messages, 'dailyProtocol', { maxTokens, temperature: 0.6 })
 
       const parsed = parseDailyProtocolResponse(result.content)

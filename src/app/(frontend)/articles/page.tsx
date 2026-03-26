@@ -73,22 +73,23 @@ export default async function ArticlesPage({ searchParams }: Args) {
     slug: p.slug,
   }))
 
-  // Fetch counts per pillar in parallel
-  const countResults = await Promise.all(
-    pillarsResult.docs.map(async (p: any) => ({
+  // Fetch counts per pillar + total count in parallel
+  const [totalArticlesResult, ...countResults] = await Promise.all([
+    payload.count({
+      collection: 'articles',
+      where: { editorialStatus: { equals: 'published' } },
+    }),
+    ...pillarsResult.docs.map(async (p: any) => ({
       id: p.id,
       count: (await payload.count({
         collection: 'articles',
         where: { pillar: { equals: p.id }, editorialStatus: { equals: 'published' } },
       })).totalDocs,
     })),
-  )
+  ])
   const pillarCounts: Record<string, number> = {}
   countResults.forEach((r) => { pillarCounts[r.id] = r.count })
-  const totalArticles = (await payload.count({
-    collection: 'articles',
-    where: { editorialStatus: { equals: 'published' } },
-  })).totalDocs
+  const totalArticles = totalArticlesResult.totalDocs
 
   return (
     <div className="pt-24 pb-24">

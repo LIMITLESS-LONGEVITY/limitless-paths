@@ -39,27 +39,25 @@ export default async function TeamPage() {
 
   const staffIds = staffResult.docs.map((u: any) => u.id)
 
-  // Fetch all enrollments for staff
-  const enrollmentsResult = staffIds.length > 0
-    ? await payload.find({
-        collection: 'enrollments',
-        where: { user: { in: staffIds } },
-        depth: 1,
-        limit: 500,
-        overrideAccess: true,
-      })
-    : { docs: [] }
-
-  // Fetch all certificates for staff
-  const certificatesResult = staffIds.length > 0
-    ? await payload.find({
-        collection: 'certificates',
-        where: { user: { in: staffIds } },
-        depth: 0,
-        limit: 500,
-        overrideAccess: true,
-      })
-    : { docs: [] }
+  // Fetch enrollments + certificates for staff in parallel
+  const [enrollmentsResult, certificatesResult] = staffIds.length > 0
+    ? await Promise.all([
+        payload.find({
+          collection: 'enrollments',
+          where: { user: { in: staffIds } },
+          depth: 1,
+          limit: 500,
+          overrideAccess: true,
+        }),
+        payload.find({
+          collection: 'certificates',
+          where: { user: { in: staffIds } },
+          depth: 0,
+          limit: 500,
+          overrideAccess: true,
+        }),
+      ])
+    : [{ docs: [] }, { docs: [] }]
 
   // Build per-staff data
   const now = new Date()
@@ -131,9 +129,9 @@ export default async function TeamPage() {
   return (
     <TeamDashboardClient
       tenantName={tenant.name}
-      organizationName={(tenant as any).organizationName || tenant.name}
-      certificationEnabled={(tenant as any).certificationEnabled || false}
-      certificationExpiry={(tenant as any).certificationExpiry || null}
+      organizationName={tenant.organizationName || tenant.name}
+      certificationEnabled={tenant.certificationEnabled || false}
+      certificationExpiry={tenant.certificationExpiry || null}
       stats={{
         totalStaff: staffResult.docs.length,
         activeEnrollments,

@@ -42,7 +42,7 @@ export const EditorialStatusField: SelectFieldClientComponent = (props) => {
   const { field, path, value } = props
   const { user } = useAuth()
 
-  const userRole = (user as any)?.role as EditorialRole | undefined
+  const userRole = (user as { role?: string } | null)?.role as EditorialRole | undefined
 
   const filteredField = useMemo(() => {
     const allowedStatuses = userRole ? (ROLE_ALLOWED_STATUSES[userRole] || []) : []

@@ -62,7 +62,7 @@ export default async function BillingPage() {
         yearlyPrice: t.yearlyPrice,
         features: t.features?.map((f: any) => f.feature) || [],
       }))}
-      hasStripeCustomer={!!(user as any).stripeCustomerId}
+      hasStripeCustomer={!!user.stripeCustomerId}
       successParam={false}
       cancelledParam={false}
     />

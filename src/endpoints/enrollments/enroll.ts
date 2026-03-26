@@ -1,5 +1,6 @@
 import type { Endpoint } from 'payload'
-import { getEffectiveAccessLevels } from '../../utilities/accessLevels'
+import { getEffectiveAccessLevels, type AccessLevel } from '../../utilities/accessLevels'
+import { getUserAccessLevel, getUserTenantAccessLevel } from '../../utilities/types'
 
 export const enrollEndpoint: Endpoint = {
   path: '/enroll',
@@ -37,11 +38,9 @@ export const enrollEndpoint: Endpoint = {
     }
 
     // 5. Verify user has access to this course's tier
-    const tierLevel = (req.user as any)?.tier?.accessLevel as string | undefined
-    const orgLevel = (req.user as any)?.tenant?.contentAccessLevel as string | undefined
-    const effectiveLevels = getEffectiveAccessLevels(tierLevel ?? null, orgLevel ?? null)
+    const effectiveLevels = getEffectiveAccessLevels(getUserAccessLevel(req.user), getUserTenantAccessLevel(req.user))
 
-    if (!effectiveLevels.includes(course.accessLevel as any)) {
+    if (!effectiveLevels.includes(course.accessLevel as AccessLevel)) {
       return Response.json(
         { error: 'Upgrade your plan to access this course' },
         { status: 403 },

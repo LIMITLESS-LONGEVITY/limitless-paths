@@ -12,7 +12,7 @@ export const restrictUserUpdates: CollectionBeforeChangeHook = ({
 }) => {
   if (operation !== 'update') return data
 
-  const userRole = (req.user as any)?.role as string | undefined
+  const userRole = req.user?.role as string | undefined
   if (!userRole) return data
 
   if (STAFF_ROLES.includes(userRole)) return data
@@ -21,7 +21,7 @@ export const restrictUserUpdates: CollectionBeforeChangeHook = ({
   const oldStatus = originalDoc?.status as string | undefined
 
   if (newStatus && newStatus !== oldStatus) {
-    if (!ALLOWED_USER_STATUS_TRANSITIONS.includes(newStatus as any)) {
+    if (!(ALLOWED_USER_STATUS_TRANSITIONS as readonly string[]).includes(newStatus)) {
       throw new Error(`You can only cancel your enrollment. Status "${newStatus}" is not allowed.`)
     }
   }

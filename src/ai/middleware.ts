@@ -1,8 +1,10 @@
 import type { PayloadRequest } from 'payload'
+import type { AiConfig } from '../payload-types'
 import { checkRateLimit, type RateLimitResult } from './rateLimiter'
+import { getUserAccessLevel } from '../utilities/types'
 
 export interface AIRequestContext {
-  aiConfig: Record<string, unknown>
+  aiConfig: AiConfig
   tier: string
   role: string
   rateLimitResult: RateLimitResult
@@ -42,7 +44,7 @@ export async function validateAIRequest(
 
   // 3. Extract tier/role
   const role = (req.user?.role as string) ?? 'user'
-  const tier = ((req.user as any)?.tier?.accessLevel as string) ?? 'free'
+  const tier = getUserAccessLevel(req.user)
 
   // 4. Rate limit (authenticated users only)
   let rateLimitResult: RateLimitResult = {
@@ -58,7 +60,7 @@ export async function validateAIRequest(
       feature,
       role,
       tier,
-      aiConfig.rateLimits as any[],
+      aiConfig.rateLimits ?? [],
     )
 
     if (!rateLimitResult.allowed) {

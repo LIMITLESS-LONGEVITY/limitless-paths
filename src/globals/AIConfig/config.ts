@@ -81,6 +81,24 @@ export const AIConfig: GlobalConfig = {
           defaultValue: 2048,
           admin: { description: 'Max output tokens per quiz generation' },
         },
+        {
+          name: 'actionPlanMaxTokens',
+          type: 'number',
+          defaultValue: 2048,
+          admin: { description: 'Max output tokens per action plan generation' },
+        },
+        {
+          name: 'dailyProtocolMaxTokens',
+          type: 'number',
+          defaultValue: 1024,
+          admin: { description: 'Max output tokens per daily protocol generation' },
+        },
+        {
+          name: 'discoverMaxTokens',
+          type: 'number',
+          defaultValue: 1024,
+          admin: { description: 'Max output tokens per content discovery' },
+        },
       ],
     },
     {

@@ -88,7 +88,7 @@ export const tutorEndpoint: Endpoint = {
               sourceCollection: body.contextType,
               sourceId: body.contextId,
               sourceTitle: contextDoc.title as string,
-              accessLevel: (contextDoc as any).accessLevel ?? 'free',
+              accessLevel: (contextDoc as Record<string, unknown>).accessLevel ?? 'free',
               chunkIndex: 0,
               relevanceScore: 1,
             },
@@ -125,7 +125,7 @@ export const tutorEndpoint: Endpoint = {
     // 8. Stream response
     const modelConfig = getModelConfig('tutor')
     const maxTokens =
-      (ctx.aiConfig.tokenBudgets as any)?.tutorMaxTokens ?? modelConfig.maxOutputTokens
+      ctx.aiConfig.tokenBudgets?.tutorMaxTokens ?? modelConfig.maxOutputTokens
 
     const encoder = new TextEncoder()
     const ESCALATION_MARKER = '[SUGGEST_CONSULTATION]'

@@ -1,5 +1,6 @@
 import type { CollectionAfterReadHook } from 'payload'
-import { getEffectiveAccessLevels } from '../utilities/accessLevels'
+import { getEffectiveAccessLevels, type AccessLevel } from '../utilities/accessLevels'
+import { getUserAccessLevel, getUserTenantAccessLevel } from '../utilities/types'
 
 /**
  * Check if an article's relatedCourses overlap with the user's enrolled course IDs.
@@ -39,12 +40,10 @@ export const computeLockedStatus: CollectionAfterReadHook = async ({ doc, req })
     return { ...doc, locked: false }
   }
 
-  const tierLevel = (user as any)?.tier?.accessLevel as string | undefined
-  const orgLevel = (user as any)?.tenant?.contentAccessLevel as string | undefined
-  const effectiveLevels = getEffectiveAccessLevels(tierLevel ?? null, orgLevel ?? null)
+  const effectiveLevels = getEffectiveAccessLevels(getUserAccessLevel(user), getUserTenantAccessLevel(user))
 
   const contentLevel = doc.accessLevel as string
-  const locked = !effectiveLevels.includes(contentLevel as any)
+  const locked = !effectiveLevels.includes(contentLevel as AccessLevel)
 
   if (locked && user) {
     // Course Reference Bypass: check if user is enrolled in a related course

@@ -56,7 +56,7 @@ export const discoverEndpoint: Endpoint = {
       ]
 
       const modelConfig = getModelConfig('discover')
-      const maxTokens = (ctx.aiConfig.tokenBudgets as any)?.discoverMaxTokens ?? modelConfig.maxOutputTokens
+      const maxTokens = ctx.aiConfig.tokenBudgets?.discoverMaxTokens ?? modelConfig.maxOutputTokens
       const result = await chat(messages, 'discover', { maxTokens, temperature: 0.3 })
 
       const path = parseDiscoverResponse(result.content, candidates).slice(0, limit)

@@ -6,6 +6,7 @@ import { getModelConfig } from '../../ai/models'
 import { getHealthProfile } from '../../utilities/getHealthProfile'
 import { buildActionPlanPrompt, parseActionPlanResponse } from '../../ai/prompts/actionPlan'
 import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
+import { unwrapRelation } from '../../utilities/types'
 
 export const actionPlanEndpoint: Endpoint = {
   path: '/ai/action-plan',
@@ -35,12 +36,13 @@ export const actionPlanEndpoint: Endpoint = {
         return Response.json({ error: 'Enrollment not found' }, { status: 404 })
       }
 
-      const course = typeof enrollment.course === 'object' ? enrollment.course : null
+      const course = unwrapRelation(enrollment.course)
       if (!course) {
         return Response.json({ error: 'Course data not available' }, { status: 400 })
       }
 
-      const pillarName = typeof course.pillar === 'object' ? (course.pillar as any)?.name : 'General'
+      const pillar = unwrapRelation(course.pillar)
+      const pillarName = pillar?.name ?? 'General'
 
       // Retrieve course content via RAG
       const chunks = await retrieveRelevantChunks(
@@ -63,7 +65,7 @@ export const actionPlanEndpoint: Endpoint = {
       const messages: ChatMessage[] = [{ role: 'system', content: prompt }]
 
       const modelConfig = getModelConfig('actionPlan')
-      const maxTokens = (ctx.aiConfig.tokenBudgets as any)?.actionPlanMaxTokens ?? modelConfig.maxOutputTokens
+      const maxTokens = ctx.aiConfig.tokenBudgets?.actionPlanMaxTokens ?? modelConfig.maxOutputTokens
       const result = await chat(messages, 'actionPlan', { maxTokens, temperature: 0.5 })
 
       const plan = parseActionPlanResponse(result.content)
@@ -78,7 +80,7 @@ export const actionPlanEndpoint: Endpoint = {
           user: req.user!.id,
           enrollment: body.enrollmentId,
           course: course.id,
-          pillar: typeof course.pillar === 'object' ? (course.pillar as any)?.id : undefined,
+          pillar: pillar?.id,
           status: 'ready',
           plan,
           healthProfileSnapshot: healthProfile

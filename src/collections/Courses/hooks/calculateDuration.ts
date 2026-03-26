@@ -33,7 +33,7 @@ export const calculateDuration: CollectionBeforeChangeHook = async ({
             typeof lessonId === 'object'
               ? lessonId
               : await req.payload.findByID({ collection: 'lessons', id: lessonId as string, req })
-          totalDuration += (lesson as any)?.estimatedDuration ?? 0
+          totalDuration += (lesson as { estimatedDuration?: number })?.estimatedDuration ?? 0
         }
       }
     }

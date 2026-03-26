@@ -40,7 +40,7 @@ export const generateCertificate: CollectionAfterChangeHook = async ({
 
     if (!course) return doc
 
-    const pillarName = typeof course.pillar === 'object' ? (course.pillar as any)?.name : undefined
+    const pillarName = typeof course.pillar === 'object' ? course.pillar?.name : undefined
     const instructor = typeof course.instructor === 'object' ? course.instructor : null
     const instructorName = instructor
       ? [instructor.firstName, instructor.lastName].filter(Boolean).join(' ')

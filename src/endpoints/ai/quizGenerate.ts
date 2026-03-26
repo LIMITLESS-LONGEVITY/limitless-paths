@@ -60,7 +60,7 @@ export const quizGenerateEndpoint: Endpoint = {
     const contentText = extractTextFromLexical(contextDoc.content)
     const prompt = buildQuizPrompt(contextDoc.title, contentText, questionCount)
     const modelConfig = getModelConfig('quizGeneration')
-    const maxTokens = (ctx.aiConfig.tokenBudgets as any)?.quizMaxTokens ?? modelConfig.maxOutputTokens
+    const maxTokens = ctx.aiConfig.tokenBudgets?.quizMaxTokens ?? modelConfig.maxOutputTokens
 
     try {
       const result = await chat([{ role: 'user', content: prompt }], 'quizGeneration', {

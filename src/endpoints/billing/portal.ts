@@ -1,4 +1,5 @@
 import type { Endpoint } from 'payload'
+import type { User } from '../../payload-types'
 import { createPortalSession } from '../../stripe/portal'
 import { getServerSideURL } from '../../utilities/getURL'
 
@@ -12,7 +13,7 @@ export const billingPortalEndpoint: Endpoint = {
     }
 
     // 2. Check for stripeCustomerId
-    const stripeCustomerId = (req.user as any).stripeCustomerId as string | undefined
+    const stripeCustomerId = (req.user as User).stripeCustomerId
     if (!stripeCustomerId) {
       return Response.json({ error: 'No billing account found. Subscribe to a plan first.' }, { status: 400 })
     }
