@@ -5,10 +5,17 @@
       .r { stroke: #FAFAFA; }
     }
   </style>
-  <!-- Five paths radiating from a single origin point -->
-  <line class="r" x1="12" y1="21" x2="2" y2="5" stroke-width="2" stroke-linecap="round" />
-  <line class="r" x1="12" y1="21" x2="6.5" y2="2.5" stroke-width="2" stroke-linecap="round" />
-  <line class="r" x1="12" y1="21" x2="12" y2="1" stroke-width="2" stroke-linecap="round" />
-  <line class="r" x1="12" y1="21" x2="17.5" y2="2.5" stroke-width="2" stroke-linecap="round" />
-  <line class="r" x1="12" y1="21" x2="22" y2="5" stroke-width="2" stroke-linecap="round" />
+  <!-- Twelve paths radiating from the center outward at 30° intervals -->
+  <line class="r" x1="12" y1="12" x2="12" y2="2" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="17" y2="3.34" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="20.66" y2="7" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="22" y2="12" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="20.66" y2="17" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="17" y2="20.66" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="12" y2="22" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="7" y2="20.66" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="3.34" y2="17" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="2" y2="12" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="3.34" y2="7" stroke-width="2" stroke-linecap="round" />
+  <line class="r" x1="12" y1="12" x2="7" y2="3.34" stroke-width="2" stroke-linecap="round" />
 </svg>
