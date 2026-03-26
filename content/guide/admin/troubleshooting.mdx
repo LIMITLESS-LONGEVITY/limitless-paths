@@ -1,0 +1,61 @@
+---
+title: "Monitoring & Troubleshooting"
+description: "Diagnose and fix common admin issues on the PATHS platform."
+role: admin
+order: 11
+---
+
+# Monitoring & Troubleshooting
+
+<RoleTag role="admin" />
+
+This guide covers the most common issues admins encounter and how to resolve them.
+
+## Common Issues
+
+| Problem | Likely Cause | Solution |
+|---------|-------------|----------|
+| **Build fails on deploy** | TypeScript errors or missing dependencies | Run `pnpm build` locally first to catch errors before pushing. Check build logs on Render for the specific error. |
+| **Database migration error** | Schema changes deployed without a migration | Run `pnpm payload migrate:create` locally to generate the migration file, commit it, and redeploy. Never use `push: true` in production. |
+| **Stripe webhook not working** | Incorrect webhook secret or endpoint URL | Verify `STRIPE_WEBHOOK_SECRET` matches the signing secret in your Stripe dashboard. Confirm the webhook endpoint URL is correct and receiving events. |
+| **AI features returning errors** | Missing API keys | Check that `OPENAI_API_KEY` and `JINA_API_KEY` are set in the deployment environment variables on Render. |
+| **User cannot log in** | Unverified email or incorrect password | Check the user's record — ensure `_verified` is `true`. If they forgot their password, they can use the forgot-password flow. |
+| **Content not appearing on frontend** | Content not published or wrong access level | Verify the content status is **Published** and the access level is within the user's tier. Also check that a tenant is assigned. |
+| **New user has no tier or tenant** | Foundation seed not run | Run `POST /next/seed` with admin auth. This assigns the default tenant and free tier to the admin user and creates foundation data. |
+| **Checkout returns 400 error** | Missing Stripe price IDs on tier | Open the membership tier in the admin panel and add the `stripeMonthlyPriceId` and `stripeYearlyPriceId` values from your Stripe dashboard. |
+| **RAG search returns no results** | Content not indexed | Embeddings are generated on content save. Edit the content body (even a small change) and save to trigger re-indexing. Check that `JINA_API_KEY` is configured. |
+| **Admin panel shows "unknown node"** | Missing Lexical block converter | Ensure all custom Lexical blocks (videoEmbed, quizQuestion, callout) have JSX converters registered in `src/components/RichText/index.tsx`. |
+
+## Monitoring Recommendations
+
+### Check Regularly
+
+- **Render dashboard** — Monitor deploy status, build logs, and server health.
+- **Stripe dashboard** — Review failed payments, subscription status, and webhook delivery logs.
+- **AI Usage Logs** — Monitor the AI Usage Logs collection in the admin panel for unusual activity or error patterns.
+- **User registrations** — Review new user signups to catch spam accounts or role assignment needs.
+
+### Environment Variables to Verify
+
+After any deployment or infrastructure change, confirm these are set correctly:
+
+<Callout type="warning" title="Critical environment variables">
+Missing or incorrect environment variables are the root cause of most post-deploy issues. Always verify these first when troubleshooting.
+</Callout>
+
+| Variable | Required For |
+|----------|-------------|
+| `DATABASE_URI` | PostgreSQL connection |
+| `PAYLOAD_SECRET` | Payload CMS encryption |
+| `STRIPE_SECRET_KEY` | Billing and checkout |
+| `STRIPE_WEBHOOK_SECRET` | Webhook verification |
+| `OPENAI_API_KEY` | AI tutor and quiz generation |
+| `JINA_API_KEY` | Embeddings and semantic search |
+
+## When to Escalate
+
+If you encounter issues not covered here, or if a fix does not resolve the problem after two attempts:
+
+1. Check the Render server logs for detailed error messages.
+2. Review the Payload CMS documentation at [payloadcms.com/docs](https://payloadcms.com/docs).
+3. Contact the development team with the error message, steps to reproduce, and any relevant log output.
