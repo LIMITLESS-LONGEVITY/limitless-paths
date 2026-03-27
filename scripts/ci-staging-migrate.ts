@@ -3,7 +3,7 @@
  *
  * Runs Payload migrations against the staging database on Render.
  * Render's external PostgreSQL requires SSL — we append sslmode=require
- * to the connection string and set ssl: true on the pool config.
+ * to the connection string and set ssl: { rejectUnauthorized: false } on the pool.
  *
  * Unlike ci-migrate.ts (which uses push: true for schema creation),
  * this uses push: false and runs actual migrations — matching production.
@@ -29,7 +29,7 @@ async function main() {
   config.db = postgresAdapter({
     pool: {
       connectionString: dbUrl,
-      ssl: true,
+      ssl: { rejectUnauthorized: false },
     },
     push: false,
     prodMigrations: (await import('../src/migrations/index.js')).migrations,

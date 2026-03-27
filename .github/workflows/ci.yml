@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -72,7 +73,7 @@ jobs:
     name: Test Migrations (Staging DB)
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout
@@ -92,13 +93,29 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Test staging DB connection
+        run: |
+          node -e "
+            const pg = require('pg');
+            const c = new pg.Client({
+              connectionString: process.env.DATABASE_URL,
+              ssl: { rejectUnauthorized: false }
+            });
+            c.connect()
+              .then(() => { console.log('Connection OK'); return c.query('SELECT version()'); })
+              .then(r => { console.log(r.rows[0].version); c.end(); })
+              .catch(e => { console.error('Connection failed:', e.message); process.exit(1); });
+          "
+        env:
+          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+
       - name: Run migrations against staging DB
         run: npx tsx scripts/ci-staging-migrate.ts
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
           PAYLOAD_SECRET: ${{ secrets.STAGING_PAYLOAD_SECRET }}
           NEXT_PUBLIC_SERVER_URL: https://paths-api.limitless-longevity.health
-          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+          RESEND_API_KEY: re_fake_not_real
 
   integration:
     name: Integration Tests (DB)
