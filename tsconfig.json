@@ -49,10 +49,6 @@
   "exclude": [
     "node_modules",
     "playwright.config.ts",
-    "tests/e2e",
-    "tests/int",
-    "tests/helpers",
-    "tests/fixtures",
-    "scripts"
+    "tests/e2e"
   ]
 }
