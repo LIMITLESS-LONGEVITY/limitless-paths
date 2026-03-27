@@ -95,16 +95,22 @@ jobs:
 
       - name: Test staging DB connection
         run: |
-          node -e "
-            const pg = require('pg');
+          npx tsx -e "
+            import pg from 'pg';
             const c = new pg.Client({
               connectionString: process.env.DATABASE_URL,
               ssl: { rejectUnauthorized: false }
             });
-            c.connect()
-              .then(() => { console.log('Connection OK'); return c.query('SELECT version()'); })
-              .then(r => { console.log(r.rows[0].version); c.end(); })
-              .catch(e => { console.error('Connection failed:', e.message); process.exit(1); });
+            try {
+              await c.connect();
+              const r = await c.query('SELECT version()');
+              console.log('Connection OK');
+              console.log(r.rows[0].version);
+              await c.end();
+            } catch (e) {
+              console.error('Connection failed:', e.message);
+              process.exit(1);
+            }
           "
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
