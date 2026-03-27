@@ -95,7 +95,7 @@ export async function retrieveRelevantChunks(
   const vectorStr = `[${queryEmbedding.join(',')}]`
 
   // Build WHERE clause
-  let whereClause = sql`access_level = ANY(ARRAY[${sql.raw(allowedLevels.map((l) => `'${l}'`).join(','))}]::text[])`
+  let whereClause = sql`access_level::text = ANY(ARRAY[${sql.raw(allowedLevels.map((l) => `'${l}'`).join(','))}]::text[])`
 
   if (options?.pillarFilter) {
     whereClause = sql`${whereClause} AND pillar_id = ${options.pillarFilter}`
