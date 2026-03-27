@@ -5,7 +5,6 @@ import { SelectField, useAuth } from '@payloadcms/ui'
 import React, { useMemo } from 'react'
 
 import type { EditorialRole } from '../../../hooks/editorialWorkflow'
-import { ROLE_HIERARCHY } from '../../../hooks/editorialWorkflow'
 
 /**
  * All editorial status options — must match the field config in Articles/Courses.
@@ -39,7 +38,7 @@ const ROLE_ALLOWED_STATUSES: Record<string, string[]> = {
  * hook is the authoritative enforcement layer.
  */
 export const EditorialStatusField: SelectFieldClientComponent = (props) => {
-  const { field, path, value } = props
+  const { field, path: _path, value } = props
   const { user } = useAuth()
 
   const userRole = (user as { role?: string } | null)?.role as EditorialRole | undefined

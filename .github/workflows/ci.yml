@@ -43,11 +43,11 @@ jobs:
 
       - name: Lint
         run: pnpm lint
-        continue-on-error: true  # ESLint FlatCompat throws "circular structure to JSON" — fix config then remove this
+        continue-on-error: true  # 16 React Compiler errors (setState in effect) from eslint-plugin-react-hooks v5 — needs per-component refactoring
 
       - name: TypeScript check
         run: npx tsc --noEmit --skipLibCheck
-        continue-on-error: true  # Payload db adapter has type drift — track but don't block
+        continue-on-error: true  # 46 Payload type drift errors — generated types don't match runtime behavior
 
       - name: Run unit tests (no DB required)
         run: pnpm vitest run tests/int/editorial-workflow.int.spec.ts tests/int/access-control.int.spec.ts tests/int/ai-provider.int.spec.ts tests/int/ai-rate-limiter.int.spec.ts tests/int/ai-guardrails.int.spec.ts tests/int/ai-prompts.int.spec.ts tests/int/enrollments.int.spec.ts tests/int/lesson-progress.int.spec.ts tests/int/course-reference-bypass.int.spec.ts tests/int/stripe-service.int.spec.ts tests/int/billing-logic.int.spec.ts tests/int/chunker.int.spec.ts
@@ -100,6 +100,7 @@ jobs:
 
   integration:
     name: Integration Tests (DB)
+    needs: test
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -165,6 +166,7 @@ jobs:
 
   e2e:
     name: E2E Tests
+    needs: test
     runs-on: ubuntu-latest
     services:
       postgres:

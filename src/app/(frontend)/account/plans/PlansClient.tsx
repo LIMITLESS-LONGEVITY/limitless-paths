@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { GlassCard } from '@/components/homepage/GlassCard'
 import { CTAButton } from '@/components/homepage/CTAButton'
 import { ChevronDown, ChevronRight, Sparkles, CheckCircle2 } from 'lucide-react'
-import { cn } from '@/utilities/ui'
 
 type Plan = {
   id: string

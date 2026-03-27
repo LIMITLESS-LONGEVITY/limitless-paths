@@ -1,6 +1,6 @@
 import { embedText } from './embeddings'
 import { rerank } from './reranker'
-import { getEffectiveAccessLevels, type AccessLevel } from '../utilities/accessLevels'
+import { getEffectiveAccessLevels } from '../utilities/accessLevels'
 import { sql } from '@payloadcms/db-postgres/drizzle'
 import type { Payload, PayloadRequest } from 'payload'
 

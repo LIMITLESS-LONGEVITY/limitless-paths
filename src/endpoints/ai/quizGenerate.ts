@@ -83,7 +83,7 @@ export const quizGenerateEndpoint: Endpoint = {
       })
 
       return Response.json(quiz)
-    } catch (err) {
+    } catch (_err) {
       return Response.json(
         { error: 'Failed to generate quiz. Please try again.' },
         { status: 500 },

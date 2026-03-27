@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { chunkLexicalContent, type ContentChunk } from '@/ai/chunker'
+import { chunkLexicalContent } from '@/ai/chunker'
 
 describe('Semantic chunker', () => {
   it('chunks by H2 headings', () => {

@@ -7,19 +7,19 @@ import { TEST_ADMIN } from '../fixtures/test-data'
 test.describe('Admin Panel', () => {
   let page: Page
   let adminUser: any
-  let tenantId: number
-  let pillarId: number
+  let _tenantId: number
+  let _pillarId: number
 
   test.beforeAll(async ({ browser }) => {
     // Seed data: admin user (which creates a tenant), pillars, tiers
     adminUser = await seedTestUser(TEST_ADMIN)
-    pillarId = await seedPillars()
+    _pillarId = await seedPillars()
     await seedTiers()
 
     // Extract tenant ID from seeded admin user
     if (adminUser.tenants && adminUser.tenants.length > 0) {
       const tenantEntry = adminUser.tenants[0]
-      tenantId = typeof tenantEntry.tenant === 'object' ? tenantEntry.tenant.id : tenantEntry.tenant
+      _tenantId = typeof tenantEntry.tenant === 'object' ? tenantEntry.tenant.id : tenantEntry.tenant
     }
 
     // Create browser context and login
@@ -79,7 +79,7 @@ test.describe('Admin Panel', () => {
     await pillarField.scrollIntoViewIfNeeded()
     // Payload relationship fields use a custom React Select component
     // Click the field area to open the dropdown
-    const pillarContainer = page.locator('.field-type.relationship', { has: page.locator('#field-pillar') })
+    const _pillarContainer = page.locator('.field-type.relationship', { has: page.locator('#field-pillar') })
     // Try clicking on the relationship field's value container to open it
     await pillarField.click()
     // Wait for options to load and select the first one

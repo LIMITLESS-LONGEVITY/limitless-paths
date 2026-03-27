@@ -96,7 +96,7 @@ async function tryCapture(
   try {
     await action()
     console.log(`  ✓ ${role}/${name}.png`)
-  } catch (err) {
+  } catch (_err) {
     console.log(`  ⊘ ${role}/${name}.png (skipped — element or state not available)`)
   }
 }
@@ -835,7 +835,7 @@ async function main() {
   const browser: Browser = await chromium.launch({ headless: true })
   const rolesToCapture = targetRole ? [targetRole] : Object.keys(scenarios)
   let totalCaptured = 0
-  let totalSkipped = 0
+  let _totalSkipped = 0
 
   for (const role of rolesToCapture) {
     const scenarioFn = scenarios[role]

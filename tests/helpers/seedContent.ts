@@ -155,7 +155,7 @@ export async function seedCourse(data: {
     overrideAccess: true,
   })
 
-  const module = await payload.create({
+  const testModule = await payload.create({
     collection: 'modules',
     data: {
       title: 'Test Module 1',
@@ -171,7 +171,7 @@ export async function seedCourse(data: {
     data: {
       title: 'Lesson 1: Introduction',
       slug: `test-lesson-1-intro-${suffix}`,
-      module: module.id,
+      module: testModule.id,
       order: 1,
       lessonType: 'text',
       estimatedDuration: 10,
@@ -194,7 +194,7 @@ export async function seedCourse(data: {
     data: {
       title: 'Lesson 2: Deep Dive',
       slug: `test-lesson-2-deep-dive-${suffix}`,
-      module: module.id,
+      module: testModule.id,
       order: 2,
       lessonType: 'text',
       estimatedDuration: 15,
@@ -206,7 +206,7 @@ export async function seedCourse(data: {
   // Link lessons to module
   await payload.update({
     collection: 'modules',
-    id: module.id,
+    id: testModule.id,
     data: { lessons: [lesson1.id, lesson2.id] },
     overrideAccess: true,
   })
@@ -215,13 +215,13 @@ export async function seedCourse(data: {
   await payload.update({
     collection: 'courses',
     id: course.id,
-    data: { modules: [module.id] },
+    data: { modules: [testModule.id] },
     overrideAccess: true,
   })
 
   return {
     courseId: course.id as number,
-    moduleId: module.id as number,
+    moduleId: testModule.id as number,
     lessonIds: [lesson1.id as number, lesson2.id as number],
   }
 }

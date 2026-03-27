@@ -110,7 +110,7 @@ export default async function TopicPage({ params }: Args) {
           <div className="text-center py-16">
             <p className="text-lg text-muted-foreground mb-2">This guide page is coming soon.</p>
             <p className="text-sm text-muted-foreground/60">
-              We're working on documenting {topic.title.toLowerCase()} for {role.label.toLowerCase()}s.
+              We&apos;re working on documenting {topic.title.toLowerCase()} for {role.label.toLowerCase()}s.
             </p>
           </div>
         )}

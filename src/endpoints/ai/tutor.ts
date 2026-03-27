@@ -176,7 +176,7 @@ export const tutorEndpoint: Endpoint = {
             contextId: body.contextId,
             durationMs: Date.now() - ctx.startTime,
           })
-        } catch (err) {
+        } catch (_err) {
           const errorChunk = `data: ${JSON.stringify({ error: 'An error occurred while generating the response.' })}\n\n`
           controller.enqueue(encoder.encode(errorChunk))
           controller.close()

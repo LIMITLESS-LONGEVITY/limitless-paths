@@ -3,7 +3,7 @@ import config from '@/payload.config'
 import { describe, it, beforeAll, expect } from 'vitest'
 
 let payload: Payload
-let adminUser: any
+let _adminUser: any
 let courseId: string
 let tenantId: number | string
 
@@ -22,7 +22,7 @@ describe('Modules and Lessons', () => {
     }
 
     try {
-      adminUser = await payload.create({
+      _adminUser = await payload.create({
         collection: 'users',
         overrideAccess: true,
         data: {
@@ -41,7 +41,7 @@ describe('Modules and Lessons', () => {
         overrideAccess: true,
         where: { email: { equals: 'modules-test-admin@test.com' } },
       })
-      adminUser = found.docs[0]
+      _adminUser = found.docs[0]
     }
 
     try {

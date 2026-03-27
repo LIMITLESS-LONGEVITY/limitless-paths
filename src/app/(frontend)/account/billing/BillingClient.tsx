@@ -29,7 +29,7 @@ export const BillingClient: React.FC<{
   hasStripeCustomer: boolean
   successParam: boolean
   cancelledParam: boolean
-}> = ({ subscription, currentTier, tiers, hasStripeCustomer }) => {
+}> = ({ subscription, currentTier, tiers, hasStripeCustomer: _hasStripeCustomer }) => {
   const searchParams = useSearchParams()
   const success = searchParams.get('success') === 'true'
   const cancelled = searchParams.get('cancelled') === 'true'

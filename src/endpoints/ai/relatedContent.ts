@@ -58,7 +58,7 @@ export const relatedContentEndpoint: Endpoint = {
       }))
 
       return Response.json({ related })
-    } catch (err) {
+    } catch (_err) {
       return Response.json({ error: 'Related content search failed.' }, { status: 500 })
     }
   },

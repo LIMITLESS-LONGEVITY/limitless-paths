@@ -5,11 +5,11 @@ import { TEST_ADMIN, TEST_USER, TEST_ARTICLE, TEST_COURSE } from '../fixtures/te
 
 test.describe('Mobile Responsive', () => {
   let adminUser: any
-  let regularUser: any
+  let _regularUser: any
   let tenantId: number
   let pillarId: number
-  let tiers: { freeId: number; premiumId: number }
-  let courseData: { courseId: number; moduleId: number; lessonIds: number[] }
+  let _tiers: { freeId: number; premiumId: number }
+  let _courseData: { courseId: number; moduleId: number; lessonIds: number[] }
 
   let userContext: BrowserContext
   let userPage: Page
@@ -18,7 +18,7 @@ test.describe('Mobile Responsive', () => {
     // Seed supporting data
     adminUser = await seedTestUser(TEST_ADMIN)
     pillarId = await seedPillars()
-    tiers = await seedTiers()
+    _tiers = await seedTiers()
 
     // Extract tenant ID from admin user
     if (adminUser.tenants && adminUser.tenants.length > 0) {
@@ -27,7 +27,7 @@ test.describe('Mobile Responsive', () => {
     }
 
     // Seed regular user
-    regularUser = await seedTestUser(TEST_USER)
+    _regularUser = await seedTestUser(TEST_USER)
 
     // Seed published article
     await seedArticle({
@@ -43,7 +43,7 @@ test.describe('Mobile Responsive', () => {
     })
 
     // Seed published course with module + lessons
-    courseData = await seedCourse({
+    _courseData = await seedCourse({
       title: TEST_COURSE.title,
       slug: TEST_COURSE.slug,
       accessLevel: TEST_COURSE.accessLevel,

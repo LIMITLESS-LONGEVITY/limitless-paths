@@ -4,7 +4,7 @@ import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { GlassCard } from '@/components/homepage/GlassCard'
 import { TierBadge } from '@/components/TierBadge'
-import { Sparkles, ArrowRight, Lock } from 'lucide-react'
+import { Sparkles, ArrowRight } from 'lucide-react'
 
 const SUGGESTED_PROMPTS = [
   'Optimize my sleep quality',

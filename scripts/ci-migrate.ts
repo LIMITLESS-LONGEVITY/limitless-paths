@@ -18,7 +18,7 @@ async function main() {
   const config = await configPromise
 
   // Override the db adapter to enable push for schema creation
-  const originalDb = config.db
+  const _originalDb = config.db
   config.db = postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL! },
     push: true,

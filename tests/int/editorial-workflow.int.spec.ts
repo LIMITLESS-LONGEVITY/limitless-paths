@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
-  EDITORIAL_TRANSITIONS,
   isValidTransition,
   getRequiredRole,
-  ROLE_HIERARCHY,
   hasRole,
 } from '@/hooks/editorialWorkflow'
 

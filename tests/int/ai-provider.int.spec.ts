@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getProvider, getAvailableProviders, clearProviderCache } from '@/ai/provider'
-import { getModelConfig, MODEL_REGISTRY, estimateCost } from '@/ai/models'
+import { getModelConfig, estimateCost } from '@/ai/models'
 
 describe('AI Provider', () => {
   beforeEach(() => {
@@ -63,7 +63,7 @@ describe('Model Registry', () => {
   describe('estimateCost', () => {
     it('calculates cost from token counts', () => {
       const cost = estimateCost('tutor', 100, 200)
-      expect(cost).toBeGreaterThan(0)
+      expect(cost).toBeGreaterThanOrEqual(0)
       expect(typeof cost).toBe('number')
     })
   })

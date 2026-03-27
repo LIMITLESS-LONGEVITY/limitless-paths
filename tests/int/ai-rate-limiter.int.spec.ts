@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
-  STAFF_ROLES,
   isStaffRole,
   getRateLimitKey,
-  DEFAULT_RATE_LIMITS,
   getDefaultLimit,
 } from '@/ai/rateLimiter'
 

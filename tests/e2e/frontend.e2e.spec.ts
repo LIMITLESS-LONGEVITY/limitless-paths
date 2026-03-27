@@ -7,7 +7,7 @@ import config from '../../src/payload.config.js'
 
 test.describe('Frontend Pages', () => {
   let adminUser: any
-  let regularUser: any
+  let _regularUser: any
   let premiumUser: any
   let tenantId: number
   let pillarId: number
@@ -40,7 +40,7 @@ test.describe('Frontend Pages', () => {
     }
 
     // Seed regular user (free tier)
-    regularUser = await seedTestUser(TEST_USER)
+    _regularUser = await seedTestUser(TEST_USER)
 
     // Seed premium user and assign premium tier
     premiumUser = await seedTestUser(PREMIUM_USER)
