@@ -101,16 +101,18 @@ jobs:
               connectionString: process.env.DATABASE_URL,
               ssl: { rejectUnauthorized: false }
             });
-            try {
-              await c.connect();
-              const r = await c.query('SELECT version()');
-              console.log('Connection OK');
-              console.log(r.rows[0].version);
-              await c.end();
-            } catch (e) {
-              console.error('Connection failed:', e.message);
-              process.exit(1);
-            }
+            (async () => {
+              try {
+                await c.connect();
+                const r = await c.query('SELECT version()');
+                console.log('Connection OK');
+                console.log(r.rows[0].version);
+                await c.end();
+              } catch (e: any) {
+                console.error('Connection failed:', e.message);
+                process.exit(1);
+              }
+            })();
           "
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
