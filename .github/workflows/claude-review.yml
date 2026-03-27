@@ -28,4 +28,4 @@ jobs:
           claude_args: "--max-turns 5"
           trigger_phrase: "@claude"
           review_on_open: true
-          review_on_push: true
+          review_on_push: false
