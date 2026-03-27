@@ -28,9 +28,28 @@
       "Configuring the AI Model",
       "Usage Logging",
       "Embedding Triggers",
+      "Health-Context AI",
+      "Telemedicine Escalation",
+      "AI Model Entries",
       "Next Steps"
     ],
     "url": "/guide/admin/ai-configuration"
+  },
+  {
+    "role": "admin",
+    "topic": "compliance-management",
+    "title": "compliance-management",
+    "description": "Track B2B staff compliance, certification status, and training completion across tenants.",
+    "body": "Compliance Management\nThe Compliance Dashboard provides tenant managers with real-time visibility into staff training completion, certification status, and compliance requirements. As an admin, you configure the compliance features and can view dashboards for any tenant.\nHow It Works\nThe compliance ",
+    "headings": [
+      "Compliance Management",
+      "How It Works",
+      "Tenant Certification Configuration",
+      "Dashboard Features",
+      "Access Control",
+      "Next Steps"
+    ],
+    "url": "/guide/admin/compliance-management"
   },
   {
     "role": "admin",
@@ -68,6 +87,22 @@
   },
   {
     "role": "admin",
+    "topic": "managing-health-profiles",
+    "title": "managing-health-profiles",
+    "description": "Understand how user health data is stored, secured, and used for AI personalization on the PATHS platform.",
+    "body": "Health Profiles\nThe Health Profiles collection stores user health data — biomarkers, goals, conditions, medications, and pillar priorities. This data powers the AI personalization features: health-aware tutor responses, personalized daily protocols, and tailored action plans.\nPrivacy by Design\nHealt",
+    "headings": [
+      "Health Profiles",
+      "Privacy by Design",
+      "Collection Structure",
+      "How Health Data Feeds AI",
+      "Viewing Health Profiles in Admin",
+      "Next Steps"
+    ],
+    "url": "/guide/admin/managing-health-profiles"
+  },
+  {
+    "role": "admin",
     "topic": "managing-tenants",
     "title": "managing-tenants",
     "description": "",
@@ -79,6 +114,7 @@
       "Assigning Users to a Tenant",
       "Content Scoping",
       "Access Level Resolution",
+      "B2B Certification Configuration",
       "Next Steps"
     ],
     "url": "/guide/admin/managing-tenants"
@@ -148,6 +184,23 @@
       "Next Steps"
     ],
     "url": "/guide/admin/site-settings"
+  },
+  {
+    "role": "admin",
+    "topic": "stays-and-telemedicine",
+    "title": "stays-and-telemedicine",
+    "description": "Configure hotel stay packages and telemedicine consultation settings in the PATHS admin.",
+    "body": "Stays & Telemedicine\nPATHS supports two clinical service features: Longevity Stay Packages (hotel stays with guided content) and Telemedicine Consultations (remote expert sessions). Both require admin configuration.\nStay Packages\nStay programs reuse the Courses collection with additional stay fields",
+    "headings": [
+      "Stays & Telemedicine",
+      "Stay Packages",
+      "Time-Gated Access",
+      "Stay-Aware AI Protocols",
+      "Telemedicine Configuration",
+      "Booking Endpoints",
+      "Next Steps"
+    ],
+    "url": "/guide/admin/stays-and-telemedicine"
   },
   {
     "role": "admin",
@@ -226,6 +279,21 @@
       "Your Role in the Workflow"
     ],
     "url": "/guide/contributor/editorial-workflow"
+  },
+  {
+    "role": "contributor",
+    "topic": "expert-profiles",
+    "title": "expert-profiles",
+    "description": "Add practitioner credentials, bio, and LinkedIn to your contributor profile so readers see who created their content.",
+    "body": "Expert Profiles\nEvery article and course on PATHS prominently features the expert who created it. As a contributor, you can set up your Expert Profile so readers see your credentials, specialization, and professional background alongside your content.\nWhy Expert Profiles Matter\nReaders on PATHS are ",
+    "headings": [
+      "Expert Profiles",
+      "Why Expert Profiles Matter",
+      "Setting Up Your Profile",
+      "How Your Profile Appears",
+      "Next Steps"
+    ],
+    "url": "/guide/contributor/expert-profiles"
   },
   {
     "role": "contributor",
@@ -390,8 +458,8 @@
     "role": "publisher",
     "topic": "content-analytics",
     "title": "content-analytics",
-    "description": "Tracking content performance and engagement metrics on the PATHS platform. This feature is coming soon.",
-    "body": "Content Analytics\nContent analytics is a planned feature that is not yet available on the PATHS platform. This guide describes the capabilities that are being developed. You will be notified when analytics features become available.\nPlanned Analytics Features\nThe analytics system will give Publisher",
+    "description": "",
+    "body": "---\r\ntitle: Content Analytics\r\ndescription: Tracking content performance and engagement metrics on the PATHS platform. This feature is coming soon.\r\n---\r\n\r\nContent Analytics\r\n\r\n\r\n\r\n\r\nContent analytics is a planned feature that is not yet available on the PATHS platform. This guide describes the capa",
     "headings": [
       "Content Analytics",
       "Planned Analytics Features",
@@ -463,6 +531,21 @@
   },
   {
     "role": "user-free",
+    "topic": "content-discovery",
+    "title": "content-discovery",
+    "description": "Use AI-powered discovery to find personalized learning paths based on your health goals.",
+    "body": "AI Content Discovery\nThe Discover page at /discover uses AI to recommend personalized learning paths based on your health goals. Instead of browsing a catalog, describe what you want to improve and let PATHS build a structured path for you.\nHow It Works\n  Navigate to Discover in the main navigation ",
+    "headings": [
+      "AI Content Discovery",
+      "How It Works",
+      "Suggested Goals",
+      "Who Can Use Discovery",
+      "Next Steps"
+    ],
+    "url": "/guide/user-free/content-discovery"
+  },
+  {
+    "role": "user-free",
     "topic": "content-pillars",
     "title": "content-pillars",
     "description": "Learn about the six longevity pillars that organise all educational content on PATHS.",
@@ -506,7 +589,9 @@
       "Getting Started with PATHS",
       "Creating Your Account",
       "Exploring the Platform",
-      "Understanding Your Dashboard",
+      "Welcome Tour",
+      "Understanding the Homepage",
+      "Your Account Dashboard",
       "Next Steps"
     ],
     "url": "/guide/user-free/getting-started"
@@ -533,7 +618,7 @@
     "topic": "reading-articles",
     "title": "reading-articles",
     "description": "Understand the article reading experience, including layout, navigation, and tier-restricted content.",
-    "body": "Reading Articles\nArticles on PATHS are standalone, in-depth pieces covering specific longevity topics. This guide explains the article reading experience and what to expect as a free-tier user.\nArticle Layout\nWhen you open an article, you will see:\nContent area — The main body of the article occupie",
+    "body": "Reading Articles\nArticles on PATHS are standalone, in-depth pieces covering specific longevity topics. This guide explains the article reading experience and what to expect as a free-tier user.\nArticle Layout\nWhen you open an article, you will see:\nBreadcrumb navigation — At the top: Articles > Pill",
     "headings": [
       "Reading Articles",
       "Article Layout",
@@ -568,7 +653,7 @@
     "topic": "using-search",
     "title": "using-search",
     "description": "Find longevity content quickly with the AI-powered semantic search on PATHS.",
-    "body": "Using Search\nPATHS includes an AI-powered semantic search that goes beyond simple keyword matching. Instead of requiring exact terms, you can describe what you are looking for in natural language, and the search engine will find the most relevant results.\nHow Semantic Search Works\nTraditional search",
+    "body": "Using Search\nPATHS includes an AI-powered semantic search that goes beyond simple keyword matching. Instead of requiring exact terms, you can describe what you are looking for in natural language, and the search engine will find the most relevant results.\nThe search page features an AI-Powered badge",
     "headings": [
       "Using Search",
       "How Semantic Search Works",
@@ -596,6 +681,22 @@
   },
   {
     "role": "user-organization",
+    "topic": "compliance-dashboard",
+    "title": "compliance-dashboard",
+    "description": "View your team's compliance status, certification progress, and training completion rates.",
+    "body": "Compliance Dashboard\nIf your organization uses PATHS for staff training, the Compliance Dashboard at /account/team gives managers a real-time view of team completion rates, certifications, and training status.\n  The Compliance Dashboard is only visible to team managers (publishers with tenant access",
+    "headings": [
+      "Compliance Dashboard",
+      "Dashboard Overview",
+      "Staff Table",
+      "Certificate Expiry Warnings",
+      "Exporting Data",
+      "Next Steps"
+    ],
+    "url": "/guide/user-organization/compliance-dashboard"
+  },
+  {
+    "role": "user-organization",
     "topic": "contacting-admin",
     "title": "contacting-admin",
     "description": "How to reach your organization administrator for access requests, issues, or questions.",
@@ -619,6 +720,7 @@
       "How Organization Accounts Work",
       "What Is Multi-Tenancy?",
       "How Access Is Determined",
+      "Compliance & Certifications",
       "Next Steps"
     ],
     "url": "/guide/user-organization/org-overview"
@@ -634,6 +736,8 @@
       "Viewing Your Progress",
       "Understanding Completion Tracking",
       "Resuming a Course",
+      "Learning Streaks",
+      "Certificates",
       "Next Steps"
     ],
     "url": "/guide/user-organization/progress-dashboard"
@@ -652,6 +756,21 @@
       "Next Steps"
     ],
     "url": "/guide/user-organization/switching-content"
+  },
+  {
+    "role": "user-organization",
+    "topic": "team-certificates",
+    "title": "team-certificates",
+    "description": "Understand how certificates work within your organization and how they support professional development.",
+    "body": "Team Certificates\nWhen you complete a course as part of an organization on PATHS, your certificate is automatically linked to your organization's compliance tracking. This means your team manager can see your certifications alongside those of your colleagues.\nEarning Certificates as an Org Member\nTh",
+    "headings": [
+      "Team Certificates",
+      "Earning Certificates as an Org Member",
+      "Certificate Expiry",
+      "Sharing Certificates",
+      "Next Steps"
+    ],
+    "url": "/guide/user-organization/team-certificates"
   },
   {
     "role": "user-organization",
@@ -682,38 +801,74 @@
       "Changing Your Email Address",
       "Changing Your Password",
       "Email Verification",
+      "Account Navigation",
       "Logging Out"
     ],
     "url": "/guide/user-paid/account-settings"
   },
   {
     "role": "user-paid",
+    "topic": "action-plans",
+    "title": "action-plans",
+    "description": "Get personalized 30-day action plans generated by AI after completing courses.",
+    "body": "AI Action Plans\nWhen you complete a course on PATHS, the AI can generate a personalized 30-day action plan that translates what you learned into concrete daily actions — tailored to your Health Profile.\nHow Action Plans Work\nAction plans are structured as a 4-week program with specific daily actions",
+    "headings": [
+      "AI Action Plans",
+      "How Action Plans Work",
+      "Generating an Action Plan",
+      "Viewing Your Action Plans",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/action-plans"
+  },
+  {
+    "role": "user-paid",
     "topic": "ai-tutor",
     "title": "ai-tutor",
-    "description": "How to use the AI-powered tutor to ask questions and deepen your understanding of platform content.",
-    "body": "Using the AI Tutor\nThe AI tutor is an intelligent assistant built into the PATHS platform. It answers your questions using content from the platform's knowledge base, helping you deepen your understanding of longevity science topics.\nHow It Works\nThe AI tutor uses retrieval-augmented generation (RAG",
+    "description": "Get AI-powered help grounded in PATHS content, personalized to your health profile, with smart clinical escalation.",
+    "body": "Using the AI Tutor\nThe AI tutor is an intelligent assistant built into PATHS. It answers your questions using content from the platform's knowledge base and — if you have a Health Profile — personalizes responses based on your biomarkers, goals, and conditions.\nHow It Works\nThe AI tutor uses retriev",
     "headings": [
       "Using the AI Tutor",
       "How It Works",
       "Accessing the AI Tutor",
+      "Starter Questions",
+      "Rich Responses",
+      "Health-Aware Personalization",
+      "Telemedicine Escalation",
       "Asking Effective Questions",
       "Conversation Context",
-      "Content Access and the Tutor"
+      "Next Steps"
     ],
     "url": "/guide/user-paid/ai-tutor"
   },
   {
     "role": "user-paid",
+    "topic": "biomarker-tracking",
+    "title": "biomarker-tracking",
+    "description": "Visualize biomarker trends over time with interactive charts, normal range shading, and trend indicators.",
+    "body": "Biomarker Tracking\nWhen you add two or more readings for the same biomarker in your Health Profile, PATHS generates interactive trend charts so you can visualize how your health markers change over time.\nViewing Your Trends\nThe Biomarker Trends section appears at the bottom of your Health Profile pa",
+    "headings": [
+      "Biomarker Tracking",
+      "Viewing Your Trends",
+      "Understanding Trend Indicators",
+      "How Trends Feed AI Context",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/biomarker-tracking"
+  },
+  {
+    "role": "user-paid",
     "topic": "certificates",
     "title": "certificates",
-    "description": "Information about the upcoming course completion certificate feature.",
-    "body": "Course Completion Certificates\n  Course completion certificates are a planned feature and are not yet available. This page describes what to expect when the feature launches.\nWhat Certificates Will Offer\nUpon completing all lessons in a course, you will be able to generate a PDF certificate confirmi",
+    "description": "Earn verifiable certificates when you complete courses, and share them with employers or on professional profiles.",
+    "body": "Course Certificates\nWhen you complete all lessons in a course, PATHS automatically generates a completion certificate — a branded, verifiable credential you can share with employers, on LinkedIn, or for continuing education records.\nHow Certificates Work\nCertificates are generated automatically when",
     "headings": [
-      "Course Completion Certificates",
-      "What Certificates Will Offer",
-      "How It Will Work",
-      "Shareable Credentials",
-      "Stay Informed"
+      "Course Certificates",
+      "How Certificates Work",
+      "Viewing Your Certificates",
+      "Sharing & Printing",
+      "Organization Certificates",
+      "Next Steps"
     ],
     "url": "/guide/user-paid/certificates"
   },
@@ -728,9 +883,42 @@
       "Lesson Viewer Layout",
       "Marking Lessons Complete",
       "Tracking Your Progress",
-      "Resuming Where You Left Off"
+      "Resuming Where You Left Off",
+      "Learning Streaks"
     ],
     "url": "/guide/user-paid/completing-lessons"
+  },
+  {
+    "role": "user-paid",
+    "topic": "dashboard",
+    "title": "dashboard",
+    "description": "Navigate your personalized learning dashboard with stats, daily protocols, course progress, and recommendations.",
+    "body": "Your Dashboard\nYour dashboard at /account is your home base on PATHS. It gives you an at-a-glance view of your learning progress, daily protocols, enrolled courses, and recent activity.\nDashboard Overview\nWhen you log in, your dashboard displays:\nWelcome message with your name and tier badge (e.g., ",
+    "headings": [
+      "Your Dashboard",
+      "Dashboard Overview",
+      "Stats Cards",
+      "Today's Protocol",
+      "Continue Learning",
+      "Onboarding Tour",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/dashboard"
+  },
+  {
+    "role": "user-paid",
+    "topic": "diagnostics",
+    "title": "diagnostics",
+    "description": "Browse and book diagnostic packages at partner clinics through the PATHS platform.",
+    "body": "Booking Diagnostics\nPATHS connects your learning with real-world diagnostics. After completing courses on biomarkers, nutrition, or longevity science, you can book diagnostic packages at partner clinics to measure what you've learned about.\nBrowsing Diagnostic Packages\nNavigate to /diagnostics (link",
+    "headings": [
+      "Booking Diagnostics",
+      "Browsing Diagnostic Packages",
+      "Contextual Suggestions",
+      "Premium Discount",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/diagnostics"
   },
   {
     "role": "user-paid",
@@ -746,6 +934,39 @@
       "Enrollment and Access Levels"
     ],
     "url": "/guide/user-paid/enrolling-courses"
+  },
+  {
+    "role": "user-paid",
+    "topic": "health-profile",
+    "title": "health-profile",
+    "description": "Set up your health profile with biomarkers, goals, conditions, and medications to unlock personalized AI recommendations.",
+    "body": "Health Profile\nYour Health Profile is the foundation of personalized learning on PATHS. By entering your biomarkers, health goals, conditions, and medications, you enable the AI tutor, daily protocols, and action plans to tailor recommendations specifically to your body.\n  Health profile data is use",
+    "headings": [
+      "Health Profile",
+      "Accessing Your Health Profile",
+      "Health Goals",
+      "Biomarkers",
+      "Health Conditions & Medications",
+      "Pillar Priorities",
+      "Saving Your Profile",
+      "How Health Data Is Used",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/health-profile"
+  },
+  {
+    "role": "user-paid",
+    "topic": "learning-streaks",
+    "title": "learning-streaks",
+    "description": "Build and maintain daily learning streaks to stay consistent with your longevity education.",
+    "body": "Learning Streaks\nPATHS tracks your learning consistency with a streak system. Every day you complete at least one lesson, your streak increases. The dashboard shows both your current streak and your all-time longest streak.\nHow Streaks Work\nCurrent Streak — The number of consecutive days you've comp",
+    "headings": [
+      "Learning Streaks",
+      "How Streaks Work",
+      "Viewing Your Streak",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/learning-streaks"
   },
   {
     "role": "user-paid",
@@ -775,10 +996,28 @@
       "Access Tiers",
       "How Locked and Unlocked Content Appears",
       "Organization Access",
+      "Discovering Content",
       "Upgrading for More Content",
       "AI Tutor and Access Levels"
     ],
     "url": "/guide/user-paid/premium-content"
+  },
+  {
+    "role": "user-paid",
+    "topic": "stay-packages",
+    "title": "stay-packages",
+    "description": "Book immersive hotel stays with guided longevity content, diagnostics, and personalized daily protocols.",
+    "body": "Longevity Stay Packages\nPATHS offers immersive Longevity Stay Packages at El Fuerte Marbella, combining luxury hospitality with hospital-grade diagnostics at Recoletas Salud. Your stay is enhanced with PATHS content — pre-arrival preparation, daily protocols during your stay, and long-term follow-up",
+    "headings": [
+      "Longevity Stay Packages",
+      "Available Packages",
+      "What's Included",
+      "Booking a Stay",
+      "Time-Gated Content During Your Stay",
+      "Stay-Aware AI Protocols",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/stay-packages"
   },
   {
     "role": "user-paid",
@@ -795,5 +1034,21 @@
       "Quizzes in Courses vs. Articles"
     ],
     "url": "/guide/user-paid/taking-quizzes"
+  },
+  {
+    "role": "user-paid",
+    "topic": "telemedicine",
+    "title": "telemedicine",
+    "description": "Book expert longevity consultations for biomarker review, health planning, and clinical guidance.",
+    "body": "Telemedicine Consultations\nPATHS connects you with the clinical team for expert health guidance via telemedicine. From biomarker interpretation to intervention protocols — get personalized advice without leaving home.\nAvailable Services\nNavigate to /telemedicine to browse four consultation types:\n| ",
+    "headings": [
+      "Telemedicine Consultations",
+      "Available Services",
+      "Pricing",
+      "Booking a Consultation",
+      "AI Tutor Escalation",
+      "Next Steps"
+    ],
+    "url": "/guide/user-paid/telemedicine"
   }
 ]

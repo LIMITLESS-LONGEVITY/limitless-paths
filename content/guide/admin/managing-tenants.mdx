@@ -73,6 +73,20 @@ This "highest wins" model means an Enterprise-tier organization member always ge
 </AccordionItem>
 </Accordion>
 
+## B2B Certification Configuration
+
+Each tenant can be configured for compliance tracking. Edit a tenant to set:
+
+| Field | Description |
+|-------|-------------|
+| `certificationEnabled` | Enable certificate tracking for this organization |
+| `certificationExpiry` | Months before certificates expire (e.g., 12 = annual recertification) |
+| `organizationName` | Name displayed on staff certificates |
+| `organizationLogo` | Logo displayed on certificates (upload via Media collection) |
+
+When certification is enabled, tenant managers can access the [Compliance Dashboard](/guide/admin/compliance-management) at `/account/team` to monitor staff progress.
+
 ## Next Steps
 
-Learn how to build educational content in [Creating & Managing Courses](/guide/admin/managing-courses).
+- [Configure compliance management](/guide/admin/compliance-management) for B2B clients
+- [Create courses](/guide/admin/managing-courses) for organizational training programs

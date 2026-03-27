@@ -82,6 +82,43 @@ Content embeddings are generated automatically via an `afterChange` hook when ar
 To force re-indexing of an article, make a small edit to the content body (e.g., add and remove a space) and save. This triggers the embedding hook.
 </Callout>
 
+## Health-Context AI
+
+The AI tutor, daily protocols, and action plan endpoints incorporate user health data when available. The shared `buildHealthContextSection` utility formats a user's health profile into structured context that is injected into the AI system prompt. This includes:
+
+- Health goals and pillar priorities
+- Biomarker values with status (normal/low/high) and trends
+- Conditions and medications
+
+This context enables personalized responses like *"Based on your Vitamin D level of 22 ng/mL..."*. The health context is session-scoped — only the authenticated user's data is injected. See [Health Profiles](/guide/admin/managing-health-profiles) for privacy details.
+
+## Telemedicine Escalation
+
+The AI tutor includes a clinical escalation system. When users ask questions about medication decisions, symptoms, or clinical judgment, the model appends a `[SUGGEST_CONSULTATION]` marker. The endpoint:
+
+1. Strips the marker from the visible response
+2. Emits a separate `{ escalation: true }` event via SSE
+3. The frontend displays a gold consultation CTA card with an auto-prefilled booking form
+
+This escalation is configured in the tutor's system prompt. The booking form submits to `/api/telemedicine-booking`, which sends notifications to the `TELEMEDICINE_EMAIL` environment variable.
+
+## AI Model Entries
+
+The AI Config global includes model entries for multiple AI features:
+
+| Feature | Endpoint | Description |
+|---------|----------|-------------|
+| Tutor | `/api/ai/tutor` | Interactive Q&A with health context |
+| Quiz Generation | `/api/ai/quiz/generate` | Auto-generate quiz questions from content |
+| Search | `/api/ai/search` | Semantic search with reranking |
+| Action Plans | `/api/ai/action-plan` | 30-day personalized plans |
+| Discovery | `/api/ai/discover` | Conversational content recommendations |
+| Daily Protocols | `/api/ai/daily-protocol` | Morning/afternoon/evening routines |
+
+Each has configurable model selection and token limits in the AI Config global.
+
 ## Next Steps
 
-Set up payment processing in [Stripe & Billing Setup](/guide/admin/stripe-billing).
+- [Manage health profile data and privacy](/guide/admin/managing-health-profiles)
+- [Configure stays and telemedicine](/guide/admin/stays-and-telemedicine)
+- [Set up Stripe & Billing](/guide/admin/stripe-billing)
