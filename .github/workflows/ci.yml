@@ -69,6 +69,7 @@ jobs:
 
   integration:
     name: Integration Tests (DB)
+    needs: test
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -134,6 +135,7 @@ jobs:
 
   e2e:
     name: E2E Tests
+    needs: test
     runs-on: ubuntu-latest
     services:
       postgres:
