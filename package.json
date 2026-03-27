@@ -23,7 +23,8 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "pnpm test:int && pnpm test:e2e"
+    "test:all": "pnpm test:int && pnpm test:e2e",
+    "reindex": "tsx scripts/reindex-content-chunks.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.80.0",
