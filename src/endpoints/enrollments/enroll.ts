@@ -83,7 +83,7 @@ export const enrollEndpoint: Endpoint = {
       })
 
       return Response.json({ enrollment }, { status: 201 })
-    } catch (err) {
+    } catch (_err) {
       return Response.json(
         { error: 'Failed to create enrollment' },
         { status: 500 },

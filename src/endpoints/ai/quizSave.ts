@@ -109,7 +109,7 @@ export const quizSaveEndpoint: Endpoint = {
         data: { content: updatedContent },
         req,
       })
-    } catch (err) {
+    } catch (_err) {
       return Response.json({ error: 'Failed to save quiz questions' }, { status: 500 })
     }
 

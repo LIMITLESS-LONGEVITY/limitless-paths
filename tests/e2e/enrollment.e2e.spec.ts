@@ -11,7 +11,7 @@ test.describe('Enrollment Flow', () => {
   let tenantId: number
   let pillarId: number
   let tiers: { freeId: number; premiumId: number }
-  let courseData: { courseId: number; moduleId: number; lessonIds: number[] }
+  let _courseData: { courseId: number; moduleId: number; lessonIds: number[] }
 
   let userContext: BrowserContext
   let userPage: Page
@@ -47,7 +47,7 @@ test.describe('Enrollment Flow', () => {
     })
 
     // Seed a published course with module + 2 lessons
-    courseData = await seedCourse({
+    _courseData = await seedCourse({
       title: TEST_COURSE.title,
       slug: TEST_COURSE.slug,
       accessLevel: TEST_COURSE.accessLevel,

@@ -102,7 +102,7 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
       )
     },
     audioEmbed: ({ node }) => {
-      const { platform, url, caption } = node.fields as any
+      const { url, caption } = node.fields as any
       return (
         <div className="my-6">
           <iframe src={url} className="w-full h-20 rounded-lg" allow="autoplay" />

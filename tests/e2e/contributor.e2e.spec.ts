@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { login } from '../helpers/login'
 import { seedTestUser, cleanupTestUsers } from '../helpers/seedUser'
 import { seedPillars, seedTiers, seedArticle } from '../helpers/seedContent'
-import { TEST_ADMIN, TEST_CONTRIBUTOR, TEST_ARTICLE } from '../fixtures/test-data'
+import { TEST_ADMIN, TEST_CONTRIBUTOR } from '../fixtures/test-data'
 
 test.describe('Contributor Experience & Permissions', () => {
   let adminUser: any

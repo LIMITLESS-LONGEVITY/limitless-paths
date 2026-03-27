@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
-import { Check, Activity, Scan, Brain, Heart, Dna, FlaskConical } from 'lucide-react'
+import { Check, Activity, Dna } from 'lucide-react'
 
 const COMPREHENSIVE_TESTS = [
   'Full-body DEXA scan',

@@ -1,6 +1,6 @@
-import { test, expect, Browser, BrowserContext, Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { login } from '../helpers/login'
-import { seedTestUser, seedAllTestUsers, cleanupTestUsers } from '../helpers/seedUser'
+import { seedAllTestUsers, cleanupTestUsers } from '../helpers/seedUser'
 import { seedPillars, seedTiers } from '../helpers/seedContent'
 import {
   TEST_ADMIN,
@@ -10,12 +10,12 @@ import {
 } from '../fixtures/test-data'
 
 test.describe('Editorial Workflow: Draft → Published Lifecycle', () => {
-  let adminUser: any
+  let _adminUser: any
   let contributorUser: any
-  let editorUser: any
-  let publisherUser: any
-  let tenantId: number
-  let pillarId: number
+  let _editorUser: any
+  let _publisherUser: any
+  let _tenantId: number
+  let _pillarId: number
 
   const articleTitle = 'E2E Editorial: Circadian Rhythm Optimization'
   const articleSlug = 'e2e-editorial-circadian-rhythm'
@@ -28,18 +28,18 @@ test.describe('Editorial Workflow: Draft → Published Lifecycle', () => {
       TEST_EDITOR,
       TEST_PUBLISHER,
     ])
-    adminUser = users.get('admin')
+    _adminUser = users.get('admin')
     contributorUser = users.get('contributor')
-    editorUser = users.get('editor')
-    publisherUser = users.get('publisher')
+    _editorUser = users.get('editor')
+    _publisherUser = users.get('publisher')
 
-    pillarId = await seedPillars()
+    _pillarId = await seedPillars()
     await seedTiers()
 
     // Extract tenant ID from any seeded user
     if (contributorUser.tenants && contributorUser.tenants.length > 0) {
       const tenantEntry = contributorUser.tenants[0]
-      tenantId =
+      _tenantId =
         typeof tenantEntry.tenant === 'object'
           ? tenantEntry.tenant.id
           : tenantEntry.tenant

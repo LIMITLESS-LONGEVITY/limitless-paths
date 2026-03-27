@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
-import { X, Send, MessageCircle, Lock, Copy, Check, Activity, Calendar } from 'lucide-react'
+import { X, Send, MessageCircle, Copy, Check, Activity } from 'lucide-react'
 import { useAuth } from '@/providers/Auth'
 import { cn } from '@/utilities/ui'
 

@@ -10,7 +10,7 @@ import type { CollectionBeforeChangeHook } from 'payload'
 export const calculateDuration: CollectionBeforeChangeHook = async ({
   data,
   req,
-  operation,
+  operation: _operation,
 }) => {
   // Skip if duration is explicitly set or no modules
   if (data.estimatedDuration != null || !data.modules?.length) return data

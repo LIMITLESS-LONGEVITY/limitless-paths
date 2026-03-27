@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
-import { Check, Video, Brain, Activity, Heart } from 'lucide-react'
+import { Video, Brain, Activity, Heart } from 'lucide-react'
 
 const SERVICES = [
   { icon: Activity, title: 'Biomarker Review', description: 'Detailed analysis of your diagnostic results with personalized recommendations' },
