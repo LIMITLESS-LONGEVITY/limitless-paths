@@ -96,7 +96,7 @@ function exportCSV(staff: StaffMember[], orgName: string) {
 }
 
 export default function TeamDashboardClient({
-  tenantName,
+  tenantName: _tenantName,
   organizationName,
   certificationEnabled,
   certificationExpiry,

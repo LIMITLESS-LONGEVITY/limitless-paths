@@ -8,7 +8,7 @@ export const generateCertificate: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
   req,
-  operation,
+  operation: _operation,
 }) => {
   // Only trigger on status change to 'completed'
   if (doc.status !== 'completed') return doc

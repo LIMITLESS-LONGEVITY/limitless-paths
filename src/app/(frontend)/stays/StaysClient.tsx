@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
-import { Check, MapPin, Calendar, Sun, Sparkles } from 'lucide-react'
+import { Check, MapPin, Calendar, Sun } from 'lucide-react'
 
 const PACKAGES = [
   {

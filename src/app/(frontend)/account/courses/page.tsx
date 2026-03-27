@@ -4,7 +4,7 @@ import { headers as getHeaders } from 'next/headers'
 import React from 'react'
 import Link from 'next/link'
 import { Media } from '@/components/Media'
-import { CheckCircle2, Clock, BookOpen } from 'lucide-react'
+import { BookOpen } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 

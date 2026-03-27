@@ -69,7 +69,7 @@ function timeAgo(dateStr: string | null | undefined): string {
 
 export default function DashboardClient({
   firstName,
-  tierName,
+  tierName: _tierName,
   tierAccess,
   activeEnrollments,
   completedEnrollments,

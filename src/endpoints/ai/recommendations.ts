@@ -113,7 +113,7 @@ export const recommendationsEndpoint: Endpoint = {
       }))
 
       return Response.json({ recommendations })
-    } catch (err) {
+    } catch (_err) {
       return Response.json({ error: 'Recommendations failed.' }, { status: 500 })
     }
   },

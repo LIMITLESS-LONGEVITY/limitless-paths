@@ -21,6 +21,7 @@ import * as migration_20260327_160000_certificates_tenant from './20260327_16000
 import * as migration_20260327_170000_stay_fields from './20260327_170000_stay_fields';
 import * as migration_20260327_180000_locked_docs_rels_new_collections from './20260327_180000_locked_docs_rels_new_collections';
 import * as migration_20260327_190000_ai_config_token_budgets from './20260327_190000_ai_config_token_budgets';
+import * as migration_20260327_200000_ai_config_token_budgets_retry from './20260327_200000_ai_config_token_budgets_retry';
 
 export const migrations = [
   {
@@ -137,5 +138,10 @@ export const migrations = [
     up: migration_20260327_190000_ai_config_token_budgets.up,
     down: migration_20260327_190000_ai_config_token_budgets.down,
     name: '20260327_190000_ai_config_token_budgets',
+  },
+  {
+    up: migration_20260327_200000_ai_config_token_budgets_retry.up,
+    down: migration_20260327_200000_ai_config_token_budgets_retry.down,
+    name: '20260327_200000_ai_config_token_budgets_retry',
   },
 ];

@@ -1,7 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { cn } from '@/utilities/ui'
-import { GlassCard } from '@/components/homepage/GlassCard'
 import { Sparkles, ChevronDown, ChevronRight, CheckCircle2 } from 'lucide-react'
 
 type WeekDay = {

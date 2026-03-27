@@ -76,7 +76,7 @@ export const semanticSearchEndpoint: Endpoint = {
       })
 
       return Response.json({ results })
-    } catch (err) {
+    } catch (_err) {
       return Response.json({ error: 'Search failed. Please try again.' }, { status: 500 })
     }
   },
