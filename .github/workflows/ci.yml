@@ -98,6 +98,7 @@ jobs:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
           PAYLOAD_SECRET: ${{ secrets.STAGING_PAYLOAD_SECRET }}
           NEXT_PUBLIC_SERVER_URL: https://paths-api.limitless-longevity.health
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
 
   integration:
     name: Integration Tests (DB)

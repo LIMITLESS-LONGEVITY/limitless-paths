@@ -2,9 +2,8 @@
  * CI Staging Migration Script
  *
  * Runs Payload migrations against the staging database on Render.
- * Uses explicit SSL config because Render's external PostgreSQL
- * requires SSL and the pg driver needs ssl: { rejectUnauthorized: false }
- * passed directly to the pool (NODE_TLS_REJECT_UNAUTHORIZED doesn't work).
+ * Render's external PostgreSQL requires SSL — we append sslmode=require
+ * to the connection string and set ssl: true on the pool config.
  *
  * Unlike ci-migrate.ts (which uses push: true for schema creation),
  * this uses push: false and runs actual migrations — matching production.
@@ -14,15 +13,23 @@ import { getPayload } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import configPromise from '../src/payload.config.js'
 
+function ensureSslMode(url: string): string {
+  if (url.includes('sslmode=')) return url
+  return url + (url.includes('?') ? '&' : '?') + 'sslmode=require'
+}
+
 async function main() {
   console.log('Running migrations against staging DB...')
+
+  const dbUrl = ensureSslMode(process.env.DATABASE_URL!)
+  console.log('SSL mode:', dbUrl.includes('sslmode=') ? 'enabled' : 'missing')
 
   const config = await configPromise
 
   config.db = postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL!,
-      ssl: { rejectUnauthorized: false },
+      connectionString: dbUrl,
+      ssl: true,
     },
     push: false,
     prodMigrations: (await import('../src/migrations/index.js')).migrations,
