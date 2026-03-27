@@ -98,7 +98,7 @@ export async function retrieveRelevantChunks(
   let whereClause = sql`access_level = ANY(ARRAY[${sql.raw(allowedLevels.map((l) => `'${l}'`).join(','))}]::text[])`
 
   if (options?.pillarFilter) {
-    whereClause = sql`${whereClause} AND pillar = ${options.pillarFilter}`
+    whereClause = sql`${whereClause} AND pillar_id = ${options.pillarFilter}`
   }
 
   if (options?.excludeDocIds && options.excludeDocIds.length > 0) {
@@ -107,7 +107,7 @@ export async function retrieveRelevantChunks(
   }
 
   const candidates = await payload.db.drizzle.execute(sql`
-    SELECT id, text, source_collection, source_id, source_title, access_level, pillar, chunk_index,
+    SELECT id, text, source_collection, source_id, source_title, access_level, pillar_id, chunk_index,
       1 - (embedding <=> ${vectorStr}::vector) as similarity
     FROM content_chunks
     WHERE embedding IS NOT NULL AND ${whereClause}
@@ -131,7 +131,7 @@ export async function retrieveRelevantChunks(
       sourceId: row.source_id,
       sourceTitle: row.source_title,
       accessLevel: row.access_level,
-      pillarId: row.pillar,
+      pillarId: row.pillar_id,
       chunkIndex: row.chunk_index,
       relevanceScore: r.relevanceScore,
     }
