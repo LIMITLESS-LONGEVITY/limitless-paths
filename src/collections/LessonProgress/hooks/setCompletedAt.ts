@@ -5,13 +5,16 @@ export const setCompletedAt: CollectionBeforeChangeHook = ({
   originalDoc,
   operation,
 }) => {
-  if (operation !== 'update') return data
-
-  const newStatus = data.status as string | undefined
-  const oldStatus = originalDoc?.status as string | undefined
-
-  if (newStatus === 'completed' && oldStatus !== 'completed') {
+  if (operation === 'create' && data.status === 'completed') {
     data.completedAt = new Date().toISOString()
+  }
+
+  if (operation === 'update') {
+    const newStatus = data.status as string | undefined
+    const oldStatus = originalDoc?.status as string | undefined
+    if (newStatus === 'completed' && oldStatus !== 'completed') {
+      data.completedAt = new Date().toISOString()
+    }
   }
 
   data.lastAccessedAt = new Date().toISOString()

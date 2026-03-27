@@ -92,11 +92,13 @@ export async function seedArticle(data: {
   content?: any
 }): Promise<any> {
   const payload = await getPayload({ config })
+  const suffix = Date.now().toString(36)
+  const uniqueSlug = `${data.slug}-${suffix}`
 
-  // Delete existing
+  // Delete existing (match both original and suffixed slugs)
   await payload.delete({
     collection: 'articles',
-    where: { slug: { equals: data.slug } },
+    where: { slug: { contains: data.slug } },
     overrideAccess: true,
   }).catch(() => {})
 
@@ -104,7 +106,7 @@ export async function seedArticle(data: {
     collection: 'articles',
     data: {
       title: data.title,
-      slug: data.slug,
+      slug: uniqueSlug,
       excerpt: data.excerpt,
       accessLevel: data.accessLevel,
       editorialStatus: data.editorialStatus ?? 'draft',
@@ -129,11 +131,13 @@ export async function seedCourse(data: {
   instructorId: number
 }): Promise<{ courseId: number; moduleId: number; lessonIds: number[] }> {
   const payload = await getPayload({ config })
+  const suffix = Date.now().toString(36)
+  const uniqueSlug = `${data.slug}-${suffix}`
 
-  // Delete existing
+  // Delete existing (match both original and suffixed slugs)
   await payload.delete({
     collection: 'courses',
-    where: { slug: { equals: data.slug } },
+    where: { slug: { contains: data.slug } },
     overrideAccess: true,
   }).catch(() => {})
 
@@ -141,7 +145,7 @@ export async function seedCourse(data: {
     collection: 'courses',
     data: {
       title: data.title,
-      slug: data.slug,
+      slug: uniqueSlug,
       accessLevel: data.accessLevel,
       editorialStatus: 'published',
       tenant: data.tenantId,
@@ -166,7 +170,7 @@ export async function seedCourse(data: {
     collection: 'lessons',
     data: {
       title: 'Lesson 1: Introduction',
-      slug: 'test-lesson-1-intro',
+      slug: `test-lesson-1-intro-${suffix}`,
       module: module.id,
       order: 1,
       lessonType: 'text',
@@ -189,7 +193,7 @@ export async function seedCourse(data: {
     collection: 'lessons',
     data: {
       title: 'Lesson 2: Deep Dive',
-      slug: 'test-lesson-2-deep-dive',
+      slug: `test-lesson-2-deep-dive-${suffix}`,
       module: module.id,
       order: 2,
       lessonType: 'text',
