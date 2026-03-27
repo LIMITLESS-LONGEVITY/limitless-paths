@@ -93,11 +93,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run migrations against staging DB
-        run: npx payload migrate
+        run: npx tsx scripts/ci-staging-migrate.ts
         env:
           DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
           PAYLOAD_SECRET: ${{ secrets.STAGING_PAYLOAD_SECRET }}
-          NODE_TLS_REJECT_UNAUTHORIZED: "0"
           NEXT_PUBLIC_SERVER_URL: https://paths-api.limitless-longevity.health
 
   integration:
