@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import { Activity } from 'lucide-react'
 
 export const DiagnosticUpsell: React.FC<{
@@ -27,8 +26,8 @@ export const DiagnosticUpsell: React.FC<{
         <div className="flex-1">
           <h3 className="text-sm font-semibold text-brand-light mb-1">{heading}</h3>
           <p className="text-xs text-brand-silver leading-relaxed mb-3">{description}</p>
-          <Link
-            href="/diagnostics"
+          <a
+            href="/book/diagnostics"
             className="inline-flex items-center gap-1.5 text-xs text-brand-gold hover:text-brand-gold/80 transition-colors group"
           >
             <span className="border-b border-brand-gold/30 group-hover:border-brand-gold/60 transition-colors">
@@ -50,7 +49,7 @@ export const DiagnosticUpsell: React.FC<{
                 strokeLinejoin="round"
               />
             </svg>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

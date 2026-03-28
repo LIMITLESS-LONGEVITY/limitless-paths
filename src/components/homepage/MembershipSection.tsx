@@ -85,13 +85,22 @@ export const MembershipSection: React.FC<MembershipSectionProps> = ({ tiers }) =
                     </ul>
                   )}
 
-                  <CTAButton
-                    href={isEnterprise ? '/contact-sales' : '/register'}
-                    variant={isPremium ? 'gold' : 'ghost'}
-                    className="mt-auto w-full text-center"
-                  >
-                    {isEnterprise ? 'Contact Sales' : 'Get Started'}
-                  </CTAButton>
+                  {isEnterprise ? (
+                    <a
+                      href="/book/contact-sales"
+                      className="mt-auto w-full text-center inline-flex items-center justify-center font-sans text-xs uppercase tracking-[0.15em] font-medium rounded-full transition-all duration-300 min-h-[44px] px-6 py-3 border border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-dark focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:outline-none"
+                    >
+                      Contact Sales
+                    </a>
+                  ) : (
+                    <CTAButton
+                      href="/register"
+                      variant={isPremium ? 'gold' : 'ghost'}
+                      className="mt-auto w-full text-center"
+                    >
+                      Get Started
+                    </CTAButton>
+                  )}
                 </GlassCard>
               </ScrollReveal>
             )

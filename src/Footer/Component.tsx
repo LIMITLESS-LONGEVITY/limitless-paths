@@ -23,8 +23,8 @@ const ACCOUNT_LINKS = [
 ]
 
 const COMPANY_LINKS = [
-  { href: '/contact-sales', label: 'Enterprise Sales' },
-  { href: '/diagnostics', label: 'Diagnostic Packages' },
+  { href: '/book/contact-sales', label: 'Enterprise Sales' },
+  { href: '/book/diagnostics', label: 'Diagnostic Packages' },
 ]
 
 export async function Footer() {
@@ -98,12 +98,12 @@ export async function Footer() {
             <ul className="space-y-2.5">
               {COMPANY_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link
+                  <a
                     href={link.href}
                     className="text-brand-silver/70 hover:text-brand-gold text-xs transition-colors"
                   >
                     {link.label}
-                  </Link>
+                  </a>
                 </li>
               ))}
               {navItems.map(({ link }, i) => (
