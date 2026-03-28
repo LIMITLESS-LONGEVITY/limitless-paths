@@ -248,10 +248,13 @@ export default function DashboardClient({
             <FileText className="w-4 h-4" />
             Browse Articles
           </CTAButton>
-          <CTAButton href="/diagnostics" variant="ghost" className="justify-start gap-2 px-4 text-left">
+          <a
+            href="/book/diagnostics"
+            className="inline-flex items-center justify-start gap-2 px-4 text-left font-sans text-xs uppercase tracking-[0.15em] font-medium rounded-full transition-all duration-300 min-h-[44px] border border-brand-glass-border text-brand-silver hover:border-brand-silver hover:text-brand-light focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:outline-none"
+          >
             <Sparkles className="w-4 h-4" />
             Diagnostic Packages
-          </CTAButton>
+          </a>
         </div>
       </div>
     </div>
