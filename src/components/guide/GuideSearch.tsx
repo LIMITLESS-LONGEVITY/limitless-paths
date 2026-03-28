@@ -45,8 +45,10 @@ export const GuideSearch: React.FC<{
 
   // Close on navigation
   useEffect(() => {
-    setIsOpen(false)
-    setQuery('')
+    queueMicrotask(() => {
+      setIsOpen(false)
+      setQuery('')
+    })
   }, [pathname])
 
   // Search
@@ -89,7 +91,7 @@ export const GuideSearch: React.FC<{
   )
 
   useEffect(() => {
-    search(query)
+    queueMicrotask(() => search(query))
   }, [query, search])
 
   return (

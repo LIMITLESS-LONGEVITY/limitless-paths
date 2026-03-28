@@ -1,5 +1,5 @@
 'use client'
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { cn } from '@/utilities/ui'
 import { CopyButton } from './CopyButton'
 
@@ -9,15 +9,19 @@ export const CodeBlock: React.FC<React.HTMLAttributes<HTMLPreElement>> = ({
   ...props
 }) => {
   const preRef = useRef<HTMLPreElement>(null)
+  const [textContent, setTextContent] = useState('')
 
-  const getTextContent = () => {
-    return preRef.current?.textContent || ''
-  }
+  useEffect(() => {
+    const el = preRef.current
+    if (el) {
+      queueMicrotask(() => setTextContent(el.textContent || ''))
+    }
+  }, [children])
 
   return (
     <div className="relative group my-4">
       <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <CopyButton text={getTextContent()} />
+        <CopyButton text={textContent} />
       </div>
       <pre
         ref={preRef}

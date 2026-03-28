@@ -13,7 +13,7 @@ export const MobileSidebar: React.FC<{
 
   // Close on navigation
   useEffect(() => {
-    setOpen(false)
+    queueMicrotask(() => setOpen(false))
   }, [pathname])
 
   return (

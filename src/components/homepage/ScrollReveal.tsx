@@ -16,10 +16,11 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({ children, className,
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) {
-      setIsVisible(true)
+      queueMicrotask(() => setIsVisible(true))
       return
     }
 
+    const el = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -30,7 +31,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({ children, className,
       { threshold: 0.1, rootMargin: '0px 0px -40px 0px' },
     )
 
-    if (ref.current) observer.observe(ref.current)
+    if (el) observer.observe(el)
     return () => observer.disconnect()
   }, [delay])
 

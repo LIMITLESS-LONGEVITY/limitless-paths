@@ -22,16 +22,22 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const pathname = usePathname()
 
   useEffect(() => {
-    setHeaderTheme(null)
-    setMobileOpen(false)
+    // Defer state updates to avoid synchronous setState in effect
+    queueMicrotask(() => {
+      setHeaderTheme(null)
+      setMobileOpen(false)
+    })
   }, [pathname, setHeaderTheme])
 
   useEffect(() => {
-    if (headerTheme && headerTheme !== theme) setTheme(headerTheme)
+    if (headerTheme && headerTheme !== theme) {
+      queueMicrotask(() => setTheme(headerTheme))
+    }
   }, [headerTheme, theme])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll() // initialize
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
