@@ -458,8 +458,8 @@
     "role": "publisher",
     "topic": "content-analytics",
     "title": "content-analytics",
-    "description": "",
-    "body": "---\r\ntitle: Content Analytics\r\ndescription: Tracking content performance and engagement metrics on the PATHS platform. This feature is coming soon.\r\n---\r\n\r\nContent Analytics\r\n\r\n\r\n\r\n\r\nContent analytics is a planned feature that is not yet available on the PATHS platform. This guide describes the capa",
+    "description": "Tracking content performance and engagement metrics on the PATHS platform. This feature is coming soon.",
+    "body": "Content Analytics\nContent analytics is a planned feature that is not yet available on the PATHS platform. This guide describes the capabilities that are being developed. You will be notified when analytics features become available.\nPlanned Analytics Features\nThe analytics system will give Publisher",
     "headings": [
       "Content Analytics",
       "Planned Analytics Features",

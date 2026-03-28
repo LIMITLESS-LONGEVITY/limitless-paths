@@ -1,12 +1,30 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
 
+/**
+ * Validate that a redirect URL is safe (same-origin).
+ * Allows paths starting with `/` but rejects protocol-relative URLs and absolute URLs to other hosts.
+ */
+function isValidRedirect(url: string): boolean {
+  if (!url) return false
+  // Must start with `/` and must NOT start with `//` (protocol-relative)
+  if (!url.startsWith('/') || url.startsWith('//')) return false
+  try {
+    // Parse against a dummy base — if the resulting origin differs, it's not same-origin
+    const parsed = new URL(url, window.location.origin)
+    return parsed.origin === window.location.origin
+  } catch {
+    return false
+  }
+}
+
 export default function LoginForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const auth = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -29,7 +47,9 @@ export default function LoginForm() {
       if (res.ok) {
         if (data.user) auth.setUser(data.user)
         setMessage({ type: 'success', text: 'Signed in! Redirecting...' })
-        setTimeout(() => router.push('/courses'), 1000)
+        const redirectTo = searchParams.get('redirect')
+        const destination = redirectTo && isValidRedirect(redirectTo) ? redirectTo : '/courses'
+        setTimeout(() => router.push(destination), 1000)
       } else {
         setMessage({ type: 'error', text: data.errors?.[0]?.message || 'Invalid email or password.' })
       }
