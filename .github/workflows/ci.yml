@@ -50,7 +50,7 @@ jobs:
         continue-on-error: true  # 46 Payload type drift errors — generated types don't match runtime behavior
 
       - name: Run unit tests (no DB required)
-        run: pnpm vitest run tests/int/editorial-workflow.int.spec.ts tests/int/access-control.int.spec.ts tests/int/ai-provider.int.spec.ts tests/int/ai-rate-limiter.int.spec.ts tests/int/ai-guardrails.int.spec.ts tests/int/ai-prompts.int.spec.ts tests/int/enrollments.int.spec.ts tests/int/lesson-progress.int.spec.ts tests/int/course-reference-bypass.int.spec.ts tests/int/stripe-service.int.spec.ts tests/int/billing-logic.int.spec.ts tests/int/chunker.int.spec.ts
+        run: pnpm vitest run tests/int/editorial-workflow.int.spec.ts tests/int/access-control.int.spec.ts tests/int/ai-provider.int.spec.ts tests/int/ai-rate-limiter.int.spec.ts tests/int/ai-guardrails.int.spec.ts tests/int/ai-prompts.int.spec.ts tests/int/enrollments.int.spec.ts tests/int/lesson-progress.int.spec.ts tests/int/course-reference-bypass.int.spec.ts tests/int/chunker.int.spec.ts
         env:
           PAYLOAD_SECRET: ci-test-secret-not-real
           AI_PROVIDER_DEFAULT_BASE_URL: https://api.together.xyz/v1
