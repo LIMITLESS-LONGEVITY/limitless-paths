@@ -283,12 +283,12 @@ export const TutorPanel: React.FC<{
                   <p className="text-xs text-brand-silver mb-3">
                     This topic may benefit from personalized guidance from our medical team.
                   </p>
-                  <button
-                    onClick={() => setShowBookingForm(true)}
-                    className="text-xs font-medium text-brand-gold hover:text-brand-gold/80 transition-colors"
+                  <a
+                    href="/book/telemedicine"
+                    className="inline-block px-4 py-2 rounded-full text-xs font-medium uppercase tracking-[0.1em] border border-brand-gold bg-brand-gold text-brand-dark hover:bg-brand-gold/90 transition-all min-h-[44px] leading-[28px] text-center"
                   >
-                    Book a Telemedicine Consultation →
-                  </button>
+                    Book a Telemedicine Consultation
+                  </a>
                 </div>
               </div>
             </div>
