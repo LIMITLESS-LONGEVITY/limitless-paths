@@ -22,6 +22,7 @@ import * as migration_20260327_170000_stay_fields from './20260327_170000_stay_f
 import * as migration_20260327_180000_locked_docs_rels_new_collections from './20260327_180000_locked_docs_rels_new_collections';
 import * as migration_20260327_190000_ai_config_token_budgets from './20260327_190000_ai_config_token_budgets';
 import * as migration_20260327_200000_ai_config_token_budgets_retry from './20260327_200000_ai_config_token_budgets_retry';
+import * as migration_20260328_100000_drop_billing_tables from './20260328_100000_drop_billing_tables';
 
 export const migrations = [
   {
@@ -143,5 +144,10 @@ export const migrations = [
     up: migration_20260327_200000_ai_config_token_budgets_retry.up,
     down: migration_20260327_200000_ai_config_token_budgets_retry.down,
     name: '20260327_200000_ai_config_token_budgets_retry',
+  },
+  {
+    up: migration_20260328_100000_drop_billing_tables.up,
+    down: migration_20260328_100000_drop_billing_tables.down,
+    name: '20260328_100000_drop_billing_tables',
   },
 ];

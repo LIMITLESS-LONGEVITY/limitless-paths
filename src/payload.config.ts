@@ -17,8 +17,6 @@ import { Categories } from './collections/Categories'
 import { ContentPillars } from './collections/ContentPillars'
 import { Media } from './collections/Media'
 import { MembershipTiers } from './collections/MembershipTiers'
-import { Subscriptions } from './collections/Subscriptions'
-import { StripeEvents } from './collections/StripeEvents'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Tenants } from './collections/Tenants'
@@ -40,9 +38,6 @@ import { enrollEndpoint } from './endpoints/enrollments/enroll'
 import { semanticSearchEndpoint } from './endpoints/ai/search'
 import { recommendationsEndpoint } from './endpoints/ai/recommendations'
 import { relatedContentEndpoint } from './endpoints/ai/relatedContent'
-import { stripeWebhookEndpoint } from './endpoints/stripe/webhooks'
-import { billingCheckoutEndpoint } from './endpoints/billing/checkout'
-import { billingPortalEndpoint } from './endpoints/billing/portal'
 import { registerEndpoint } from './endpoints/auth/register'
 import { discoverEndpoint } from './endpoints/ai/discover'
 import { actionPlanEndpoint } from './endpoints/ai/actionPlan'
@@ -109,9 +104,9 @@ export default buildConfig({
     push: false,
     prodMigrations: migrations,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents, HealthProfiles, ActionPlans, DailyProtocols, Certificates],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, HealthProfiles, ActionPlans, DailyProtocols, Certificates],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint, myEnrollmentsEndpoint, myProtocolEndpoint],
+  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, registerEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint, myEnrollmentsEndpoint, myProtocolEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,

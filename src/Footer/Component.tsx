@@ -19,7 +19,7 @@ const ACCOUNT_LINKS = [
   { href: '/account', label: 'Dashboard' },
   { href: '/account/health', label: 'Health Profile' },
   { href: '/account/certificates', label: 'Certificates' },
-  { href: '/account/billing', label: 'Billing' },
+  { href: '/book/dashboard/membership', label: 'Billing' },
 ]
 
 const COMPANY_LINKS = [
