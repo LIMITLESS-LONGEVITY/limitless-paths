@@ -41,6 +41,7 @@ const nextConfig: NextConfig = {
     return webpackConfig
   },
   reactStrictMode: true,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   redirects,
   turbopack: {
     root: path.resolve(dirname),
