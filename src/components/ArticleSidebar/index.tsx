@@ -21,8 +21,9 @@ export const ArticleSidebar: React.FC<{
 
   // Build TOC from rendered headings
   useEffect(() => {
-    if (!contentRef.current) return
-    const headings = contentRef.current.querySelectorAll('h2, h3')
+    const el = contentRef.current
+    if (!el) return
+    const headings = el.querySelectorAll('h2, h3')
     const items: TOCItem[] = []
     headings.forEach((heading, i) => {
       if (!heading.id) heading.id = `heading-${i}`
@@ -32,7 +33,7 @@ export const ArticleSidebar: React.FC<{
         level: heading.tagName === 'H2' ? 2 : 3,
       })
     })
-    setToc(items)
+    queueMicrotask(() => setToc(items))
   }, [contentRef])
 
   // Scrollspy

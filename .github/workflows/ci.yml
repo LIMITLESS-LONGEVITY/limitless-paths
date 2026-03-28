@@ -44,7 +44,6 @@ jobs:
 
       - name: Lint
         run: pnpm lint
-        continue-on-error: true  # 16 React Compiler errors (setState in effect) from eslint-plugin-react-hooks v5 — needs per-component refactoring
 
       - name: TypeScript check
         run: npx tsc --noEmit --skipLibCheck

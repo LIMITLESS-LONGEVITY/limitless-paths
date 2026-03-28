@@ -39,7 +39,7 @@ export const GuideTableOfContents: React.FC<{
       }
     })
 
-    setItems(tocItems)
+    queueMicrotask(() => setItems(tocItems))
   }, [contentRef])
 
   // Scroll-spy via IntersectionObserver

@@ -11,12 +11,14 @@ export const GuideFeedback: React.FC<{
   const [feedback, setFeedback] = useState<'helpful' | 'not-helpful' | null>(null)
 
   useEffect(() => {
-    const stored = localStorage.getItem(`guide-feedback:${pathname}`)
-    if (stored === 'helpful' || stored === 'not-helpful') {
-      setFeedback(stored)
-    } else {
-      setFeedback(null)
-    }
+    queueMicrotask(() => {
+      const stored = localStorage.getItem(`guide-feedback:${pathname}`)
+      if (stored === 'helpful' || stored === 'not-helpful') {
+        setFeedback(stored)
+      } else {
+        setFeedback(null)
+      }
+    })
   }, [pathname])
 
   const handleFeedback = (value: 'helpful' | 'not-helpful') => {

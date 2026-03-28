@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
 
 export const KeyboardShortcut: React.FC<{
@@ -7,11 +7,12 @@ export const KeyboardShortcut: React.FC<{
   mac?: string[]
   className?: string
 }> = ({ keys, mac, className }) => {
-  const [isMac, setIsMac] = useState(false)
-
-  useEffect(() => {
-    setIsMac(navigator.platform?.toLowerCase().includes('mac') || navigator.userAgent?.toLowerCase().includes('mac'))
-  }, [])
+  const [isMac] = useState(() => {
+    if (typeof navigator !== 'undefined') {
+      return navigator.platform?.toLowerCase().includes('mac') || navigator.userAgent?.toLowerCase().includes('mac')
+    }
+    return false
+  })
 
   const displayKeys = isMac && mac ? mac : keys
 

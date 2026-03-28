@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [])
 
   useEffect(() => {
-    fetchMe()
+    queueMicrotask(() => { void fetchMe() })
   }, [fetchMe])
 
   const handleSetUser = useCallback((user: User | null) => {

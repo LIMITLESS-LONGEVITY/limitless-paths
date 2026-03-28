@@ -67,7 +67,7 @@ export const OnboardingTour: React.FC<{ userId: string }> = ({ userId }) => {
   }, [currentStep])
 
   useEffect(() => {
-    updateTargetRect()
+    queueMicrotask(() => updateTargetRect())
     window.addEventListener('resize', updateTargetRect)
     window.addEventListener('scroll', updateTargetRect)
     return () => {
