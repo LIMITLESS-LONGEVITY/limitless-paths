@@ -55,6 +55,8 @@ import { dailyProtocolStatusEndpoint } from './endpoints/ai/dailyProtocolStatus'
 import { resendVerificationEndpoint } from './endpoints/auth/resend-verification'
 import { healthEndpoint } from './endpoints/health'
 import { tierSyncEndpoint } from './endpoints/internal/tier-sync'
+import { myEnrollmentsEndpoint } from './endpoints/me/enrollments'
+import { myProtocolEndpoint } from './endpoints/me/protocol'
 import { migrations } from './migrations'
 import { getServerSideURL } from './utilities/getURL'
 import { validateEnv } from './utilities/validateEnv'
@@ -113,7 +115,7 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, Subscriptions, StripeEvents, HealthProfiles, ActionPlans, DailyProtocols, Certificates],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint, diagnosticBookingEndpoint, stayBookingEndpoint, telemedicineBookingEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint],
+  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, stripeWebhookEndpoint, billingCheckoutEndpoint, billingPortalEndpoint, registerEndpoint, contactSalesEndpoint, diagnosticBookingEndpoint, stayBookingEndpoint, telemedicineBookingEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint, myEnrollmentsEndpoint, myProtocolEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
