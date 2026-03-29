@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { ContentListItem, type ContentListItemData } from '@/components/ContentListItem'
 import { useSearchParams } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type SearchResult = {
   title: string
@@ -45,7 +46,7 @@ const PageClient: React.FC = () => {
     setSearched(true)
 
     try {
-      const res = await fetch('/api/ai/search', {
+      const res = await fetch(apiUrl('/api/ai/search'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: q.trim(), limit: 12 }),

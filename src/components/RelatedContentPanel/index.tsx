@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useDocumentInfo } from '@payloadcms/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type RelatedItem = {
   id: string
@@ -22,7 +23,7 @@ export const RelatedContentPanel: React.FC = () => {
 
     try {
       // Fetch current document content
-      const docRes = await fetch(`/api/${collectionSlug}/${id}?depth=0`)
+      const docRes = await fetch(apiUrl(`/api/${collectionSlug}/${id}?depth=0`))
       const doc = await docRes.json()
 
       // Extract text from content field
@@ -34,7 +35,7 @@ export const RelatedContentPanel: React.FC = () => {
       }
 
       // Call related content endpoint
-      const res = await fetch('/api/ai/related-content', {
+      const res = await fetch(apiUrl('/api/ai/related-content'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

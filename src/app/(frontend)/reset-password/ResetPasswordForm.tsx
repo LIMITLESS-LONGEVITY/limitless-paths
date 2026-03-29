@@ -2,6 +2,7 @@
 import React, { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/utilities/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 import Link from 'next/link'
 
 function ResetPasswordFormInner() {
@@ -31,7 +32,7 @@ function ResetPasswordFormInner() {
     setSubmitting(true)
 
     try {
-      const res = await fetch('/api/users/reset-password', {
+      const res = await fetch(apiUrl('/api/users/reset-password'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, password }),

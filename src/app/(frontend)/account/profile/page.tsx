@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { cn } from '@/utilities/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 import { SkeletonProfileForm } from '@/components/Skeleton'
 
 export default function ProfilePage() {
@@ -22,7 +23,7 @@ export default function ProfilePage() {
   const [savingPassword, setSavingPassword] = useState(false)
 
   useEffect(() => {
-    fetch('/api/users/me')
+    fetch(apiUrl('/api/users/me'))
       .then((res) => res.json())
       .then((data) => {
         const u = data.user
@@ -40,7 +41,7 @@ export default function ProfilePage() {
     setMessage(null)
 
     try {
-      const res = await fetch(`/api/users/${user.id}`, {
+      const res = await fetch(apiUrl(`/api/users/${user.id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName }),
@@ -72,7 +73,7 @@ export default function ProfilePage() {
 
     setSavingPassword(true)
     try {
-      const res = await fetch(`/api/users/${user.id}`, {
+      const res = await fetch(apiUrl(`/api/users/${user.id}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: newPassword }),
@@ -144,11 +145,11 @@ export default function ProfilePage() {
                   const formData = new FormData()
                   formData.append('file', file)
                   formData.append('alt', `${firstName} ${lastName} avatar`)
-                  const uploadRes = await fetch('/api/media', { method: 'POST', body: formData })
+                  const uploadRes = await fetch(apiUrl('/api/media'), { method: 'POST', body: formData })
                   if (!uploadRes.ok) throw new Error('Upload failed')
                   const media = await uploadRes.json()
                   // Link to user
-                  await fetch(`/api/users/${user.id}`, {
+                  await fetch(apiUrl(`/api/users/${user.id}`), {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ avatar: media.doc.id }),

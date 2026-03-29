@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { X, Send, MessageCircle, Copy, Activity } from 'lucide-react'
 import { cn } from '@/utilities/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 
 const SUGGESTED_QUESTIONS: Record<string, string[]> = {
   articles: [
@@ -103,7 +104,7 @@ export const TutorPanel: React.FC<{
     setLoading(true)
 
     try {
-      const res = await fetch('/api/ai/tutor', {
+      const res = await fetch(apiUrl('/api/ai/tutor'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

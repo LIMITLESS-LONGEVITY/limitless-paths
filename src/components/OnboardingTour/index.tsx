@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { cn } from '@/utilities/ui'
 import { X } from 'lucide-react'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type TourStep = {
   title: string
@@ -79,7 +80,7 @@ export const OnboardingTour: React.FC<{ userId: string }> = ({ userId }) => {
   const complete = async () => {
     setDismissed(true)
     try {
-      await fetch(`/api/users/${userId}`, {
+      await fetch(apiUrl(`/api/users/${userId}`), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hasCompletedOnboarding: true }),

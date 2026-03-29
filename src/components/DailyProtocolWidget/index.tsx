@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { cn } from '@/utilities/ui'
 import { GlassCard } from '@/components/homepage/GlassCard'
 import { Sun, CloudSun, Moon, RefreshCw, CheckCircle2, Circle } from 'lucide-react'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type Action = {
   id: string
@@ -43,7 +44,7 @@ export const DailyProtocolWidget: React.FC<{ tierAccess: string }> = ({ tierAcce
 
   const fetchProtocol = async (regenerate = false) => {
     try {
-      const res = await fetch('/api/ai/daily-protocol', {
+      const res = await fetch(apiUrl('/api/ai/daily-protocol'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(regenerate ? { regenerate: true } : {}),
@@ -95,7 +96,7 @@ export const DailyProtocolWidget: React.FC<{ tierAccess: string }> = ({ tierAcce
     })
 
     try {
-      await fetch('/api/ai/daily-protocol-status', {
+      await fetch(apiUrl('/api/ai/daily-protocol-status'), {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ protocolId: protocol.id, actionId, completed }),

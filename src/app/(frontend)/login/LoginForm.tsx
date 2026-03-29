@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
+import { apiUrl } from '@/utilities/apiUrl'
 
 /**
  * Validate that a redirect URL is safe (same-origin).
@@ -37,7 +38,7 @@ export default function LoginForm() {
     setSubmitting(true)
 
     try {
-      const res = await fetch('/api/users/login', {
+      const res = await fetch(apiUrl('/api/users/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
