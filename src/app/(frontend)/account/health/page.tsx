@@ -6,6 +6,53 @@ import HealthProfileClient from './HealthProfileClient'
 
 export const dynamic = 'force-dynamic'
 
+/**
+ * Fetch health profile from Digital Twin API, with Payload fallback.
+ */
+async function fetchHealthFromDT(userId: string): Promise<any | null> {
+  const dtUrl = process.env.DT_SERVICE_URL
+  const dtKey = process.env.DT_SERVICE_KEY
+
+  if (!dtUrl || !dtKey) return null
+
+  try {
+    const headers = { 'x-service-key': dtKey }
+
+    const [profileRes, biomarkersRes] = await Promise.all([
+      fetch(`${dtUrl}/api/twin/${userId}/profile`, { headers }),
+      fetch(`${dtUrl}/api/twin/${userId}/biomarkers?limit=50`, { headers }),
+    ])
+
+    if (!profileRes.ok) return null
+
+    const profile = await profileRes.json()
+    const bioData = biomarkersRes.ok ? await biomarkersRes.json() : null
+    const biomarkers = bioData?.biomarkers ?? []
+
+    return {
+      user: userId,
+      conditions: (profile.conditions ?? []).map((c: string) => ({ condition: c })),
+      medications: (profile.medications ?? []).map((m: string) => ({ medication: m })),
+      healthGoals: (profile.healthGoals ?? []).map((g: string) => ({ goal: g })),
+      pillarPriorities: Object.entries(profile.pillarPriorities ?? {} as Record<string, number>)
+        .sort(([, a], [, b]) => (a as number) - (b as number))
+        .map(([key]) => ({ pillar: { name: key } })),
+      biomarkers: biomarkers.map((b: any) => ({
+        name: b.name,
+        value: b.value,
+        unit: b.unit,
+        date: b.measuredAt,
+        normalRangeLow: b.referenceMin ?? undefined,
+        normalRangeHigh: b.referenceMax ?? undefined,
+        status: b.status,
+      })),
+    }
+  } catch (err) {
+    console.warn('[health/page] DT unreachable, falling back to Payload:', (err as Error).message)
+    return null
+  }
+}
+
 export default async function HealthProfilePage() {
   const payload = await getPayload({ config: configPromise })
   const headersList = await getHeaders()
@@ -13,16 +60,23 @@ export default async function HealthProfilePage() {
 
   if (!user) return null
 
-  // Fetch existing health profile
-  const profileResult = await payload.find({
-    collection: 'health-profiles',
-    where: { user: { equals: user.id } },
-    limit: 1,
-    depth: 1,
-    overrideAccess: true,
-  })
+  const userId = user.id as string
 
-  // Fetch content pillars for priorities
+  // Try DT first, fall back to Payload
+  let existingProfile = await fetchHealthFromDT(userId)
+
+  if (!existingProfile) {
+    const profileResult = await payload.find({
+      collection: 'health-profiles',
+      where: { user: { equals: userId } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: true,
+    })
+    existingProfile = profileResult.docs[0] || null
+  }
+
+  // Fetch content pillars for priorities (always from Payload — these are PATHS content)
   const pillarsResult = await payload.find({
     collection: 'content-pillars',
     where: { isActive: { equals: true } },
@@ -30,7 +84,6 @@ export default async function HealthProfilePage() {
     limit: 20,
   })
 
-  const existingProfile = profileResult.docs[0] || null
   const pillars = pillarsResult.docs.map((p: any) => ({
     id: p.id,
     name: p.name,
@@ -40,7 +93,7 @@ export default async function HealthProfilePage() {
     <HealthProfileClient
       existingProfile={existingProfile}
       pillars={pillars}
-      userId={user.id as string}
+      userId={userId}
     />
   )
 }
