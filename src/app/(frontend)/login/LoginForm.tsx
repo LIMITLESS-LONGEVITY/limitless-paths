@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
@@ -24,7 +24,6 @@ function isValidRedirect(url: string): boolean {
 }
 
 export default function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const auth = useAuth()
   const [email, setEmail] = useState('')
