@@ -4,7 +4,7 @@ import { logUsage } from '../../ai/usageLogger'
 import { retrieveRelevantChunks } from '../../ai/retrieval'
 import { getModelConfig } from '../../ai/models'
 import { getHealthProfile } from '../../utilities/getHealthProfile'
-import { getStayPhase, getStayDayNumber } from '../../utilities/getStayPhase'
+import { getStayContext } from '../../utilities/getStayContext'
 import { buildDailyProtocolPrompt, parseDailyProtocolResponse } from '../../ai/prompts/dailyProtocol'
 import { validateAIRequest, isErrorResponse } from '../../ai/middleware'
 
@@ -104,23 +104,19 @@ export const dailyProtocolEndpoint: Endpoint = {
         // Health profile unavailable — continue without personalization
       }
 
-      // Check for active stay enrollment
-      let stayContext: string | null = null
-      for (const e of enrollments.docs) {
-        const enrollment = e as any
-        const phase = getStayPhase(enrollment)
-        if (phase === 'during-stay') {
-          const dayNumber = getStayDayNumber(enrollment)
-          const course = typeof enrollment.course === 'object' ? enrollment.course : null
-          const location = course?.stayLocation || 'the hotel'
-          const stayType = course?.stayType || 'stay'
-          stayContext = `The student is on Day ${dayNumber} of a ${stayType} longevity stay at ${location}. Include hotel-specific activities: morning wellness routine, spa recovery, Mediterranean nutrition, evening relaxation. Reference the day's scheduled activities from the stay program.`
-          break
+      // Check for active stay via Digital Twin
+      let stayContextStr: string | null = null
+      try {
+        const stay = await getStayContext(req.user.id as string)
+        if (stay && stay.phase === 'during-stay') {
+          stayContextStr = `The student is on Day ${stay.dayNumber} of a ${stay.stayType} longevity stay at ${stay.stayLocation}. Include hotel-specific activities: morning wellness routine, spa recovery, Mediterranean nutrition, evening relaxation. Reference the day's scheduled activities from the stay program.`
         }
+      } catch {
+        // Stay context unavailable — continue without it
       }
 
       // Generate
-      const prompt = buildDailyProtocolPrompt(enrolledCourses, recentLessons, chunks, healthProfile, stayContext)
+      const prompt = buildDailyProtocolPrompt(enrolledCourses, recentLessons, chunks, healthProfile, stayContextStr)
       const messages: ChatMessage[] = [{ role: 'system', content: prompt }]
 
       const modelConfig = getModelConfig('dailyProtocol')

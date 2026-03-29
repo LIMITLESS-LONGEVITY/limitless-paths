@@ -86,58 +86,6 @@ export const Courses: CollectionConfig = {
       admin: { description: 'Total duration in minutes (auto-calculated from lessons)' },
     },
     { name: 'publishedAt', type: 'date' },
-    // --- Longevity Stay Program ---
-    {
-      name: 'stayType',
-      type: 'select',
-      options: [
-        { label: '3-Day Discovery', value: '3-day' },
-        { label: '5-Day Immersion', value: '5-day' },
-        { label: '7-Day Transformation', value: '7-day' },
-      ],
-      admin: { description: 'Set to make this course a hotel longevity stay program' },
-    },
-    {
-      name: 'stayLocation',
-      type: 'text',
-      admin: {
-        description: 'e.g. "El Fuerte Marbella"',
-        condition: (data) => !!data?.stayType,
-      },
-    },
-    {
-      name: 'stayPrice',
-      type: 'number',
-      admin: {
-        description: 'Price in EUR (non-member)',
-        condition: (data) => !!data?.stayType,
-      },
-    },
-    {
-      name: 'stayMemberPrice',
-      type: 'number',
-      admin: {
-        description: 'Member price in EUR',
-        condition: (data) => !!data?.stayType,
-      },
-    },
-    {
-      name: 'stayIncludes',
-      type: 'array',
-      admin: {
-        description: 'What is included in the stay package',
-        condition: (data) => !!data?.stayType,
-      },
-      fields: [{ name: 'item', type: 'text', required: true }],
-    },
-    {
-      name: 'followUpMonths',
-      type: 'number',
-      admin: {
-        description: 'Post-stay follow-up duration in months (e.g., 1, 3, or 6)',
-        condition: (data) => !!data?.stayType,
-      },
-    },
   ],
   hooks: {
     beforeChange: [validateEditorialTransition, calculateDuration],
