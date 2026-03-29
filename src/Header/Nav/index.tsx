@@ -7,7 +7,7 @@ import type { Header as HeaderType } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
-import { SearchIcon } from 'lucide-react'
+import { SearchIcon, HomeIcon } from 'lucide-react'
 
 const CONTENT_NAV = [
   { href: '/courses', label: 'Courses' },
@@ -30,6 +30,14 @@ export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ da
       aria-label="Main navigation"
       className={mobile ? 'flex flex-col gap-4' : 'flex gap-6 items-center'}
     >
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- cross-app nav to OS Dashboard */}
+      <a
+        href="/"
+        className="text-brand-silver/60 hover:text-brand-gold transition-colors"
+        title="Dashboard"
+      >
+        <HomeIcon className="w-4 h-4" />
+      </a>
       {CONTENT_NAV.map((item) => (
         <Link
           key={item.href}
