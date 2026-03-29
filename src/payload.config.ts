@@ -21,7 +21,6 @@ import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Tenants } from './collections/Tenants'
 import { Users } from './collections/Users'
-import { HealthProfiles } from './collections/HealthProfiles'
 import { ActionPlans } from './collections/ActionPlans'
 import { DailyProtocols } from './collections/DailyProtocols'
 import { Certificates } from './collections/Certificates'
@@ -104,7 +103,7 @@ export default buildConfig({
     push: false,
     prodMigrations: migrations,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, HealthProfiles, ActionPlans, DailyProtocols, Certificates],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, ActionPlans, DailyProtocols, Certificates],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, registerEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint, myEnrollmentsEndpoint, myProtocolEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],

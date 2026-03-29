@@ -7,7 +7,7 @@ import HealthProfileClient from './HealthProfileClient'
 export const dynamic = 'force-dynamic'
 
 /**
- * Fetch health profile from Digital Twin API, with Payload fallback.
+ * Fetch health profile from Digital Twin API (source of truth).
  */
 async function fetchHealthFromDT(userId: string): Promise<any | null> {
   const dtUrl = process.env.DT_SERVICE_URL
@@ -48,7 +48,7 @@ async function fetchHealthFromDT(userId: string): Promise<any | null> {
       })),
     }
   } catch (err) {
-    console.warn('[health/page] DT unreachable, falling back to Payload:', (err as Error).message)
+    console.error('[health/page] DT error:', (err as Error).message)
     return null
   }
 }
@@ -62,21 +62,9 @@ export default async function HealthProfilePage() {
 
   const userId = user.id as string
 
-  // Try DT first, fall back to Payload
-  let existingProfile = await fetchHealthFromDT(userId)
+  const existingProfile = await fetchHealthFromDT(userId)
 
-  if (!existingProfile) {
-    const profileResult = await payload.find({
-      collection: 'health-profiles',
-      where: { user: { equals: userId } },
-      limit: 1,
-      depth: 1,
-      overrideAccess: true,
-    })
-    existingProfile = profileResult.docs[0] || null
-  }
-
-  // Fetch content pillars for priorities (always from Payload — these are PATHS content)
+  // Fetch content pillars for priorities (always from Payload — PATHS content)
   const pillarsResult = await payload.find({
     collection: 'content-pillars',
     where: { isActive: { equals: true } },

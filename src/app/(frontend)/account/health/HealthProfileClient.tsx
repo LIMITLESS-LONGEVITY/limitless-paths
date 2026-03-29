@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 import { Plus, X, ChevronUp, ChevronDown } from 'lucide-react'
 import { BiomarkerTrendsSection } from './BiomarkerTrendsSection'
 
@@ -90,12 +91,23 @@ export default function HealthProfileClient({ existingProfile, pillars, userId }
     existingProfile?.medications?.map((m: any) => m.medication) || [],
   )
 
-  // Pillar priorities
-  const [pillarOrder, setPillarOrder] = useState<string[]>(
-    existingProfile?.pillarPriorities?.map((p: any) =>
-      typeof p.pillar === 'object' ? p.pillar.id : p.pillar,
-    ) || pillars.map((p) => p.id),
-  )
+  // Pillar priorities — match by id or name from DT response
+  const [pillarOrder, setPillarOrder] = useState<string[]>(() => {
+    if (!existingProfile?.pillarPriorities?.length) return pillars.map((p) => p.id)
+    const ordered = existingProfile.pillarPriorities
+      .map((p: any) => {
+        if (typeof p.pillar === 'object' && p.pillar.id) return p.pillar.id
+        if (typeof p.pillar === 'object' && p.pillar.name) {
+          const match = pillars.find((pl) => pl.name === p.pillar.name)
+          return match?.id
+        }
+        return p.pillar
+      })
+      .filter(Boolean)
+    // Append any pillars not in the saved order
+    const remaining = pillars.filter((p) => !ordered.includes(p.id)).map((p) => p.id)
+    return [...ordered, ...remaining]
+  })
 
   const toggleGoal = (goal: string) => {
     setSelectedGoals((prev) =>
@@ -154,43 +166,67 @@ export default function HealthProfileClient({ existingProfile, pillars, userId }
     setSaving(true)
     setMessage(null)
 
-    const data: any = {
-      user: userId,
-      healthGoals: selectedGoals.map((goal) => ({ goal })),
-      biomarkers: biomarkers
-        .filter((b) => b.name && b.value !== '')
-        .map((b) => ({
-          name: b.name,
-          value: Number(b.value),
-          unit: b.unit,
-          date: b.date || new Date().toISOString(),
-          normalRangeLow: b.normalRangeLow,
-          normalRangeHigh: b.normalRangeHigh,
-          status: b.status,
-        })),
-      conditions: conditions.filter(Boolean).map((c) => ({ condition: c })),
-      medications: medications.filter(Boolean).map((m) => ({ medication: m })),
-      pillarPriorities: pillarOrder.map((id) => ({ pillar: id })),
+    // Build pillar priorities as { pillarName: rank } object
+    const pillarPriorities: Record<string, number> = {}
+    pillarOrder.forEach((id, i) => {
+      const pillar = pillars.find((p) => p.id === id)
+      if (pillar) pillarPriorities[pillar.name] = i + 1
+    })
+
+    const profilePayload = {
+      conditions: conditions.filter(Boolean),
+      medications: medications.filter(Boolean),
+      healthGoals: selectedGoals,
+      pillarPriorities,
     }
 
-    try {
-      const url = existingProfile
-        ? `/api/health-profiles/${existingProfile.id}`
-        : '/api/health-profiles'
-      const method = existingProfile ? 'PATCH' : 'POST'
+    const validBiomarkers = biomarkers
+      .filter((b) => b.name && b.value !== '')
+      .map((b) => ({
+        name: b.name,
+        value: Number(b.value),
+        unit: b.unit,
+        measuredAt: b.date || new Date().toISOString(),
+        referenceMin: b.normalRangeLow,
+        referenceMax: b.normalRangeHigh,
+        status: b.status,
+        category: 'user-entered',
+        source: 'paths',
+      }))
 
-      const res = await fetch(url, {
-        method,
+    try {
+      // Save profile to DT via gateway
+      const profileRes = await fetch(apiUrl(`/api/twin/${userId}/profile`), {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        credentials: 'include',
+        body: JSON.stringify(profilePayload),
       })
 
-      if (res.ok) {
-        setMessage({ type: 'success', text: 'Health profile saved successfully.' })
-      } else {
-        const err = await res.json().catch(() => null)
-        setMessage({ type: 'error', text: err?.errors?.[0]?.message || 'Failed to save. Please try again.' })
+      if (!profileRes.ok) {
+        const err = await profileRes.json().catch(() => null)
+        setMessage({ type: 'error', text: err?.error || 'Failed to save profile.' })
+        setSaving(false)
+        return
       }
+
+      // Save biomarkers to DT via gateway
+      if (validBiomarkers.length > 0) {
+        const bioRes = await fetch(apiUrl(`/api/twin/${userId}/biomarkers/batch`), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ biomarkers: validBiomarkers }),
+        })
+
+        if (!bioRes.ok) {
+          setMessage({ type: 'error', text: 'Profile saved but biomarkers failed. Try again.' })
+          setSaving(false)
+          return
+        }
+      }
+
+      setMessage({ type: 'success', text: 'Health profile saved successfully.' })
     } catch {
       setMessage({ type: 'error', text: 'Something went wrong.' })
     } finally {
