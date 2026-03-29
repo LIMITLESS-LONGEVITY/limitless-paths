@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
@@ -24,7 +24,6 @@ function isValidRedirect(url: string): boolean {
 }
 
 export default function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const auth = useAuth()
   const [email, setEmail] = useState('')
@@ -50,7 +49,7 @@ export default function LoginForm() {
         setMessage({ type: 'success', text: 'Signed in! Redirecting...' })
         const redirectTo = searchParams.get('redirect')
         const destination = redirectTo && isValidRedirect(redirectTo) ? redirectTo : '/courses'
-        setTimeout(() => router.push(destination), 1000)
+        setTimeout(() => { window.location.href = destination }, 1000)
       } else {
         setMessage({ type: 'error', text: data.errors?.[0]?.message || 'Invalid email or password.' })
       }
