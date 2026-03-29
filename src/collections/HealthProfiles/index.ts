@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { isAdmin } from '../../access/isAdmin'
+import { syncHealthProfileToDT } from '../../hooks/syncHealthProfileToDT'
 
 export const HealthProfiles: CollectionConfig = {
   slug: 'health-profiles',
@@ -96,6 +97,9 @@ export const HealthProfiles: CollectionConfig = {
       ],
     },
   ],
+  hooks: {
+    afterChange: [syncHealthProfileToDT],
+  },
   access: {
     create: authenticated,
     read: ({ req: { user } }) => {
