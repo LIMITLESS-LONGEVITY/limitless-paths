@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { useRouter } from 'next/navigation'
 
 import type { User } from '@/payload-types'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type AuthStatus = 'loading' | 'loggedIn' | 'loggedOut'
 
@@ -27,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchMe = useCallback(async () => {
     try {
-      const res = await fetch('/api/users/me', { credentials: 'include' })
+      const res = await fetch(apiUrl('/api/users/me'), { credentials: 'include' })
       if (res.ok) {
         const data = await res.json()
         if (data?.user) {
@@ -55,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
+      await fetch(apiUrl('/api/users/logout'), { method: 'POST', credentials: 'include' })
     } catch {
       // Proceed with client-side cleanup even if request fails
     }

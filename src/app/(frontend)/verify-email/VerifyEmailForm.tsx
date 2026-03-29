@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
+import { apiUrl } from '@/utilities/apiUrl'
 
 function VerifyEmailFormInner() {
   const router = useRouter()
@@ -23,14 +24,14 @@ function VerifyEmailFormInner() {
     setMessage(null)
 
     try {
-      const res = await fetch(`/api/users/verify/${token}`, {
+      const res = await fetch(apiUrl(`/api/users/verify/${token}`), {
         method: 'POST',
         credentials: 'include',
       })
 
       if (res.ok) {
         // Refresh auth state
-        const meRes = await fetch('/api/users/me', { credentials: 'include' })
+        const meRes = await fetch(apiUrl('/api/users/me'), { credentials: 'include' })
         if (meRes.ok) {
           const meData = await meRes.json()
           if (meData.user) auth.setUser(meData.user)
@@ -55,7 +56,7 @@ function VerifyEmailFormInner() {
     setResending(true)
     setMessage(null)
     try {
-      const res = await fetch('/api/auth/resend-verification', {
+      const res = await fetch(apiUrl('/api/auth/resend-verification'), {
         method: 'POST',
         credentials: 'include',
       })

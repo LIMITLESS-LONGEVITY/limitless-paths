@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { cn } from '@/utilities/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 import Link from 'next/link'
 
 export default function ForgotPasswordForm() {
@@ -14,7 +15,7 @@ export default function ForgotPasswordForm() {
     setSubmitting(true)
 
     try {
-      const res = await fetch('/api/users/forgot-password', {
+      const res = await fetch(apiUrl('/api/users/forgot-password'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

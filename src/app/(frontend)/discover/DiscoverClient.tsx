@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { GlassCard } from '@/components/homepage/GlassCard'
 import { TierBadge } from '@/components/TierBadge'
 import { Sparkles, ArrowRight } from 'lucide-react'
+import { apiUrl } from '@/utilities/apiUrl'
 
 const SUGGESTED_PROMPTS = [
   'Optimize my sleep quality',
@@ -40,7 +41,7 @@ export default function DiscoverClient({ isAuthenticated }: { isAuthenticated: b
     setPath(null)
 
     try {
-      const res = await fetch('/api/ai/discover', {
+      const res = await fetch(apiUrl('/api/ai/discover'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchQuery, limit: 6 }),

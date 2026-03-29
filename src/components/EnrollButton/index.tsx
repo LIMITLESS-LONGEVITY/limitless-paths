@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/utilities/ui'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type EnrollState = 'not-logged-in' | 'no-access' | 'can-enroll' | 'enrolled' | 'completed'
 
@@ -18,7 +19,7 @@ export const EnrollButton: React.FC<{
   const handleEnroll = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/enroll', {
+      const res = await fetch(apiUrl('/api/enroll'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ courseId }),

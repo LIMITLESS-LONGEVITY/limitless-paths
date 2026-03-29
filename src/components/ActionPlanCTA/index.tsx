@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { cn } from '@/utilities/ui'
 import { Sparkles, ChevronDown, ChevronRight, CheckCircle2 } from 'lucide-react'
+import { apiUrl } from '@/utilities/apiUrl'
 
 type WeekDay = {
   dayNumber: number
@@ -64,7 +65,7 @@ export const ActionPlanCTA: React.FC<{
     setError(null)
 
     try {
-      const res = await fetch('/api/ai/action-plan', {
+      const res = await fetch(apiUrl('/api/ai/action-plan'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enrollmentId }),

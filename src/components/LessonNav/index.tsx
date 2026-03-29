@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/utilities/ui'
 import { useAuth } from '@/providers/Auth'
+import { apiUrl } from '@/utilities/apiUrl'
 
 export const LessonNav: React.FC<{
   prevHref?: string | null
@@ -21,14 +22,14 @@ export const LessonNav: React.FC<{
     try {
       if (lessonProgressId) {
         // Update existing progress
-        await fetch(`/api/lesson-progress/${lessonProgressId}`, {
+        await fetch(apiUrl(`/api/lesson-progress/${lessonProgressId}`), {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'completed' }),
         })
       } else {
         // Create new progress record
-        await fetch('/api/lesson-progress', {
+        await fetch(apiUrl('/api/lesson-progress'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

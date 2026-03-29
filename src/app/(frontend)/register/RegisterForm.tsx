@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
+import { apiUrl } from '@/utilities/apiUrl'
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -31,7 +32,7 @@ export default function RegisterForm() {
 
     setSubmitting(true)
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch(apiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, firstName, lastName }),
