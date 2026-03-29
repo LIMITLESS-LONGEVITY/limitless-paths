@@ -23,6 +23,7 @@ import * as migration_20260327_180000_locked_docs_rels_new_collections from './2
 import * as migration_20260327_190000_ai_config_token_budgets from './20260327_190000_ai_config_token_budgets';
 import * as migration_20260327_200000_ai_config_token_budgets_retry from './20260327_200000_ai_config_token_budgets_retry';
 import * as migration_20260328_100000_drop_billing_tables from './20260328_100000_drop_billing_tables';
+import * as migration_20260329_100000_drop_health_profiles from './20260329_100000_drop_health_profiles';
 
 export const migrations = [
   {
@@ -149,5 +150,10 @@ export const migrations = [
     up: migration_20260328_100000_drop_billing_tables.up,
     down: migration_20260328_100000_drop_billing_tables.down,
     name: '20260328_100000_drop_billing_tables',
+  },
+  {
+    up: migration_20260329_100000_drop_health_profiles.up,
+    down: migration_20260329_100000_drop_health_profiles.down,
+    name: '20260329_100000_drop_health_profiles',
   },
 ];

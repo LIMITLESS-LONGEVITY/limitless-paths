@@ -99,7 +99,7 @@ export const dailyProtocolEndpoint: Endpoint = {
       // Health profile (graceful degradation)
       let healthProfile: any = null
       try {
-        healthProfile = await getHealthProfile(req.user.id as string, req.payload, req)
+        healthProfile = await getHealthProfile(req.user.id as string)
       } catch {
         // Health profile unavailable — continue without personalization
       }

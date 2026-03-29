@@ -101,7 +101,7 @@ export const tutorEndpoint: Endpoint = {
     // 6. Fetch health profile for personalization (graceful degradation)
     let healthProfile: any = null
     try {
-      healthProfile = await getHealthProfile(req.user!.id as string, req.payload, req)
+      healthProfile = await getHealthProfile(req.user!.id as string)
     } catch {
       // Health profile unavailable — continue without personalization
     }
