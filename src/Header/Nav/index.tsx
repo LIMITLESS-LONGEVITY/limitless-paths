@@ -16,11 +16,6 @@ const CONTENT_NAV = [
   { href: '/guide', label: 'Guide' },
 ]
 
-/** External links served by the gateway Worker (not Next.js routes) */
-const EXTERNAL_NAV = [
-  { href: '/book', label: 'Book' },
-]
-
 export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ data, mobile }) => {
   const navItems = data?.navItems || []
   const pathname = usePathname()
@@ -44,15 +39,6 @@ export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ da
         >
           {item.label}
         </Link>
-      ))}
-      {EXTERNAL_NAV.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          className={linkClasses(false)}
-        >
-          {item.label}
-        </a>
       ))}
       {navItems.map(({ link }, i) => {
         return (
