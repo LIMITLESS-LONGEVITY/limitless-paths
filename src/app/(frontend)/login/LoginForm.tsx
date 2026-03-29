@@ -50,7 +50,7 @@ export default function LoginForm() {
         setMessage({ type: 'success', text: 'Signed in! Redirecting...' })
         const redirectTo = searchParams.get('redirect')
         const destination = redirectTo && isValidRedirect(redirectTo) ? redirectTo : '/courses'
-        setTimeout(() => router.push(destination), 1000)
+        setTimeout(() => { window.location.href = destination }, 1000)
       } else {
         setMessage({ type: 'error', text: data.errors?.[0]?.message || 'Invalid email or password.' })
       }
