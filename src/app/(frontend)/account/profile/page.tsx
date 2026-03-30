@@ -147,11 +147,7 @@ export default function ProfilePage() {
                   const formData = new FormData()
                   formData.append('file', file)
                   formData.append('alt', `${firstName} ${lastName} avatar`)
-<<<<<<< HEAD
-                  const uploadRes = await fetch(apiUrl('/api/media'), { method: 'POST', body: formData })
-=======
-                  const uploadRes = await fetch('/api/media', { method: 'POST', credentials: 'include', body: formData })
->>>>>>> 883b00b9 (Fix missing credentials: 'include' on all authenticated fetch calls)
+                  const uploadRes = await fetch(apiUrl('/api/media'), { method: 'POST', credentials: 'include', body: formData })
                   if (!uploadRes.ok) throw new Error('Upload failed')
                   const media = await uploadRes.json()
                   // Link to user
