@@ -46,6 +46,7 @@ export const DailyProtocolWidget: React.FC<{ tierAccess: string }> = ({ tierAcce
     try {
       const res = await fetch(apiUrl('/api/ai/daily-protocol'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(regenerate ? { regenerate: true } : {}),
       })
@@ -98,6 +99,7 @@ export const DailyProtocolWidget: React.FC<{ tierAccess: string }> = ({ tierAcce
     try {
       await fetch(apiUrl('/api/ai/daily-protocol-status'), {
         method: 'PATCH',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ protocolId: protocol.id, actionId, completed }),
       })

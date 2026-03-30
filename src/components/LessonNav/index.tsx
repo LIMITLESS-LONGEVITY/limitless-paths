@@ -24,6 +24,7 @@ export const LessonNav: React.FC<{
         // Update existing progress
         await fetch(apiUrl(`/api/lesson-progress/${lessonProgressId}`), {
           method: 'PATCH',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'completed' }),
         })
@@ -31,6 +32,7 @@ export const LessonNav: React.FC<{
         // Create new progress record
         await fetch(apiUrl('/api/lesson-progress'), {
           method: 'POST',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             user: user?.id,

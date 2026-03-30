@@ -23,7 +23,7 @@ export default function ProfilePage() {
   const [savingPassword, setSavingPassword] = useState(false)
 
   useEffect(() => {
-    fetch(apiUrl('/api/users/me'))
+    fetch(apiUrl('/api/users/me'), { credentials: 'include' })
       .then((res) => res.json())
       .then((data) => {
         const u = data.user
@@ -43,6 +43,7 @@ export default function ProfilePage() {
     try {
       const res = await fetch(apiUrl(`/api/users/${user.id}`), {
         method: 'PATCH',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName }),
       })
@@ -75,6 +76,7 @@ export default function ProfilePage() {
     try {
       const res = await fetch(apiUrl(`/api/users/${user.id}`), {
         method: 'PATCH',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: newPassword }),
       })
@@ -145,12 +147,17 @@ export default function ProfilePage() {
                   const formData = new FormData()
                   formData.append('file', file)
                   formData.append('alt', `${firstName} ${lastName} avatar`)
+<<<<<<< HEAD
                   const uploadRes = await fetch(apiUrl('/api/media'), { method: 'POST', body: formData })
+=======
+                  const uploadRes = await fetch('/api/media', { method: 'POST', credentials: 'include', body: formData })
+>>>>>>> 883b00b9 (Fix missing credentials: 'include' on all authenticated fetch calls)
                   if (!uploadRes.ok) throw new Error('Upload failed')
                   const media = await uploadRes.json()
                   // Link to user
                   await fetch(apiUrl(`/api/users/${user.id}`), {
                     method: 'PATCH',
+                    credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ avatar: media.doc.id }),
                   })

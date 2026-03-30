@@ -23,7 +23,7 @@ export const RelatedContentPanel: React.FC = () => {
 
     try {
       // Fetch current document content
-      const docRes = await fetch(apiUrl(`/api/${collectionSlug}/${id}?depth=0`))
+      const docRes = await fetch(apiUrl(`/api/${collectionSlug}/${id}?depth=0`), { credentials: 'include' })
       const doc = await docRes.json()
 
       // Extract text from content field
@@ -37,6 +37,7 @@ export const RelatedContentPanel: React.FC = () => {
       // Call related content endpoint
       const res = await fetch(apiUrl('/api/ai/related-content'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: typeof content === 'string' ? content : JSON.stringify(content),
