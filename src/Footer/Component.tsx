@@ -1,6 +1,7 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
+import { getTranslations } from 'next-intl/server'
 
 import type { Footer } from '@/payload-types'
 
@@ -10,27 +11,28 @@ import { FeedbackTrigger } from '@/components/FeedbackTrigger'
 import { Logo } from '@/components/Logo/Logo'
 
 const PLATFORM_LINKS = [
-  { href: '/courses', label: 'Courses' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/discover', label: 'Discover' },
-  { href: '/guide', label: 'Platform Guide' },
-]
+  { href: '/courses', key: 'courses' },
+  { href: '/articles', key: 'articles' },
+  { href: '/discover', key: 'discover' },
+  { href: '/guide', key: 'platformGuide' },
+] as const
 
 const ACCOUNT_LINKS = [
-  { href: '/account', label: 'Dashboard' },
-  { href: '/account/health', label: 'Health Profile' },
-  { href: '/account/certificates', label: 'Certificates' },
-  { href: '/book/dashboard/membership', label: 'Billing' },
-]
+  { href: '/account', key: 'dashboardLink' },
+  { href: '/account/health', key: 'healthProfile' },
+  { href: '/account/certificates', key: 'certificates' },
+  { href: '/book/dashboard/membership', key: 'billing' },
+] as const
 
 const COMPANY_LINKS = [
-  { href: '/book/contact-sales', label: 'Enterprise Sales' },
-  { href: '/book/diagnostics', label: 'Diagnostic Packages' },
-]
+  { href: '/book/contact-sales', key: 'enterpriseSales' },
+  { href: '/book/diagnostics', key: 'diagnosticPackages' },
+] as const
 
 export async function Footer() {
   const footerData: Footer = await (await getCachedGlobal('footer', 1))()
   const navItems = footerData?.navItems || []
+  const t = await getTranslations('footer')
 
   return (
     <footer className="mt-auto bg-brand-dark text-white relative">
@@ -45,18 +47,18 @@ export async function Footer() {
               <Logo className="text-brand-light" />
             </Link>
             <p className="text-brand-silver text-xs leading-relaxed mb-4">
-              Evidence-based longevity education for executives and high-performers.
+              {t('tagline')}
             </p>
             <p className="text-brand-silver/50 text-[10px]">
-              &copy; {new Date().getFullYear()} Limitless Longevity.
-              <br />All rights reserved.
+              {t('copyright', { year: new Date().getFullYear() })}
+              <br />{t('allRightsReserved')}
             </p>
           </div>
 
           {/* Column 2: Platform */}
           <div>
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-silver mb-4">
-              Platform
+              {t('platform')}
             </h3>
             <ul className="space-y-2.5">
               {PLATFORM_LINKS.map((link) => (
@@ -65,7 +67,7 @@ export async function Footer() {
                     href={link.href}
                     className="text-brand-silver/70 hover:text-brand-gold text-xs transition-colors"
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 </li>
               ))}
@@ -75,7 +77,7 @@ export async function Footer() {
           {/* Column 3: Account */}
           <div>
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-silver mb-4">
-              Account
+              {t('account')}
             </h3>
             <ul className="space-y-2.5">
               {ACCOUNT_LINKS.map((link) => (
@@ -84,7 +86,7 @@ export async function Footer() {
                     href={link.href}
                     className="text-brand-silver/70 hover:text-brand-gold text-xs transition-colors"
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 </li>
               ))}
@@ -94,7 +96,7 @@ export async function Footer() {
           {/* Column 4: Company */}
           <div>
             <h3 className="text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-silver mb-4">
-              Company
+              {t('company')}
             </h3>
             <ul className="space-y-2.5">
               {COMPANY_LINKS.map((link) => (
@@ -103,7 +105,7 @@ export async function Footer() {
                     href={link.href}
                     className="text-brand-silver/70 hover:text-brand-gold text-xs transition-colors"
                   >
-                    {link.label}
+                    {t(link.key)}
                   </a>
                 </li>
               ))}
@@ -123,7 +125,7 @@ export async function Footer() {
         <div className="mt-10 pt-6 border-t border-brand-glass-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <p className="text-brand-silver/40 text-[10px]">
-              Marbella, Spain &middot; Global Reach
+              {t('location')}
             </p>
             <span className="text-brand-silver/20 text-[10px]">&middot;</span>
             <FeedbackTrigger />
