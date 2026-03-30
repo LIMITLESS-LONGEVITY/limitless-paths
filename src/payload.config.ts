@@ -24,6 +24,7 @@ import { Users } from './collections/Users'
 import { ActionPlans } from './collections/ActionPlans'
 import { DailyProtocols } from './collections/DailyProtocols'
 import { Certificates } from './collections/Certificates'
+import { Feedback } from './collections/Feedback'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { AIConfig } from './globals/AIConfig/config'
@@ -43,6 +44,7 @@ import { actionPlanEndpoint } from './endpoints/ai/actionPlan'
 import { dailyProtocolEndpoint } from './endpoints/ai/dailyProtocol'
 import { dailyProtocolStatusEndpoint } from './endpoints/ai/dailyProtocolStatus'
 import { resendVerificationEndpoint } from './endpoints/auth/resend-verification'
+import { feedbackEndpoint } from './endpoints/feedback'
 import { healthEndpoint } from './endpoints/health'
 import { tierSyncEndpoint } from './endpoints/internal/tier-sync'
 import { myEnrollmentsEndpoint } from './endpoints/me/enrollments'
@@ -103,9 +105,9 @@ export default buildConfig({
     push: false,
     prodMigrations: migrations,
   }),
-  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, ActionPlans, DailyProtocols, Certificates],
+  collections: [Pages, Posts, Media, Categories, Users, MembershipTiers, ContentPillars, Tenants, Articles, Courses, Modules, Lessons, Enrollments, LessonProgress, AIUsage, ContentChunks, ActionPlans, DailyProtocols, Certificates, Feedback],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, registerEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint, myEnrollmentsEndpoint, myProtocolEndpoint],
+  endpoints: [feedbackEndpoint, healthEndpoint, tutorEndpoint, quizGenerateEndpoint, quizSaveEndpoint, semanticSearchEndpoint, recommendationsEndpoint, relatedContentEndpoint, enrollEndpoint, registerEndpoint, discoverEndpoint, actionPlanEndpoint, dailyProtocolEndpoint, dailyProtocolStatusEndpoint, resendVerificationEndpoint, tierSyncEndpoint, myEnrollmentsEndpoint, myProtocolEndpoint],
   globals: [Header, Footer, SiteSettings, AIConfig],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
