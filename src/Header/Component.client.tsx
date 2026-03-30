@@ -7,6 +7,7 @@ import type { Header } from '@/payload-types'
 
 import { HeaderNav } from './Nav'
 import { AuthSection } from './AuthSection'
+import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import type { OSConfig } from './types'
 
 interface HeaderClientProps {
@@ -78,6 +79,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         <div className="hidden md:flex items-center gap-6">
           <HeaderNav data={data} />
           <div className="w-px h-5 bg-brand-glass-border" aria-hidden="true" />
+          <LocaleSwitcher />
+          <div className="w-px h-5 bg-brand-glass-border" aria-hidden="true" />
           <AuthSection osConfig={osConfig} />
         </div>
 
@@ -107,6 +110,10 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
           style={{ WebkitBackdropFilter: 'blur(12px)' }}
         >
           <HeaderNav data={data} mobile />
+          <div className="h-px bg-brand-glass-border my-4" aria-hidden="true" />
+          <div className="mb-4">
+            <LocaleSwitcher />
+          </div>
           <div className="h-px bg-brand-glass-border my-4" aria-hidden="true" />
           <AuthSection mobile osConfig={osConfig} />
         </div>

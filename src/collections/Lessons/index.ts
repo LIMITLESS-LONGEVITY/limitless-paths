@@ -12,12 +12,13 @@ export const Lessons: CollectionConfig = {
     defaultColumns: ['title', 'module', 'lessonType', 'order', 'updatedAt'],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
+    { name: 'title', type: 'text', required: true, localized: true },
     { name: 'slug', type: 'text', required: true, unique: true },
     {
       name: 'content',
       type: 'richText',
       editor: richTextEditor,
+      localized: true,
     },
     {
       name: 'module',
@@ -65,7 +66,7 @@ export const Lessons: CollectionConfig = {
       name: 'resources',
       type: 'array',
       fields: [
-        { name: 'title', type: 'text', required: true },
+        { name: 'title', type: 'text', required: true, localized: true },
         { name: 'file', type: 'upload', relationTo: 'media' },
       ],
     },
