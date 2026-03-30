@@ -1,19 +1,37 @@
 'use client'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/providers/Auth'
-import { User, BookOpen, CreditCard, LogOut } from 'lucide-react'
+import { User, LogOut } from 'lucide-react'
 import { UserDropdown } from './UserDropdown'
+import { iconMap } from './iconMap'
+import { apiUrl } from '@/utilities/apiUrl'
+import type { OSConfig, OSMenuItem } from './types'
+
+/** Hardcoded fallback if OS config fetch fails */
+const FALLBACK_MENU: OSMenuItem[] = [
+  { label: 'Profile', href: '/account/profile', icon: 'user', roles: [] },
+]
 
 interface AuthSectionProps {
   mobile?: boolean
+  osConfig: OSConfig | null
 }
 
-export const AuthSection: React.FC<AuthSectionProps> = ({ mobile }) => {
-  const { user, status, logout } = useAuth()
+export const AuthSection: React.FC<AuthSectionProps> = ({ mobile, osConfig }) => {
+  const { user, status } = useAuth()
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const closeDropdown = useCallback(() => setDropdownOpen(false), [])
+
+  /** Filter menu items by user role — empty roles array means show to all */
+  const menuItems = useMemo(() => {
+    const items = osConfig?.userMenu?.length ? osConfig.userMenu : FALLBACK_MENU
+    const userRole = user?.role
+    return items.filter(
+      (item) => item.roles.length === 0 || (userRole && item.roles.includes(userRole)),
+    )
+  }, [osConfig, user?.role])
 
   // Loading state
   if (status === 'loading') {
@@ -24,41 +42,7 @@ export const AuthSection: React.FC<AuthSectionProps> = ({ mobile }) => {
   // Logged in — mobile: inline menu items
   if (status === 'loggedIn' && user) {
     if (mobile) {
-      return (
-        <div className="flex flex-col gap-2">
-          <div className="text-brand-silver text-xs uppercase tracking-[0.15em] font-sans font-medium mb-1">
-            {user.firstName} {user.lastName}
-          </div>
-          <Link
-            href="/account/profile"
-            className="flex items-center gap-3 text-brand-silver hover:text-brand-gold text-xs uppercase tracking-[0.15em] font-sans font-medium transition-colors min-h-[44px]"
-          >
-            <User className="w-4 h-4 shrink-0" />
-            Profile
-          </Link>
-          <Link
-            href="/account/courses"
-            className="flex items-center gap-3 text-brand-silver hover:text-brand-gold text-xs uppercase tracking-[0.15em] font-sans font-medium transition-colors min-h-[44px]"
-          >
-            <BookOpen className="w-4 h-4 shrink-0" />
-            My Courses
-          </Link>
-          <Link
-            href="/account/billing"
-            className="flex items-center gap-3 text-brand-silver hover:text-brand-gold text-xs uppercase tracking-[0.15em] font-sans font-medium transition-colors min-h-[44px]"
-          >
-            <CreditCard className="w-4 h-4 shrink-0" />
-            Billing
-          </Link>
-          <button
-            onClick={logout}
-            className="flex items-center gap-3 text-red-400 hover:text-red-300 text-xs uppercase tracking-[0.15em] font-sans font-medium transition-colors min-h-[44px]"
-          >
-            <LogOut className="w-4 h-4 shrink-0" />
-            Log Out
-          </button>
-        </div>
-      )
+      return <MobileLoggedIn user={user} menuItems={menuItems} />
     }
 
     // Logged in — desktop: avatar with dropdown
@@ -76,7 +60,7 @@ export const AuthSection: React.FC<AuthSectionProps> = ({ mobile }) => {
         >
           {initial}
         </button>
-        <UserDropdown open={dropdownOpen} onClose={closeDropdown} />
+        <UserDropdown open={dropdownOpen} onClose={closeDropdown} menuItems={menuItems} />
       </div>
     )
   }
@@ -115,6 +99,47 @@ export const AuthSection: React.FC<AuthSectionProps> = ({ mobile }) => {
       >
         Get Started
       </Link>
+    </div>
+  )
+}
+
+/** Mobile logged-in menu — renders config-driven items inline */
+const MobileLoggedIn: React.FC<{
+  user: NonNullable<ReturnType<typeof useAuth>['user']>
+  menuItems: OSMenuItem[]
+}> = ({ user, menuItems }) => {
+  const handleLogout = () => {
+    // Cross-app navigation to gateway root
+    void fetch(apiUrl('/api/users/logout'), { method: 'POST', credentials: 'include' }).finally(() => {
+      window.location.href = '/'
+    })
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="text-brand-silver text-xs uppercase tracking-[0.15em] font-sans font-medium mb-1">
+        {user.firstName} {user.lastName}
+      </div>
+      {menuItems.map((item) => {
+        const Icon = iconMap[item.icon] || User
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="flex items-center gap-3 text-brand-silver hover:text-brand-gold text-xs uppercase tracking-[0.15em] font-sans font-medium transition-colors min-h-[44px]"
+          >
+            <Icon className="w-4 h-4 shrink-0" />
+            {item.label}
+          </Link>
+        )
+      })}
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 text-red-400 hover:text-red-300 text-xs uppercase tracking-[0.15em] font-sans font-medium transition-colors min-h-[44px]"
+      >
+        <LogOut className="w-4 h-4 shrink-0" />
+        Log Out
+      </button>
     </div>
   )
 }

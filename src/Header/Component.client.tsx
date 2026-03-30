@@ -1,14 +1,13 @@
 'use client'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 import type { Header } from '@/payload-types'
 
-import { Logo } from '@/components/Logo/Logo'
 import { HeaderNav } from './Nav'
 import { AuthSection } from './AuthSection'
+import type { OSConfig } from './types'
 
 interface HeaderClientProps {
   data: Header
@@ -18,6 +17,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [osConfig, setOsConfig] = useState<OSConfig | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
 
@@ -42,6 +42,18 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Fetch OS config on mount (parallel with existing auth fetch)
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch('/api/twin/os/config', { signal: controller.signal })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error('OS config fetch failed'))))
+      .then((data: OSConfig) => setOsConfig(data))
+      .catch(() => {
+        // Silently fail — AuthSection uses hardcoded fallback
+      })
+    return () => controller.abort()
+  }, [])
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -53,15 +65,20 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
       {...(theme ? { 'data-theme': theme } : {})}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="shrink-0">
-          <Logo className="text-brand-light" />
-        </Link>
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- cross-app nav to gateway root */}
+        <a
+          href="/"
+          className="shrink-0 font-display text-2xl font-semibold tracking-[0.12em] text-brand-gold hover:text-brand-gold/80 transition-colors"
+          aria-label="LIMITLESS"
+        >
+          LIMITLESS
+        </a>
 
         {/* Desktop: nav + auth */}
         <div className="hidden md:flex items-center gap-6">
           <HeaderNav data={data} />
           <div className="w-px h-5 bg-brand-glass-border" aria-hidden="true" />
-          <AuthSection />
+          <AuthSection osConfig={osConfig} />
         </div>
 
         {/* Mobile hamburger */}
@@ -91,7 +108,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
         >
           <HeaderNav data={data} mobile />
           <div className="h-px bg-brand-glass-border my-4" aria-hidden="true" />
-          <AuthSection mobile />
+          <AuthSection mobile osConfig={osConfig} />
         </div>
       )}
     </header>
