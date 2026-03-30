@@ -48,6 +48,7 @@ const PageClient: React.FC = () => {
     try {
       const res = await fetch(apiUrl('/api/ai/search'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: q.trim(), limit: 12 }),
       })

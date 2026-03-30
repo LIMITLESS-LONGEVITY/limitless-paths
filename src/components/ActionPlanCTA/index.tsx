@@ -67,6 +67,7 @@ export const ActionPlanCTA: React.FC<{
     try {
       const res = await fetch(apiUrl('/api/ai/action-plan'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enrollmentId }),
       })

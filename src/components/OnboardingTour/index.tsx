@@ -82,6 +82,7 @@ export const OnboardingTour: React.FC<{ userId: string }> = ({ userId }) => {
     try {
       await fetch(apiUrl(`/api/users/${userId}`), {
         method: 'PATCH',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ hasCompletedOnboarding: true }),
       })

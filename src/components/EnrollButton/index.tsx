@@ -21,6 +21,7 @@ export const EnrollButton: React.FC<{
     try {
       const res = await fetch(apiUrl('/api/enroll'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ courseId }),
       })

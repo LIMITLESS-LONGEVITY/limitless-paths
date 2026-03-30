@@ -106,6 +106,7 @@ export const TutorPanel: React.FC<{
     try {
       const res = await fetch(apiUrl('/api/ai/tutor'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
