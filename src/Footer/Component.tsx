@@ -8,6 +8,7 @@ import type { Footer } from '@/payload-types'
 import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { CMSLink } from '@/components/Link'
 import { FeedbackTrigger } from '@/components/FeedbackTrigger'
+import { ManageCookiesLink } from '@/components/CookieConsent/ManageCookiesLink'
 import { Logo } from '@/components/Logo/Logo'
 
 const PLATFORM_LINKS = [
@@ -129,6 +130,8 @@ export async function Footer() {
             </p>
             <span className="text-brand-silver/20 text-[10px]">&middot;</span>
             <FeedbackTrigger />
+            <span className="text-brand-silver/20 text-[10px]">&middot;</span>
+            <ManageCookiesLink />
           </div>
           <div className="flex items-center gap-4">
             <ThemeSelector />

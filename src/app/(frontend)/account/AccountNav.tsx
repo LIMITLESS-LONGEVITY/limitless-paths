@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/ui'
-import { LayoutDashboard, User, Heart, ClipboardList, Award, Users, CreditCard, BookOpen } from 'lucide-react'
+import { LayoutDashboard, User, Heart, ClipboardList, Award, Users, CreditCard, BookOpen, Shield } from 'lucide-react'
 
 const BASE_NAV_ITEMS = [
   { href: '/account', label: 'Dashboard', icon: LayoutDashboard },
@@ -18,6 +18,7 @@ const MANAGER_NAV_ITEM = { href: '/account/team', label: 'Team', icon: Users }
 const BOTTOM_NAV_ITEMS = [
   { href: '/account/billing', label: 'Billing', icon: CreditCard },
   { href: '/account/courses', label: 'My Courses', icon: BookOpen },
+  { href: '/account/privacy', label: 'Privacy & Data', icon: Shield },
 ]
 
 export const AccountNav: React.FC<{ isManager?: boolean }> = ({ isManager }) => {
