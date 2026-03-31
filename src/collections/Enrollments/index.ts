@@ -49,6 +49,12 @@ export const Enrollments: CollectionConfig = {
       ],
       admin: { description: 'Placeholder for Phase 5 billing integration' },
     },
+    {
+      name: 'feedbackPrompted',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { description: 'Whether the user has been shown the post-course satisfaction prompt' },
+    },
   ],
   hooks: {
     beforeChange: [preventDuplicateEnrollment, restrictUserUpdates],

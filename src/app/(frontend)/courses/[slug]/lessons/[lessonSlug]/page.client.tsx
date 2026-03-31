@@ -85,6 +85,7 @@ const LessonViewerClient: React.FC<LessonViewerProps> = ({
             nextHref={nextHref}
             lessonProgressId={lessonProgressId}
             enrollmentId={enrollmentId}
+            courseId={course.id}
             lessonId={lesson.id}
             isCompleted={isCompleted}
           />
