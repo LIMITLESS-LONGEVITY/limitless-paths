@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 import type { Header as HeaderType } from '@/payload-types'
 
@@ -9,16 +10,17 @@ import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
 import { SearchIcon, HomeIcon } from 'lucide-react'
 
-const CONTENT_NAV = [
-  { href: '/courses', label: 'Courses' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/discover', label: 'Discover' },
-  { href: '/guide', label: 'Guide' },
-]
+const CONTENT_NAV_KEYS = [
+  { href: '/courses', key: 'courses' },
+  { href: '/articles', key: 'articles' },
+  { href: '/discover', key: 'discover' },
+  { href: '/guide', key: 'guide' },
+] as const
 
 export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ data, mobile }) => {
   const navItems = data?.navItems || []
   const pathname = usePathname()
+  const t = useTranslations('nav')
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
 
@@ -34,18 +36,18 @@ export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ da
       <a
         href="/"
         className="text-brand-silver/60 hover:text-brand-gold transition-colors"
-        title="Dashboard"
+        title={t('dashboard')}
       >
         <HomeIcon className="w-4 h-4" />
       </a>
-      {CONTENT_NAV.map((item) => (
+      {CONTENT_NAV_KEYS.map((item) => (
         <Link
           key={item.href}
           href={item.href}
           className={linkClasses(isActive(item.href))}
           {...(isActive(item.href) ? { 'aria-current': 'page' as const } : {})}
         >
-          {item.label}
+          {t(item.key)}
         </Link>
       ))}
       {navItems.map(({ link }, i) => {
@@ -63,7 +65,7 @@ export const HeaderNav: React.FC<{ data: HeaderType; mobile?: boolean }> = ({ da
         className={`${isActive('/search') ? 'text-brand-gold' : 'text-brand-silver hover:text-brand-gold'} transition-colors`}
         {...(isActive('/search') ? { 'aria-current': 'page' as const } : {})}
       >
-        <span className="sr-only">Search</span>
+        <span className="sr-only">{t('search')}</span>
         <SearchIcon className="w-4 h-4" />
       </Link>
     </nav>

@@ -11,8 +11,8 @@ export const Modules: CollectionConfig = {
     defaultColumns: ['title', 'course', 'order', 'updatedAt'],
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
-    { name: 'description', type: 'textarea' },
+    { name: 'title', type: 'text', required: true, localized: true },
+    { name: 'description', type: 'textarea', localized: true },
     {
       name: 'course',
       type: 'relationship',
