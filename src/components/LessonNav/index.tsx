@@ -7,6 +7,7 @@ import { useAuth } from '@/providers/Auth'
 import { apiUrl } from '@/utilities/apiUrl'
 import { fireCourseCompleteConfetti } from '@/components/CelebrationConfetti'
 import { StreakToast, isMilestone } from '@/components/StreakToast'
+import { CourseFeedbackPrompt } from '@/components/CourseFeedbackPrompt'
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -16,15 +17,17 @@ export const LessonNav: React.FC<{
   nextHref?: string | null
   lessonProgressId?: string | null
   enrollmentId: string
+  courseId: string
   lessonId: string
   isCompleted: boolean
-}> = ({ prevHref, nextHref, lessonProgressId, enrollmentId, lessonId, isCompleted }) => {
+}> = ({ prevHref, nextHref, lessonProgressId, enrollmentId, courseId, lessonId, isCompleted }) => {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [completed, setCompleted] = useState(isCompleted)
   const [showCheckmark, setShowCheckmark] = useState(false)
   const [courseComplete, setCourseComplete] = useState(false)
   const [streakMilestone, setStreakMilestone] = useState<number | null>(null)
+  const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false)
 
   const handleMarkComplete = async () => {
     setLoading(true)
@@ -66,6 +69,7 @@ export const LessonNav: React.FC<{
       ])
 
       let hasCelebration = false
+      let shouldPromptFeedback = false
 
       if (enrollmentRes?.ok) {
         const enrollment = await enrollmentRes.json()
@@ -73,6 +77,9 @@ export const LessonNav: React.FC<{
           setCourseComplete(true)
           fireCourseCompleteConfetti()
           hasCelebration = true
+          if (!enrollment.feedbackPrompted) {
+            shouldPromptFeedback = true
+          }
         }
       }
 
@@ -83,6 +90,15 @@ export const LessonNav: React.FC<{
           setStreakMilestone(streak)
           hasCelebration = true
         }
+      }
+
+      // If course just completed and feedback not yet prompted, show prompt after confetti
+      if (shouldPromptFeedback) {
+        const confettiDelay = hasCelebration ? 2500 : 1200
+        setTimeout(() => {
+          setShowFeedbackPrompt(true)
+        }, confettiDelay)
+        return
       }
 
       // Delay navigation to show celebration
@@ -177,6 +193,19 @@ export const LessonNav: React.FC<{
         </AnimatePresence>
       </div>
       <StreakToast streak={streakMilestone} />
+      <CourseFeedbackPrompt
+        isOpen={showFeedbackPrompt}
+        onClose={() => {
+          setShowFeedbackPrompt(false)
+          // Navigate after feedback prompt is dismissed or submitted
+          setTimeout(() => {
+            if (nextHref) window.location.href = nextHref
+            else window.location.reload()
+          }, 300)
+        }}
+        enrollmentId={enrollmentId}
+        courseId={courseId}
+      />
     </>
   )
 }
