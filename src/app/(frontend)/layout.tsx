@@ -8,6 +8,7 @@ import { getMessages, getLocale } from 'next-intl/server'
 
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
+import { CookieConsent } from '@/components/CookieConsent'
 import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -45,6 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Header />
             {children}
             <Footer />
+            <CookieConsent />
           </Providers>
         </NextIntlClientProvider>
       </body>
