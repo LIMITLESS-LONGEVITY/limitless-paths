@@ -38,13 +38,12 @@ export const Courses: CollectionConfig = {
     maxPerDoc: 10,
   },
   fields: [
-    { name: 'title', type: 'text', required: true, localized: true },
+    { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true },
     {
       name: 'description',
       type: 'richText',
       editor: richTextEditor,
-      localized: true,
     },
     { name: 'featuredImage', type: 'upload', relationTo: 'media' },
     { name: 'pillar', type: 'relationship', relationTo: 'content-pillars' },

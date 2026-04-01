@@ -23,14 +23,13 @@ export const Articles: CollectionConfig = {
     maxPerDoc: 25,
   },
   fields: [
-    { name: 'title', type: 'text', required: true, localized: true },
+    { name: 'title', type: 'text', required: true },
     slugField(),
-    { name: 'excerpt', type: 'textarea', localized: true },
+    { name: 'excerpt', type: 'textarea' },
     {
       name: 'content',
       type: 'richText',
       editor: richTextEditor,
-      localized: true,
     },
     { name: 'featuredImage', type: 'upload', relationTo: 'media' },
     {
