@@ -77,45 +77,98 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for localization changes
-        id: check-localization
+      - name: Detect schema changes
+        id: detect
         run: |
           CHANGED=$(git diff --name-only origin/main...HEAD)
           CONFIG_CHANGED=$(echo "$CHANGED" | grep -c 'payload.config.ts' || true)
           COLLECTIONS_CHANGED=$(echo "$CHANGED" | grep -c 'src/collections/' || true)
-          if [ "$CONFIG_CHANGED" -gt 0 ] || [ "$COLLECTIONS_CHANGED" -gt 0 ]; then
-            echo "payload_changed=true" >> $GITHUB_OUTPUT
-            LOCALIZED_ADDED=$(git diff origin/main...HEAD -- 'src/collections/' 'src/payload.config.ts' | grep -c '+.*localized.*true' || true)
-            echo "localized_added=$LOCALIZED_ADDED" >> $GITHUB_OUTPUT
-            MIGRATION_ADDED=$(echo "$CHANGED" | grep -c 'src/migrations/' || true)
-            echo "migration_added=$MIGRATION_ADDED" >> $GITHUB_OUTPUT
+          GLOBALS_CHANGED=$(echo "$CHANGED" | grep -c 'src/globals/' || true)
+          MIGRATION_ADDED=$(echo "$CHANGED" | grep -c 'src/migrations/' || true)
+
+          if [ "$CONFIG_CHANGED" -gt 0 ] || [ "$COLLECTIONS_CHANGED" -gt 0 ] || [ "$GLOBALS_CHANGED" -gt 0 ]; then
+            echo "schema_changed=true" >> $GITHUB_OUTPUT
+            echo "config_changed=$CONFIG_CHANGED" >> $GITHUB_OUTPUT
           else
-            echo "payload_changed=false" >> $GITHUB_OUTPUT
+            echo "schema_changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Validate migration exists for localization changes
-        if: steps.check-localization.outputs.payload_changed == 'true' && steps.check-localization.outputs.localized_added != '0'
-        run: |
-          MIGRATION_ADDED=${{ steps.check-localization.outputs.migration_added }}
-          if [ "$MIGRATION_ADDED" -eq 0 ]; then
-            echo "::error::Localization fields added/changed but no migration file found in src/migrations/"
-            echo "::error::Run 'pnpm payload migrate:create' to generate the schema migration, then commit it."
-            exit 1
+          echo "migration_added=$MIGRATION_ADDED" >> $GITHUB_OUTPUT
+
+          LOCALIZED_ADDED=$(git diff origin/main...HEAD -- 'src/collections/' 'src/payload.config.ts' | grep -c '+.*localized.*true' || true)
+          echo "localized_added=$LOCALIZED_ADDED" >> $GITHUB_OUTPUT
+
+          NEW_COLLECTION_FILES=$(git diff --name-only --diff-filter=A origin/main...HEAD -- 'src/collections/*/index.ts' 'src/collections/*/index.tsx' || true)
+          if [ -n "$NEW_COLLECTION_FILES" ]; then
+            echo "new_collections=true" >> $GITHUB_OUTPUT
+            echo "new_collection_list<<EOF" >> $GITHUB_OUTPUT
+            echo "$NEW_COLLECTION_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "new_collections=false" >> $GITHUB_OUTPUT
           fi
-          for f in $(git diff --name-only origin/main...HEAD -- 'src/migrations/*.ts'); do
-            if grep -q "SELECT 1" "$f" && ! grep -q "CREATE\|ALTER\|INSERT\|UPDATE\|DROP" "$f"; then
-              echo "::error::Migration file $f appears to be a no-op placeholder. It must contain actual SQL."
+
+          FIELDS_ADDED=$(git diff origin/main...HEAD -- 'src/collections/' 'src/globals/' | grep -cE "^\+.*name:\s*'" || true)
+          echo "fields_added=$FIELDS_ADDED" >> $GITHUB_OUTPUT
+
+      - name: Require migration for schema changes
+        if: steps.detect.outputs.schema_changed == 'true'
+        run: |
+          MIGRATION_ADDED=${{ steps.detect.outputs.migration_added }}
+          FIELDS_ADDED=${{ steps.detect.outputs.fields_added }}
+          LOCALIZED_ADDED=${{ steps.detect.outputs.localized_added }}
+
+          if [ "$FIELDS_ADDED" -gt 0 ] || [ "$LOCALIZED_ADDED" -gt 0 ]; then
+            if [ "$MIGRATION_ADDED" -eq 0 ]; then
+              echo "::error::Payload schema fields added/changed but NO migration file found in src/migrations/"
+              echo "::error::You MUST run 'pnpm payload migrate:create' and commit the generated migration."
+              echo "::error::Fields added: $FIELDS_ADDED | Localization changes: $LOCALIZED_ADDED"
               exit 1
             fi
-          done
-          echo "✅ Migration file found and contains SQL statements"
+          fi
 
-      - name: Validate payload-types.ts is up to date
-        if: steps.check-localization.outputs.payload_changed == 'true'
+          if [ "$MIGRATION_ADDED" -eq 0 ]; then
+            echo "::warning::Payload config/collections/globals changed but no migration file added. If you changed field definitions, you MUST add a migration."
+          fi
+
+      - name: Reject no-op placeholder migrations
+        if: steps.detect.outputs.schema_changed == 'true' && steps.detect.outputs.migration_added != '0'
+        run: |
+          FAILED=0
+          for f in $(git diff --name-only origin/main...HEAD -- 'src/migrations/*.ts'); do
+            if echo "$f" | grep -q 'index.ts$'; then continue; fi
+            if grep -q "SELECT 1" "$f" && ! grep -qE "CREATE|ALTER|DROP|INSERT|UPDATE|ADD COLUMN" "$f"; then
+              echo "::error::Migration $f is a no-op placeholder (SELECT 1 only, no real SQL)."
+              echo "::error::Run 'pnpm payload migrate:create' to generate real migration SQL."
+              FAILED=1
+            fi
+          done
+          if [ "$FAILED" -eq 1 ]; then exit 1; fi
+          echo "All migration files contain real SQL statements"
+
+      - name: Check locked_documents_rels for new collections
+        if: steps.detect.outputs.new_collections == 'true' && steps.detect.outputs.config_changed != '0'
+        run: |
+          RELS_COVERED=false
+          for f in $(git diff --name-only origin/main...HEAD -- 'src/migrations/*.ts'); do
+            if echo "$f" | grep -q 'index.ts$'; then continue; fi
+            if grep -q "payload_locked_documents_rels" "$f" 2>/dev/null; then
+              RELS_COVERED=true
+              break
+            fi
+          done
+          if [ "$RELS_COVERED" = "false" ]; then
+            echo "::warning::New collection(s) added with payload.config.ts change, but no migration updates payload_locked_documents_rels."
+            echo "::warning::New collections need a FK column in payload_locked_documents_rels. Missing this caused the feedback collection outage (2026-03-30)."
+            echo "::warning::Files: ${{ steps.detect.outputs.new_collection_list }}"
+          fi
+
+      - name: Validate payload-types.ts is current
+        if: steps.detect.outputs.schema_changed == 'true'
         run: |
           TYPES_CHANGED=$(git diff --name-only origin/main...HEAD | grep -c 'src/payload-types.ts' || true)
           if [ "$TYPES_CHANGED" -eq 0 ]; then
-            echo "::warning::Payload config/collections changed but payload-types.ts was not updated. Run 'pnpm payload generate:types' and commit."
+            echo "::warning::Payload schema changed but payload-types.ts was not updated. Run 'pnpm payload generate:types' and commit."
           fi
 
   staging-migration:
