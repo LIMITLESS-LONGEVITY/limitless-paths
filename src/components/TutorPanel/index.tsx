@@ -103,11 +103,15 @@ export const TutorPanel: React.FC<{
     setMessages(newMessages)
     setLoading(true)
 
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 30000)
+
     try {
       const res = await fetch(apiUrl('/api/ai/tutor'), {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           message: userMessage,
           conversationHistory: messages,
@@ -187,8 +191,14 @@ export const TutorPanel: React.FC<{
           }
         }
       }
-    } catch {
-      setError('Something went wrong. Try again.')
+      clearTimeout(timeout)
+    } catch (err) {
+      clearTimeout(timeout)
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setError('The AI tutor is taking too long. Please try a shorter question.')
+      } else {
+        setError('Something went wrong. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
@@ -261,7 +271,10 @@ export const TutorPanel: React.FC<{
                 </>
               ) : (
                 msg.content || (loading && i === messages.length - 1 && (
-                  <span className="inline-block w-2 h-4 bg-brand-gold/50 animate-pulse" />
+                  <span className="flex items-center gap-2 text-brand-silver/50 text-sm">
+                    <span className="inline-block w-2 h-4 bg-brand-gold/50 animate-pulse" />
+                    Thinking...
+                  </span>
                 ))
               )}
             </div>
