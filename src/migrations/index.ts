@@ -28,6 +28,7 @@ import * as migration_20260329_110000_drop_stay_fields from './20260329_110000_d
 import * as migration_20260330_180000_i18n_restructure from './20260330_180000_i18n_restructure';
 import * as migration_20260401_130000_add_feedback_prompted from './20260401_130000_add_feedback_prompted';
 import * as migration_20260401_160000_schema_catchup from './20260401_160000_schema_catchup';
+import * as migration_20260401_170000_schema_catchup_v2 from './20260401_170000_schema_catchup_v2';
 
 export const migrations = [
   {
@@ -179,5 +180,10 @@ export const migrations = [
     up: migration_20260401_160000_schema_catchup.up,
     down: migration_20260401_160000_schema_catchup.down,
     name: '20260401_160000_schema_catchup',
+  },
+  {
+    up: migration_20260401_170000_schema_catchup_v2.up,
+    down: migration_20260401_170000_schema_catchup_v2.down,
+    name: '20260401_170000_schema_catchup_v2',
   },
 ];
