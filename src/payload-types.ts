@@ -83,12 +83,10 @@ export interface Config {
     'lesson-progress': LessonProgress;
     'ai-usage': AiUsage;
     'content-chunks': ContentChunk;
-    subscriptions: Subscription;
-    'stripe-events': StripeEvent;
-    'health-profiles': HealthProfile;
     'action-plans': ActionPlan;
     'daily-protocols': DailyProtocol;
     certificates: Certificate;
+    feedback: Feedback;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -117,12 +115,10 @@ export interface Config {
     'lesson-progress': LessonProgressSelect<false> | LessonProgressSelect<true>;
     'ai-usage': AiUsageSelect<false> | AiUsageSelect<true>;
     'content-chunks': ContentChunksSelect<false> | ContentChunksSelect<true>;
-    subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
-    'stripe-events': StripeEventsSelect<false> | StripeEventsSelect<true>;
-    'health-profiles': HealthProfilesSelect<false> | HealthProfilesSelect<true>;
     'action-plans': ActionPlansSelect<false> | ActionPlansSelect<true>;
     'daily-protocols': DailyProtocolsSelect<false> | DailyProtocolsSelect<true>;
     certificates: CertificatesSelect<false> | CertificatesSelect<true>;
+    feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -965,35 +961,6 @@ export interface Course {
    */
   estimatedDuration?: number | null;
   publishedAt?: string | null;
-  /**
-   * Set to make this course a hotel longevity stay program
-   */
-  stayType?: ('3-day' | '5-day' | '7-day') | null;
-  /**
-   * e.g. "El Fuerte Marbella"
-   */
-  stayLocation?: string | null;
-  /**
-   * Price in EUR (non-member)
-   */
-  stayPrice?: number | null;
-  /**
-   * Member price in EUR
-   */
-  stayMemberPrice?: number | null;
-  /**
-   * What is included in the stay package
-   */
-  stayIncludes?:
-    | {
-        item: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Post-stay follow-up duration in months (e.g., 1, 3, or 6)
-   */
-  followUpMonths?: number | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1091,13 +1058,9 @@ export interface Enrollment {
    */
   paymentStatus: 'free' | 'paid' | 'pending' | 'refunded';
   /**
-   * Start date of hotel stay. Set by admin when confirming booking.
+   * Whether the user has been shown the post-course satisfaction prompt
    */
-  stayStartDate?: string | null;
-  /**
-   * End date of hotel stay. Set by admin.
-   */
-  stayEndDate?: string | null;
+  feedbackPrompted?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1167,118 +1130,6 @@ export interface ContentChunk {
   pillar?: (number | null) | ContentPillar;
   chunkIndex: number;
   tokenCount: number;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subscriptions".
- */
-export interface Subscription {
-  id: number;
-  user: number | User;
-  tier: number | MembershipTier;
-  stripeSubscriptionId: string;
-  stripeCustomerId: string;
-  status: 'active' | 'past_due' | 'cancelled' | 'expired';
-  billingInterval: 'monthly' | 'yearly';
-  currentPeriodStart?: string | null;
-  currentPeriodEnd?: string | null;
-  cancelAtPeriodEnd?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "stripe-events".
- */
-export interface StripeEvent {
-  id: number;
-  stripeEventId: string;
-  eventType: string;
-  processed?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * User health data for personalized AI features. Strictly access-controlled.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "health-profiles".
- */
-export interface HealthProfile {
-  id: number;
-  /**
-   * One health profile per user (1:1 relationship)
-   */
-  user: number | User;
-  /**
-   * Health biomarker measurements from diagnostic assessments
-   */
-  biomarkers?:
-    | {
-        /**
-         * e.g. "Vitamin D", "HbA1c", "ApoB", "hs-CRP"
-         */
-        name: string;
-        value: number;
-        /**
-         * e.g. "ng/mL", "%", "mg/dL"
-         */
-        unit: string;
-        date: string;
-        normalRangeLow?: number | null;
-        normalRangeHigh?: number | null;
-        status: 'low' | 'normal' | 'high' | 'critical';
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * User-selected health improvement goals
-   */
-  healthGoals?:
-    | {
-        goal:
-          | 'improve-sleep'
-          | 'lose-weight'
-          | 'increase-energy'
-          | 'reduce-inflammation'
-          | 'build-muscle'
-          | 'improve-cognition'
-          | 'cardiovascular-health'
-          | 'hormone-balance'
-          | 'longevity-optimization'
-          | 'stress-management';
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * User-reported health conditions (optional)
-   */
-  conditions?:
-    | {
-        condition: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Current medications (optional)
-   */
-  medications?:
-    | {
-        medication: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Ordered list of content pillars the user prioritizes
-   */
-  pillarPriorities?:
-    | {
-        pillar: number | ContentPillar;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1369,6 +1220,23 @@ export interface Certificate {
    */
   expiresAt?: string | null;
   type: 'completion' | 'certification';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback".
+ */
+export interface Feedback {
+  id: number;
+  user?: (number | null) | User;
+  category: 'experience' | 'content' | 'feature_request' | 'bug_report';
+  satisfaction: 'exceptional' | 'good' | 'could_improve';
+  message?: string | null;
+  pageUrl?: string | null;
+  anonymous?: boolean | null;
+  status?: ('new' | 'reviewed' | 'actioned' | 'closed') | null;
+  internalNotes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1636,18 +1504,6 @@ export interface PayloadLockedDocument {
         value: number | ContentChunk;
       } | null)
     | ({
-        relationTo: 'subscriptions';
-        value: number | Subscription;
-      } | null)
-    | ({
-        relationTo: 'stripe-events';
-        value: number | StripeEvent;
-      } | null)
-    | ({
-        relationTo: 'health-profiles';
-        value: number | HealthProfile;
-      } | null)
-    | ({
         relationTo: 'action-plans';
         value: number | ActionPlan;
       } | null)
@@ -1658,6 +1514,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'certificates';
         value: number | Certificate;
+      } | null)
+    | ({
+        relationTo: 'feedback';
+        value: number | Feedback;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2116,17 +1976,6 @@ export interface CoursesSelect<T extends boolean = true> {
   relatedArticles?: T;
   estimatedDuration?: T;
   publishedAt?: T;
-  stayType?: T;
-  stayLocation?: T;
-  stayPrice?: T;
-  stayMemberPrice?: T;
-  stayIncludes?:
-    | T
-    | {
-        item?: T;
-        id?: T;
-      };
-  followUpMonths?: T;
   meta?:
     | T
     | {
@@ -2195,8 +2044,7 @@ export interface EnrollmentsSelect<T extends boolean = true> {
   completedAt?: T;
   completionPercentage?: T;
   paymentStatus?: T;
-  stayStartDate?: T;
-  stayEndDate?: T;
+  feedbackPrompted?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2253,79 +2101,6 @@ export interface ContentChunksSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subscriptions_select".
- */
-export interface SubscriptionsSelect<T extends boolean = true> {
-  user?: T;
-  tier?: T;
-  stripeSubscriptionId?: T;
-  stripeCustomerId?: T;
-  status?: T;
-  billingInterval?: T;
-  currentPeriodStart?: T;
-  currentPeriodEnd?: T;
-  cancelAtPeriodEnd?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "stripe-events_select".
- */
-export interface StripeEventsSelect<T extends boolean = true> {
-  stripeEventId?: T;
-  eventType?: T;
-  processed?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "health-profiles_select".
- */
-export interface HealthProfilesSelect<T extends boolean = true> {
-  user?: T;
-  biomarkers?:
-    | T
-    | {
-        name?: T;
-        value?: T;
-        unit?: T;
-        date?: T;
-        normalRangeLow?: T;
-        normalRangeHigh?: T;
-        status?: T;
-        id?: T;
-      };
-  healthGoals?:
-    | T
-    | {
-        goal?: T;
-        id?: T;
-      };
-  conditions?:
-    | T
-    | {
-        condition?: T;
-        id?: T;
-      };
-  medications?:
-    | T
-    | {
-        medication?: T;
-        id?: T;
-      };
-  pillarPriorities?:
-    | T
-    | {
-        pillar?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "action-plans_select".
  */
 export interface ActionPlansSelect<T extends boolean = true> {
@@ -2372,6 +2147,22 @@ export interface CertificatesSelect<T extends boolean = true> {
   issuedAt?: T;
   expiresAt?: T;
   type?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback_select".
+ */
+export interface FeedbackSelect<T extends boolean = true> {
+  user?: T;
+  category?: T;
+  satisfaction?: T;
+  message?: T;
+  pageUrl?: T;
+  anonymous?: T;
+  status?: T;
+  internalNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
