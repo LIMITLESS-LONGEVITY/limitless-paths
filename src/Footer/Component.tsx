@@ -22,7 +22,7 @@ const ACCOUNT_LINKS = [
   { href: '/account', key: 'dashboardLink' },
   { href: '/account/health', key: 'healthProfile' },
   { href: '/account/certificates', key: 'certificates' },
-  { href: '/book/dashboard/membership', key: 'billing' },
+  { href: '/account/billing', key: 'billing' },
 ] as const
 
 const COMPANY_LINKS = [
