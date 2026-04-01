@@ -26,6 +26,7 @@ import * as migration_20260328_100000_drop_billing_tables from './20260328_10000
 import * as migration_20260329_100000_drop_health_profiles from './20260329_100000_drop_health_profiles';
 import * as migration_20260329_110000_drop_stay_fields from './20260329_110000_drop_stay_fields';
 import * as migration_20260330_180000_i18n_restructure from './20260330_180000_i18n_restructure';
+import * as migration_20260401_130000_add_feedback_prompted from './20260401_130000_add_feedback_prompted';
 
 export const migrations = [
   {
@@ -167,5 +168,10 @@ export const migrations = [
     up: migration_20260330_180000_i18n_restructure.up,
     down: migration_20260330_180000_i18n_restructure.down,
     name: '20260330_180000_i18n_restructure',
+  },
+  {
+    up: migration_20260401_130000_add_feedback_prompted.up,
+    down: migration_20260401_130000_add_feedback_prompted.down,
+    name: '20260401_130000_add_feedback_prompted',
   },
 ];
