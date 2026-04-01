@@ -68,11 +68,60 @@ jobs:
           NEXT_PUBLIC_SERVER_URL: http://localhost:3000
           RESEND_API_KEY: re_fake_not_real
 
+  validate-payload-schema:
+    name: Validate Payload Schema
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for localization changes
+        id: check-localization
+        run: |
+          CHANGED=$(git diff --name-only origin/main...HEAD)
+          CONFIG_CHANGED=$(echo "$CHANGED" | grep -c 'payload.config.ts' || true)
+          COLLECTIONS_CHANGED=$(echo "$CHANGED" | grep -c 'src/collections/' || true)
+          if [ "$CONFIG_CHANGED" -gt 0 ] || [ "$COLLECTIONS_CHANGED" -gt 0 ]; then
+            echo "payload_changed=true" >> $GITHUB_OUTPUT
+            LOCALIZED_ADDED=$(git diff origin/main...HEAD -- 'src/collections/' 'src/payload.config.ts' | grep -c '+.*localized.*true' || true)
+            echo "localized_added=$LOCALIZED_ADDED" >> $GITHUB_OUTPUT
+            MIGRATION_ADDED=$(echo "$CHANGED" | grep -c 'src/migrations/' || true)
+            echo "migration_added=$MIGRATION_ADDED" >> $GITHUB_OUTPUT
+          else
+            echo "payload_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Validate migration exists for localization changes
+        if: steps.check-localization.outputs.payload_changed == 'true' && steps.check-localization.outputs.localized_added != '0'
+        run: |
+          MIGRATION_ADDED=${{ steps.check-localization.outputs.migration_added }}
+          if [ "$MIGRATION_ADDED" -eq 0 ]; then
+            echo "::error::Localization fields added/changed but no migration file found in src/migrations/"
+            echo "::error::Run 'pnpm payload migrate:create' to generate the schema migration, then commit it."
+            exit 1
+          fi
+          for f in $(git diff --name-only origin/main...HEAD -- 'src/migrations/*.ts'); do
+            if grep -q "SELECT 1" "$f" && ! grep -q "CREATE\|ALTER\|INSERT\|UPDATE\|DROP" "$f"; then
+              echo "::error::Migration file $f appears to be a no-op placeholder. It must contain actual SQL."
+              exit 1
+            fi
+          done
+          echo "✅ Migration file found and contains SQL statements"
+
+      - name: Validate payload-types.ts is up to date
+        if: steps.check-localization.outputs.payload_changed == 'true'
+        run: |
+          TYPES_CHANGED=$(git diff --name-only origin/main...HEAD | grep -c 'src/payload-types.ts' || true)
+          if [ "$TYPES_CHANGED" -eq 0 ]; then
+            echo "::warning::Payload config/collections changed but payload-types.ts was not updated. Run 'pnpm payload generate:types' and commit."
+          fi
+
   staging-migration:
     name: Test Migrations (Staging DB)
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout
