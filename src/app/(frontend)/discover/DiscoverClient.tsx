@@ -24,6 +24,7 @@ type PathItem = {
   order: number
   accessLevel: string
   locked?: boolean
+  slug?: string
 }
 
 export default function DiscoverClient({ isAuthenticated }: { isAuthenticated: boolean }) {
@@ -78,8 +79,9 @@ export default function DiscoverClient({ isAuthenticated }: { isAuthenticated: b
   }
 
   const getContentHref = (item: PathItem) => {
-    if (item.collection === 'articles') return `/articles/${item.sourceId}`
-    if (item.collection === 'courses') return `/courses/${item.sourceId}`
+    const id = item.slug || item.sourceId
+    if (item.collection === 'articles') return `/articles/${id}`
+    if (item.collection === 'courses') return `/courses/${id}`
     if (item.collection === 'lessons') return '#'
     return '#'
   }

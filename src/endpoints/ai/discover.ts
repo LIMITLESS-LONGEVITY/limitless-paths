@@ -71,7 +71,23 @@ export const discoverEndpoint: Endpoint = {
         durationMs: Date.now() - ctx.startTime,
       })
 
-      return Response.json({ path })
+      // Resolve slugs for each path item
+      const enrichedPath = await Promise.all(
+        path.map(async (item) => {
+          try {
+            const doc = await req.payload.findByID({
+              collection: item.collection as 'articles' | 'courses',
+              id: item.sourceId,
+              depth: 0,
+              select: { slug: true },
+            })
+            return { ...item, slug: (doc as any)?.slug || item.sourceId }
+          } catch {
+            return { ...item, slug: item.sourceId }
+          }
+        })
+      )
+      return Response.json({ path: enrichedPath })
     } catch (err: any) {
       req.payload.logger.error({ err, message: 'Content discovery failed' })
       return Response.json({ error: 'Failed to generate learning path. Please try again.' }, { status: 500 })
