@@ -9,6 +9,8 @@ import { fireCourseCompleteConfetti } from '@/components/CelebrationConfetti'
 import { StreakToast, isMilestone } from '@/components/StreakToast'
 import { CourseFeedbackPrompt } from '@/components/CourseFeedbackPrompt'
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -104,7 +106,7 @@ export const LessonNav: React.FC<{
       // Delay navigation to show celebration
       const delay = hasCelebration ? 2500 : 1200
       setTimeout(() => {
-        if (nextHref) window.location.href = nextHref
+        if (nextHref) window.location.href = `${basePath}${nextHref}`
         else window.location.reload()
       }, delay)
     } catch {
@@ -199,7 +201,7 @@ export const LessonNav: React.FC<{
           setShowFeedbackPrompt(false)
           // Navigate after feedback prompt is dismissed or submitted
           setTimeout(() => {
-            if (nextHref) window.location.href = nextHref
+            if (nextHref) window.location.href = `${basePath}${nextHref}`
             else window.location.reload()
           }, 300)
         }}
